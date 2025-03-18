@@ -21,12 +21,12 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
         child: Column(
           children: [
-            TotalScoreDisplay(scoreTeamOne: 654, scoreTeamTwo: 123),
-            const SizedBox(height: 12),
-            const Divider(),
+            TotalScoreDisplay(scoreTeamOne: 0, scoreTeamTwo: 0),
+            const SizedBox(height: 6),
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 12), child: const Divider()),
             const SizedBox(height: 12),
             Expanded(
               child: FadingEdgeScrollView(
@@ -49,7 +49,7 @@ class HomeScreen extends ConsumerWidget {
                 AddRoundButton(text: 'Vi', color: Colors.red, onPressed: () {}),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 24),
           ],
         ),
       ),

@@ -8,19 +8,43 @@ class TotalScoreDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return Column(
       children: [
-        Expanded(
-          child: Center(
-            child: Text(scoreTeamOne.toString(), style: TextStyle(fontSize: 48), textAlign: TextAlign.center),
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+              child: Center(child: Text("Mi", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600))),
+            ),
+            const SizedBox(width: 12.1),
+            Expanded(
+              child: Center(child: Text("Vi", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600))),
+            ),
+          ],
         ),
-        Center(child: const Text(":", style: TextStyle(fontSize: 40))),
-        Expanded(
-          child: Center(
-            child: Text(scoreTeamTwo.toString(), style: TextStyle(fontSize: 48), textAlign: TextAlign.center),
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+              child: Center(
+                child: Text(
+                  scoreTeamOne.toString(),
+                  style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            Center(child: const Text(":", style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold))),
+            Expanded(
+              child: Center(
+                child: Text(
+                  scoreTeamTwo.toString(),
+                  style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
