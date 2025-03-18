@@ -1,10 +1,12 @@
+import 'dart:math';
+
 class Round {
   final int scoreTeamOne;
   final int scoreTeamTwo;
 
   Round({required this.scoreTeamOne, required this.scoreTeamTwo});
 
-  Round.dummy() : scoreTeamOne = 123, scoreTeamTwo = 456;
+  Round.dummy() : scoreTeamOne = Random().nextInt(163), scoreTeamTwo = Random().nextInt(163);
 
   Round copyWith({int? scoreTeamOne, int? scoreTeamTwo}) {
     return Round(
