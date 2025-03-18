@@ -4,30 +4,40 @@ import '../models/round.dart';
 
 class RoundDisplay extends StatelessWidget {
   final Round round;
+  final int roundIndex;
 
-  const RoundDisplay({super.key, required this.round});
+  const RoundDisplay({super.key, required this.round, required this.roundIndex});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Expanded(
-          child: Text(
-            round.scoreTeamOne.toString(),
-            style: TextStyle(fontSize: 24),
-            textAlign: TextAlign.center,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          SizedBox(
+            width: 24,
+            child: Text('$roundIndex.', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
           ),
-        ),
-        Expanded(child: Icon(Symbols.horizontal_rule, size: 24)),
-        Expanded(
-          child: Text(
-            round.scoreTeamOne.toString(),
-            style: TextStyle(fontSize: 24),
-            textAlign: TextAlign.center,
+
+          Expanded(
+            child: Text(
+              round.scoreTeamOne.toString(),
+              style: TextStyle(fontSize: 32),
+              textAlign: TextAlign.center,
+            ),
           ),
-        ),
-      ],
+          Expanded(child: Icon(Symbols.horizontal_rule, size: 32)),
+          Expanded(
+            child: Text(
+              round.scoreTeamOne.toString(),
+              style: TextStyle(fontSize: 32),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          SizedBox(width: 24),
+        ],
+      ),
     );
   }
 }

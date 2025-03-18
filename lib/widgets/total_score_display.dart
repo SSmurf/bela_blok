@@ -12,11 +12,15 @@ class TotalScoreDisplay extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Expanded(
-          child: Text(scoreTeamOne.toString(), style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
+          child: Center(
+            child: Text(scoreTeamOne.toString(), style: TextStyle(fontSize: 48), textAlign: TextAlign.center),
+          ),
         ),
-        Expanded(child: Icon(Icons.horizontal_rule, size: 24)),
+        Center(child: const Text(":", style: TextStyle(fontSize: 40))),
         Expanded(
-          child: Text(scoreTeamTwo.toString(), style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
+          child: Center(
+            child: Text(scoreTeamTwo.toString(), style: TextStyle(fontSize: 48), textAlign: TextAlign.center),
+          ),
         ),
       ],
     );
