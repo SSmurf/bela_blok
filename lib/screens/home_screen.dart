@@ -18,7 +18,42 @@ class HomeScreen extends ConsumerWidget {
           IconButton(icon: const Icon(Symbols.history), iconSize: 32, onPressed: () {}),
         ],
       ),
-      body: Column(children: [TotalScoreDisplay(score: 123), RoundDisplay(round: Round.dummy())]),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 24),
+        child: Column(
+          children: [
+            TotalScoreDisplay(scoreTeamOne: 654, scoreTeamTwo: 123),
+            const Divider(),
+            Expanded(
+              child: ListView(
+                children: [
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                  RoundDisplay(round: Round.dummy()),
+                ],
+              ),
+            ),
+            Row(),
+          ],
+        ),
+      ),
     );
   }
 }
