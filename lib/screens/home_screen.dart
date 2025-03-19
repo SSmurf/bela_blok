@@ -44,10 +44,7 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                AddRoundButton(text: 'Mi', color: Colors.green, onPressed: () {}),
-                AddRoundButton(text: 'Vi', color: Colors.red, onPressed: () {}),
-              ],
+              children: [AddRoundButton(text: 'Nova runda', color: Colors.green, onPressed: () {})],
             ),
             const SizedBox(height: 24),
           ],

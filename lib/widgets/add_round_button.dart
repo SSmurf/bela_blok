@@ -11,18 +11,17 @@ class AddRoundButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 56.0, // Set the desired height
+      height: 56.0,
+      width: 250.0,
       child: ElevatedButton.icon(
         onPressed: onPressed,
-        icon: Icon(Symbols.add, size: 40.0), // Increased icon size
-        label: Text(text, style: TextStyle(fontSize: 32.0)), // Increased text size
+        icon: Icon(Symbols.add, size: 40.0),
+        label: Text(text, style: TextStyle(fontSize: 24.0)),
         style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white, // Custom color
+          foregroundColor: Colors.white,
           backgroundColor: color,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0), // Squircles shape
-          ),
-          elevation: 0, // No shadow
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+          elevation: 0,
         ),
       ),
     );
