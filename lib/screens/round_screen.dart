@@ -35,6 +35,14 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   int decl200TeamOne = 0, decl200TeamTwo = 0;
   int declStigljaTeamOne = 0, declStigljaTeamTwo = 0;
 
+  // Maximum allowed declarations per team
+  static const int max20 = 5;
+  static const int max50 = 4;
+  static const int max100 = 4;
+  static const int max150 = 1;
+  static const int max200 = 1;
+  static const int maxStiglja = 1;
+
   @override
   void initState() {
     super.initState();
@@ -130,9 +138,8 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   }
 
   // Helper method to build each declaration row.
-  // The row layout is:
-  // [Team One Undo] [(optional) Team One Counter] [Declaration Button] [(optional) Team Two Counter] [Team Two Undo]
-  // The declaration button adds a declaration to the team that is currently selected.
+  // Layout: [Team One Undo] [optional Team One Counter] [Declaration Button] [optional Team Two Counter] [Team Two Undo]
+  // The declaration button adds declaration to the team that is currently selected.
   Widget _buildDeclarationRow({
     required String label,
     double fontSize = 28,
@@ -253,18 +260,19 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                   SingleChildScrollView(
                     child: Column(
                       children: [
+                        // Declaration row for "20" with max 5 declarations per team
                         _buildDeclarationRow(
                           label: '20',
                           teamOneCount: decl20TeamOne,
                           teamTwoCount: decl20TeamTwo,
                           onTeamOneIncrement: () {
                             setState(() {
-                              decl20TeamOne++;
+                              if (decl20TeamOne < max20) decl20TeamOne++;
                             });
                           },
                           onTeamTwoIncrement: () {
                             setState(() {
-                              decl20TeamTwo++;
+                              if (decl20TeamTwo < max20) decl20TeamTwo++;
                             });
                           },
                           onTeamOneUndo: () {
@@ -278,18 +286,19 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                             });
                           },
                         ),
+                        // Declaration row for "50" with max 4 declarations per team
                         _buildDeclarationRow(
                           label: '50',
                           teamOneCount: decl50TeamOne,
                           teamTwoCount: decl50TeamTwo,
                           onTeamOneIncrement: () {
                             setState(() {
-                              decl50TeamOne++;
+                              if (decl50TeamOne < max50) decl50TeamOne++;
                             });
                           },
                           onTeamTwoIncrement: () {
                             setState(() {
-                              decl50TeamTwo++;
+                              if (decl50TeamTwo < max50) decl50TeamTwo++;
                             });
                           },
                           onTeamOneUndo: () {
@@ -303,18 +312,19 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                             });
                           },
                         ),
+                        // Declaration row for "100" with max 4 declarations per team
                         _buildDeclarationRow(
                           label: '100',
                           teamOneCount: decl100TeamOne,
                           teamTwoCount: decl100TeamTwo,
                           onTeamOneIncrement: () {
                             setState(() {
-                              decl100TeamOne++;
+                              if (decl100TeamOne < max100) decl100TeamOne++;
                             });
                           },
                           onTeamTwoIncrement: () {
                             setState(() {
-                              decl100TeamTwo++;
+                              if (decl100TeamTwo < max100) decl100TeamTwo++;
                             });
                           },
                           onTeamOneUndo: () {
@@ -328,18 +338,19 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                             });
                           },
                         ),
+                        // Declaration row for "150" with max 1 declaration per team
                         _buildDeclarationRow(
                           label: '150',
                           teamOneCount: decl150TeamOne,
                           teamTwoCount: decl150TeamTwo,
                           onTeamOneIncrement: () {
                             setState(() {
-                              decl150TeamOne++;
+                              if (decl150TeamOne < max150) decl150TeamOne++;
                             });
                           },
                           onTeamTwoIncrement: () {
                             setState(() {
-                              decl150TeamTwo++;
+                              if (decl150TeamTwo < max150) decl150TeamTwo++;
                             });
                           },
                           onTeamOneUndo: () {
@@ -353,18 +364,19 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                             });
                           },
                         ),
+                        // Declaration row for "200" with max 1 declaration per team
                         _buildDeclarationRow(
                           label: '200',
                           teamOneCount: decl200TeamOne,
                           teamTwoCount: decl200TeamTwo,
                           onTeamOneIncrement: () {
                             setState(() {
-                              decl200TeamOne++;
+                              if (decl200TeamOne < max200) decl200TeamOne++;
                             });
                           },
                           onTeamTwoIncrement: () {
                             setState(() {
-                              decl200TeamTwo++;
+                              if (decl200TeamTwo < max200) decl200TeamTwo++;
                             });
                           },
                           onTeamOneUndo: () {
@@ -378,6 +390,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                             });
                           },
                         ),
+                        // Declaration row for "Štiglja" with max 1 declaration per team
                         _buildDeclarationRow(
                           label: 'Štiglja',
                           fontSize: 20,
@@ -385,12 +398,12 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                           teamTwoCount: declStigljaTeamTwo,
                           onTeamOneIncrement: () {
                             setState(() {
-                              declStigljaTeamOne++;
+                              if (declStigljaTeamOne < maxStiglja) declStigljaTeamOne++;
                             });
                           },
                           onTeamTwoIncrement: () {
                             setState(() {
-                              declStigljaTeamTwo++;
+                              if (declStigljaTeamTwo < maxStiglja) declStigljaTeamTwo++;
                             });
                           },
                           onTeamOneUndo: () {
