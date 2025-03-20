@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bela_blok/models/round.dart';
 import 'package:bela_blok/providers/game_provider.dart';
 import 'package:bela_blok/widgets/round_display.dart';
@@ -5,22 +7,50 @@ import 'package:bela_blok/widgets/total_score_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/add_round_button.dart';
 import 'round_screen.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  // A flag to ensure the game is saved only once.
+  bool _gameSaved = false;
+
+  Future<void> _saveGameToLocalStorage(List<Round> rounds, int teamOneTotal, int teamTwoTotal) async {
+    // Construct a simple game map.
+    final Map<String, dynamic> gameData = {
+      'teamOneName': 'Mi',
+      'teamTwoName': 'Vi',
+      'rounds': rounds.map((round) => round.toJson()).toList(),
+      'teamOneTotal': teamOneTotal,
+      'teamTwoTotal': teamTwoTotal,
+      'createdAt': DateTime.now().toIso8601String(),
+    };
+
+    final prefs = await SharedPreferences.getInstance();
+    // Save using a unique key with timestamp.
+    final key = 'saved_game_${DateTime.now().millisecondsSinceEpoch}';
+    await prefs.setString(key, json.encode(gameData));
+
+    // For debugging purposes.
+    debugPrint('Game saved under key: $key');
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final rounds = ref.watch(currentGameProvider);
     final gameNotifier = ref.read(currentGameProvider.notifier);
 
-    // Determine the total scores.
     final int teamOneTotal = gameNotifier.teamOneTotal;
     final int teamTwoTotal = gameNotifier.teamTwoTotal;
-    // The game ends when one team's score is at least 1.001.
+    // The game ends when one team's score is at least 1001.
     final bool gameEnded = teamOneTotal >= 1001 || teamTwoTotal >= 1001;
     // Determine the winning team.
     final String winningTeam =
@@ -29,6 +59,14 @@ class HomeScreen extends ConsumerWidget {
             : teamTwoTotal >= 1001
             ? 'Vi'
             : '';
+
+    // Save the game to local storage when gameEnded and it wasn't already saved.
+    if (gameEnded && !_gameSaved) {
+      _saveGameToLocalStorage(rounds, teamOneTotal, teamTwoTotal);
+      setState(() {
+        _gameSaved = true;
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -41,7 +79,7 @@ class HomeScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(HugeIcons.strokeRoundedCancel01),
             iconSize: 32,
-            onPressed: rounds.isNotEmpty && !gameEnded ? () => _confirmClearGame(context, ref) : null,
+            onPressed: rounds.isNotEmpty && !gameEnded ? () => _confirmClearGame(context) : null,
           ),
           IconButton(icon: const Icon(HugeIcons.strokeRoundedClock02), iconSize: 32, onPressed: () {}),
         ],
@@ -82,7 +120,6 @@ class HomeScreen extends ConsumerWidget {
                               ],
                             ),
                             const SizedBox(height: 24),
-                            // Undo last round button.
                             if (rounds.isNotEmpty)
                               ElevatedButton.icon(
                                 onPressed: () {
@@ -153,7 +190,7 @@ class HomeScreen extends ConsumerWidget {
                                   ref.read(currentGameProvider.notifier).removeRound(index);
                                 },
                                 child: GestureDetector(
-                                  onTap: () => _editRound(context, ref, rounds[index], index),
+                                  onTap: () => _editRound(context, rounds[index], index),
                                   child: RoundDisplay(round: rounds[index], roundIndex: index),
                                 ),
                               );
@@ -171,7 +208,11 @@ class HomeScreen extends ConsumerWidget {
                   color: Theme.of(context).colorScheme.primary,
                   onPressed: () {
                     if (gameEnded) {
+                      // Start a new game by clearing rounds and resetting _gameSaved.
                       ref.read(currentGameProvider.notifier).clearRounds();
+                      setState(() {
+                        _gameSaved = false;
+                      });
                     } else {
                       _addNewRound(context);
                     }
@@ -192,7 +233,7 @@ class HomeScreen extends ConsumerWidget {
     ).push(MaterialPageRoute(builder: (context) => const RoundScreen(isTeamOneSelected: true)));
   }
 
-  void _editRound(BuildContext context, WidgetRef ref, Round round, int index) {
+  void _editRound(BuildContext context, Round round, int index) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => RoundScreen(roundToEdit: round, roundIndex: index, isTeamOneSelected: true),
@@ -200,7 +241,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _confirmClearGame(BuildContext context, WidgetRef ref) {
+  void _confirmClearGame(BuildContext context) {
     showDialog(
       context: context,
       builder:
@@ -212,6 +253,9 @@ class HomeScreen extends ConsumerWidget {
               TextButton(
                 onPressed: () {
                   ref.read(currentGameProvider.notifier).clearRounds();
+                  setState(() {
+                    _gameSaved = false;
+                  });
                   Navigator.of(context).pop();
                 },
                 child: const Text('Obriši'),

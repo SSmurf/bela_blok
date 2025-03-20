@@ -14,6 +14,7 @@ dependencies:
   flutter_riverpod: ^2.6.1
   material_symbols_icons: ^4.2810.1
   hugeicons: ^0.0.10
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
   flutter_test:
