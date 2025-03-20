@@ -107,6 +107,19 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     Navigator.of(context).pop();
   }
 
+  void _setTeamSelection(bool selectTeamOne) {
+    if (isTeamOneSelected != selectTeamOne) {
+      setState(() {
+        isTeamOneSelected = selectTeamOne;
+        // Invert the score if input has already started
+        if (hasStartedInput) {
+          int current = int.parse(activeScore);
+          activeScore = (totalPoints - current).toString();
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -117,8 +130,15 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
         child: Column(
           children: [
-            TotalScoreDisplay(scoreTeamOne: teamOneScore, scoreTeamTwo: teamTwoScore),
-            const SizedBox(height: 16),
+            TotalScoreDisplay(
+              scoreTeamOne: teamOneScore,
+              scoreTeamTwo: teamTwoScore,
+              isTeamOneSelected: isTeamOneSelected,
+              interactable: true,
+              onTeamOneTap: () => _setTeamSelection(true),
+              onTeamTwoTap: () => _setTeamSelection(false),
+            ),
+            const SizedBox(height: 24),
             Container(
               height: 48,
               decoration: BoxDecoration(
@@ -139,27 +159,20 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                 tabs: const [Tab(text: 'Bodovi'), Tab(text: 'Zvanja')],
               ),
             ),
-
             const SizedBox(height: 24),
-
             Expanded(
               child: TabBarView(
                 controller: _tabController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   // Bodovi tab
-                  Column(
-                    children: [
-                      Expanded(
-                        child: NumericKeyboard(
-                          onKeyPressed: _updateScore,
-                          onDelete: _deleteDigit,
-                          onClear: _clearScore,
-                        ),
-                      ),
-                    ],
+                  Expanded(
+                    child: NumericKeyboard(
+                      onKeyPressed: _updateScore,
+                      onDelete: _deleteDigit,
+                      onClear: _clearScore,
+                    ),
                   ),
-
                   // Zvanja tab
                   Container(
                     decoration: BoxDecoration(
@@ -172,20 +185,14 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                 ],
               ),
             ),
-
             const SizedBox(height: 24),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 AddRoundButton(
                   text: 'Spremi',
                   color: theme.colorScheme.primary,
-                  onPressed: () {
-                    if (hasStartedInput) {
-                      _saveRound();
-                    }
-                  },
+                  onPressed: hasStartedInput ? _saveRound : () {},
                 ),
               ],
             ),

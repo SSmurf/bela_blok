@@ -4,7 +4,7 @@ import 'package:bela_blok/widgets/round_display.dart';
 import 'package:bela_blok/widgets/total_score_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../widgets/add_round_button.dart';
 import 'round_screen.dart';
@@ -127,7 +127,9 @@ class HomeScreen extends ConsumerWidget {
   }
 
   void _addNewRound(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const RoundScreen()));
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const RoundScreen(isTeamOneSelected: true)));
   }
 
   void _editRound(BuildContext context, WidgetRef ref, Round round, int index) {
