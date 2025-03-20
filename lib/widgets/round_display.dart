@@ -35,7 +35,7 @@ class RoundDisplay extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              round.scoreTeamOne.toString(),
+              round.scoreTeamTwo.toString(),
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
               textAlign: TextAlign.center,
             ),
