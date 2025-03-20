@@ -268,168 +268,167 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                     ),
                   ),
                   // Zvanja tab with declaration rows
-                  SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        // Declaration row for "20" with max 5 declarations per team
-                        _buildDeclarationRow(
-                          label: '20',
-                          teamOneCount: decl20TeamOne,
-                          teamTwoCount: decl20TeamTwo,
-                          onTeamOneIncrement: () {
-                            setState(() {
-                              if (decl20TeamOne < max20) decl20TeamOne++;
-                            });
-                          },
-                          onTeamTwoIncrement: () {
-                            setState(() {
-                              if (decl20TeamTwo < max20) decl20TeamTwo++;
-                            });
-                          },
-                          onTeamOneUndo: () {
-                            setState(() {
-                              if (decl20TeamOne > 0) decl20TeamOne--;
-                            });
-                          },
-                          onTeamTwoUndo: () {
-                            setState(() {
-                              if (decl20TeamTwo > 0) decl20TeamTwo--;
-                            });
-                          },
-                        ),
-                        // Declaration row for "50" with max 4 declarations per team
-                        _buildDeclarationRow(
-                          label: '50',
-                          teamOneCount: decl50TeamOne,
-                          teamTwoCount: decl50TeamTwo,
-                          onTeamOneIncrement: () {
-                            setState(() {
-                              if (decl50TeamOne < max50) decl50TeamOne++;
-                            });
-                          },
-                          onTeamTwoIncrement: () {
-                            setState(() {
-                              if (decl50TeamTwo < max50) decl50TeamTwo++;
-                            });
-                          },
-                          onTeamOneUndo: () {
-                            setState(() {
-                              if (decl50TeamOne > 0) decl50TeamOne--;
-                            });
-                          },
-                          onTeamTwoUndo: () {
-                            setState(() {
-                              if (decl50TeamTwo > 0) decl50TeamTwo--;
-                            });
-                          },
-                        ),
-                        // Declaration row for "100" with max 4 declarations per team
-                        _buildDeclarationRow(
-                          label: '100',
-                          teamOneCount: decl100TeamOne,
-                          teamTwoCount: decl100TeamTwo,
-                          onTeamOneIncrement: () {
-                            setState(() {
-                              if (decl100TeamOne < max100) decl100TeamOne++;
-                            });
-                          },
-                          onTeamTwoIncrement: () {
-                            setState(() {
-                              if (decl100TeamTwo < max100) decl100TeamTwo++;
-                            });
-                          },
-                          onTeamOneUndo: () {
-                            setState(() {
-                              if (decl100TeamOne > 0) decl100TeamOne--;
-                            });
-                          },
-                          onTeamTwoUndo: () {
-                            setState(() {
-                              if (decl100TeamTwo > 0) decl100TeamTwo--;
-                            });
-                          },
-                        ),
-                        // Declaration row for "150" with max 1 declaration per team
-                        _buildDeclarationRow(
-                          label: '150',
-                          teamOneCount: decl150TeamOne,
-                          teamTwoCount: decl150TeamTwo,
-                          onTeamOneIncrement: () {
-                            setState(() {
-                              if (decl150TeamOne < max150) decl150TeamOne++;
-                            });
-                          },
-                          onTeamTwoIncrement: () {
-                            setState(() {
-                              if (decl150TeamTwo < max150) decl150TeamTwo++;
-                            });
-                          },
-                          onTeamOneUndo: () {
-                            setState(() {
-                              if (decl150TeamOne > 0) decl150TeamOne--;
-                            });
-                          },
-                          onTeamTwoUndo: () {
-                            setState(() {
-                              if (decl150TeamTwo > 0) decl150TeamTwo--;
-                            });
-                          },
-                        ),
-                        // Declaration row for "200" with max 1 declaration per team
-                        _buildDeclarationRow(
-                          label: '200',
-                          teamOneCount: decl200TeamOne,
-                          teamTwoCount: decl200TeamTwo,
-                          onTeamOneIncrement: () {
-                            setState(() {
-                              if (decl200TeamOne < max200) decl200TeamOne++;
-                            });
-                          },
-                          onTeamTwoIncrement: () {
-                            setState(() {
-                              if (decl200TeamTwo < max200) decl200TeamTwo++;
-                            });
-                          },
-                          onTeamOneUndo: () {
-                            setState(() {
-                              if (decl200TeamOne > 0) decl200TeamOne--;
-                            });
-                          },
-                          onTeamTwoUndo: () {
-                            setState(() {
-                              if (decl200TeamTwo > 0) decl200TeamTwo--;
-                            });
-                          },
-                        ),
-                        // Declaration row for "Štiglja" with max 1 declaration per team
-                        _buildDeclarationRow(
-                          label: 'Štiglja',
-                          fontSize: 24,
-                          teamOneCount: declStigljaTeamOne,
-                          teamTwoCount: declStigljaTeamTwo,
-                          onTeamOneIncrement: () {
-                            setState(() {
-                              if (declStigljaTeamOne < maxStiglja) declStigljaTeamOne++;
-                            });
-                          },
-                          onTeamTwoIncrement: () {
-                            setState(() {
-                              if (declStigljaTeamTwo < maxStiglja) declStigljaTeamTwo++;
-                            });
-                          },
-                          onTeamOneUndo: () {
-                            setState(() {
-                              if (declStigljaTeamOne > 0) declStigljaTeamOne--;
-                            });
-                          },
-                          onTeamTwoUndo: () {
-                            setState(() {
-                              if (declStigljaTeamTwo > 0) declStigljaTeamTwo--;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Declaration row for "20" with max 5 declarations per team
+                      _buildDeclarationRow(
+                        label: '20',
+                        teamOneCount: decl20TeamOne,
+                        teamTwoCount: decl20TeamTwo,
+                        onTeamOneIncrement: () {
+                          setState(() {
+                            if (decl20TeamOne < max20) decl20TeamOne++;
+                          });
+                        },
+                        onTeamTwoIncrement: () {
+                          setState(() {
+                            if (decl20TeamTwo < max20) decl20TeamTwo++;
+                          });
+                        },
+                        onTeamOneUndo: () {
+                          setState(() {
+                            if (decl20TeamOne > 0) decl20TeamOne--;
+                          });
+                        },
+                        onTeamTwoUndo: () {
+                          setState(() {
+                            if (decl20TeamTwo > 0) decl20TeamTwo--;
+                          });
+                        },
+                      ),
+                      // Declaration row for "50" with max 4 declarations per team
+                      _buildDeclarationRow(
+                        label: '50',
+                        teamOneCount: decl50TeamOne,
+                        teamTwoCount: decl50TeamTwo,
+                        onTeamOneIncrement: () {
+                          setState(() {
+                            if (decl50TeamOne < max50) decl50TeamOne++;
+                          });
+                        },
+                        onTeamTwoIncrement: () {
+                          setState(() {
+                            if (decl50TeamTwo < max50) decl50TeamTwo++;
+                          });
+                        },
+                        onTeamOneUndo: () {
+                          setState(() {
+                            if (decl50TeamOne > 0) decl50TeamOne--;
+                          });
+                        },
+                        onTeamTwoUndo: () {
+                          setState(() {
+                            if (decl50TeamTwo > 0) decl50TeamTwo--;
+                          });
+                        },
+                      ),
+                      // Declaration row for "100" with max 4 declarations per team
+                      _buildDeclarationRow(
+                        label: '100',
+                        teamOneCount: decl100TeamOne,
+                        teamTwoCount: decl100TeamTwo,
+                        onTeamOneIncrement: () {
+                          setState(() {
+                            if (decl100TeamOne < max100) decl100TeamOne++;
+                          });
+                        },
+                        onTeamTwoIncrement: () {
+                          setState(() {
+                            if (decl100TeamTwo < max100) decl100TeamTwo++;
+                          });
+                        },
+                        onTeamOneUndo: () {
+                          setState(() {
+                            if (decl100TeamOne > 0) decl100TeamOne--;
+                          });
+                        },
+                        onTeamTwoUndo: () {
+                          setState(() {
+                            if (decl100TeamTwo > 0) decl100TeamTwo--;
+                          });
+                        },
+                      ),
+                      // Declaration row for "150" with max 1 declaration per team
+                      _buildDeclarationRow(
+                        label: '150',
+                        teamOneCount: decl150TeamOne,
+                        teamTwoCount: decl150TeamTwo,
+                        onTeamOneIncrement: () {
+                          setState(() {
+                            if (decl150TeamOne < max150) decl150TeamOne++;
+                          });
+                        },
+                        onTeamTwoIncrement: () {
+                          setState(() {
+                            if (decl150TeamTwo < max150) decl150TeamTwo++;
+                          });
+                        },
+                        onTeamOneUndo: () {
+                          setState(() {
+                            if (decl150TeamOne > 0) decl150TeamOne--;
+                          });
+                        },
+                        onTeamTwoUndo: () {
+                          setState(() {
+                            if (decl150TeamTwo > 0) decl150TeamTwo--;
+                          });
+                        },
+                      ),
+                      // Declaration row for "200" with max 1 declaration per team
+                      _buildDeclarationRow(
+                        label: '200',
+                        teamOneCount: decl200TeamOne,
+                        teamTwoCount: decl200TeamTwo,
+                        onTeamOneIncrement: () {
+                          setState(() {
+                            if (decl200TeamOne < max200) decl200TeamOne++;
+                          });
+                        },
+                        onTeamTwoIncrement: () {
+                          setState(() {
+                            if (decl200TeamTwo < max200) decl200TeamTwo++;
+                          });
+                        },
+                        onTeamOneUndo: () {
+                          setState(() {
+                            if (decl200TeamOne > 0) decl200TeamOne--;
+                          });
+                        },
+                        onTeamTwoUndo: () {
+                          setState(() {
+                            if (decl200TeamTwo > 0) decl200TeamTwo--;
+                          });
+                        },
+                      ),
+                      // Declaration row for "Štiglja" with max 1 declaration per team
+                      _buildDeclarationRow(
+                        label: 'Štiglja',
+                        fontSize: 24,
+                        teamOneCount: declStigljaTeamOne,
+                        teamTwoCount: declStigljaTeamTwo,
+                        onTeamOneIncrement: () {
+                          setState(() {
+                            if (declStigljaTeamOne < maxStiglja) declStigljaTeamOne++;
+                          });
+                        },
+                        onTeamTwoIncrement: () {
+                          setState(() {
+                            if (declStigljaTeamTwo < maxStiglja) declStigljaTeamTwo++;
+                          });
+                        },
+                        onTeamOneUndo: () {
+                          setState(() {
+                            if (declStigljaTeamOne > 0) declStigljaTeamOne--;
+                          });
+                        },
+                        onTeamTwoUndo: () {
+                          setState(() {
+                            if (declStigljaTeamTwo > 0) declStigljaTeamTwo--;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
