@@ -22,7 +22,7 @@ class HomeScreen extends ConsumerWidget {
     final int teamTwoTotal = gameNotifier.teamTwoTotal;
     // The game ends when one team's score is at least 1.001.
     final bool gameEnded = teamOneTotal >= 1001 || teamTwoTotal >= 1001;
-    // Determine the winning team. Adjust the names if necessary.
+    // Determine the winning team.
     final String winningTeam =
         teamOneTotal >= 1001
             ? 'Mi'
@@ -146,18 +146,22 @@ class HomeScreen extends ConsumerWidget {
                       ),
             ),
             const SizedBox(height: 24),
-            // Only show "Nova runda" button if the game isn't finished.
-            if (!gameEnded)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  AddRoundButton(
-                    text: 'Nova runda',
-                    color: Theme.of(context).colorScheme.primary,
-                    onPressed: () => _addNewRound(context),
-                  ),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                AddRoundButton(
+                  text: gameEnded ? 'Nova igra' : 'Nova runda',
+                  color: Theme.of(context).colorScheme.primary,
+                  onPressed: () {
+                    if (gameEnded) {
+                      ref.read(currentGameProvider.notifier).clearRounds();
+                    } else {
+                      _addNewRound(context);
+                    }
+                  },
+                ),
+              ],
+            ),
             const SizedBox(height: 24),
           ],
         ),
