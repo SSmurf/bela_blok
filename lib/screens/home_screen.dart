@@ -56,7 +56,9 @@ class HomeScreen extends ConsumerWidget {
                             itemCount: rounds.length,
                             itemBuilder: (context, index) {
                               return Dismissible(
-                                key: ValueKey('round_$index'),
+                                key: ValueKey(
+                                  'round_${rounds[index].hashCode}',
+                                ), // Use unique key based on object
                                 background: Container(
                                   color: Colors.red.withOpacity(0.7),
                                   alignment: Alignment.centerRight,
@@ -64,7 +66,32 @@ class HomeScreen extends ConsumerWidget {
                                   child: const Icon(Icons.delete, color: Colors.white),
                                 ),
                                 direction: DismissDirection.endToStart,
+                                confirmDismiss: (_) async {
+                                  // Show confirmation dialog
+                                  return await showDialog<bool>(
+                                        context: context,
+                                        builder:
+                                            (context) => AlertDialog(
+                                              title: const Text('Brisanje runde'),
+                                              content: const Text(
+                                                'Jesi li siguran da želiš obrisati ovu rundu?',
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () => Navigator.of(context).pop(false),
+                                                  child: const Text('Odustani'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () => Navigator.of(context).pop(true),
+                                                  child: const Text('Obriši'),
+                                                ),
+                                              ],
+                                            ),
+                                      ) ??
+                                      false;
+                                },
                                 onDismissed: (_) {
+                                  // This is now safe because we confirmed the dismissal
                                   ref.read(currentGameProvider.notifier).removeRound(index);
                                 },
                                 child: GestureDetector(
@@ -102,12 +129,7 @@ class HomeScreen extends ConsumerWidget {
   void _editRound(BuildContext context, WidgetRef ref, Round round, int index) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder:
-            (context) => RoundScreen(
-              roundToEdit: round,
-              roundIndex: index,
-              isTeamOneSelected: true,
-            ),
+        builder: (context) => RoundScreen(roundToEdit: round, roundIndex: index, isTeamOneSelected: true),
       ),
     );
   }
