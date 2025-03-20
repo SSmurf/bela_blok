@@ -3,6 +3,7 @@ import 'package:bela_blok/widgets/numeric_keyboard.dart';
 import 'package:bela_blok/widgets/total_score_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../models/round.dart';
 import '../providers/game_provider.dart';
@@ -26,6 +27,14 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   bool hasStartedInput = false;
   static const int totalPoints = 162;
 
+  // Declaration counters for each declaration value
+  int decl20TeamOne = 0, decl20TeamTwo = 0;
+  int decl50TeamOne = 0, decl50TeamTwo = 0;
+  int decl100TeamOne = 0, decl100TeamTwo = 0;
+  int decl150TeamOne = 0, decl150TeamTwo = 0;
+  int decl200TeamOne = 0, decl200TeamTwo = 0;
+  int declStigljaTeamOne = 0, declStigljaTeamTwo = 0;
+
   @override
   void initState() {
     super.initState();
@@ -39,7 +48,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
       } else {
         activeScore = widget.roundToEdit!.scoreTeamTwo.toString();
       }
-
       if (activeScore != '0') {
         hasStartedInput = true;
       }
@@ -121,6 +129,72 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     }
   }
 
+  // Helper method to build each declaration row.
+  // The row layout is:
+  // [Team One Undo] [(optional) Team One Counter] [Declaration Button] [(optional) Team Two Counter] [Team Two Undo]
+  // The declaration button adds a declaration to the team that is currently selected.
+  Widget _buildDeclarationRow({
+    required String label,
+    double fontSize = 28,
+    required int teamOneCount,
+    required int teamTwoCount,
+    required VoidCallback onTeamOneIncrement,
+    required VoidCallback onTeamTwoIncrement,
+    required VoidCallback onTeamOneUndo,
+    required VoidCallback onTeamTwoUndo,
+  }) {
+    // Use a fixed width spacer for undo buttons when not visible; 63 is an approximate width.
+    const double undoWidth = 63;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Undo button for Team One or spacer
+        teamOneCount > 0
+            ? IconButton(icon: const Icon(HugeIcons.strokeRoundedRemoveSquare), onPressed: onTeamOneUndo)
+            : const SizedBox(width: undoWidth),
+        // Display Team One counter if > 0
+        if (teamOneCount > 0)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: Text(
+              'x${teamOneCount.toString()}',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+            ),
+          )
+        else
+          const SizedBox(width: 8),
+        // Declaration button which adds declaration to the selected team
+        DeclarationButton(
+          text: label,
+          fontSize: fontSize,
+          onPressed: () {
+            // Add declaration to the team that is selected
+            if (isTeamOneSelected) {
+              onTeamOneIncrement();
+            } else {
+              onTeamTwoIncrement();
+            }
+          },
+        ),
+        // Display Team Two counter if > 0
+        if (teamTwoCount > 0)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: Text(
+              'x${teamTwoCount.toString()}',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+            ),
+          )
+        else
+          const SizedBox(width: 8),
+        // Undo button for Team Two or spacer
+        teamTwoCount > 0
+            ? IconButton(icon: const Icon(HugeIcons.strokeRoundedRemoveSquare), onPressed: onTeamTwoUndo)
+            : const SizedBox(width: undoWidth),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -140,6 +214,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
               onTeamTwoTap: () => _setTeamSelection(false),
             ),
             const SizedBox(height: 24),
+            // Tab selector
             Container(
               height: 48,
               decoration: BoxDecoration(
@@ -174,35 +249,163 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                       onClear: _clearScore,
                     ),
                   ),
-                  // Zvanja tab
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            DeclarationButton(text: '20', onPressed: () {}),
-                            DeclarationButton(text: '50', onPressed: () {}),
-                            DeclarationButton(text: '100', onPressed: () {}),
-                            DeclarationButton(text: '150', onPressed: () {}),
-                            DeclarationButton(text: '200', onPressed: () {}),
-                            DeclarationButton(text: 'Štiglja', fontSize: 24, onPressed: () {}),
-                          ],
+                  // Zvanja tab with declaration rows
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _buildDeclarationRow(
+                          label: '20',
+                          teamOneCount: decl20TeamOne,
+                          teamTwoCount: decl20TeamTwo,
+                          onTeamOneIncrement: () {
+                            setState(() {
+                              decl20TeamOne++;
+                            });
+                          },
+                          onTeamTwoIncrement: () {
+                            setState(() {
+                              decl20TeamTwo++;
+                            });
+                          },
+                          onTeamOneUndo: () {
+                            setState(() {
+                              if (decl20TeamOne > 0) decl20TeamOne--;
+                            });
+                          },
+                          onTeamTwoUndo: () {
+                            setState(() {
+                              if (decl20TeamTwo > 0) decl20TeamTwo--;
+                            });
+                          },
                         ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            DeclarationButton(text: '20', onPressed: () {}),
-                            DeclarationButton(text: '50', onPressed: () {}),
-                            DeclarationButton(text: '100', onPressed: () {}),
-                            DeclarationButton(text: '150', onPressed: () {}),
-                            DeclarationButton(text: '200', onPressed: () {}),
-                            DeclarationButton(text: 'Štiglja', fontSize: 24, onPressed: () {}),
-                          ],
+                        _buildDeclarationRow(
+                          label: '50',
+                          teamOneCount: decl50TeamOne,
+                          teamTwoCount: decl50TeamTwo,
+                          onTeamOneIncrement: () {
+                            setState(() {
+                              decl50TeamOne++;
+                            });
+                          },
+                          onTeamTwoIncrement: () {
+                            setState(() {
+                              decl50TeamTwo++;
+                            });
+                          },
+                          onTeamOneUndo: () {
+                            setState(() {
+                              if (decl50TeamOne > 0) decl50TeamOne--;
+                            });
+                          },
+                          onTeamTwoUndo: () {
+                            setState(() {
+                              if (decl50TeamTwo > 0) decl50TeamTwo--;
+                            });
+                          },
                         ),
-                      ),
-                    ],
+                        _buildDeclarationRow(
+                          label: '100',
+                          teamOneCount: decl100TeamOne,
+                          teamTwoCount: decl100TeamTwo,
+                          onTeamOneIncrement: () {
+                            setState(() {
+                              decl100TeamOne++;
+                            });
+                          },
+                          onTeamTwoIncrement: () {
+                            setState(() {
+                              decl100TeamTwo++;
+                            });
+                          },
+                          onTeamOneUndo: () {
+                            setState(() {
+                              if (decl100TeamOne > 0) decl100TeamOne--;
+                            });
+                          },
+                          onTeamTwoUndo: () {
+                            setState(() {
+                              if (decl100TeamTwo > 0) decl100TeamTwo--;
+                            });
+                          },
+                        ),
+                        _buildDeclarationRow(
+                          label: '150',
+                          teamOneCount: decl150TeamOne,
+                          teamTwoCount: decl150TeamTwo,
+                          onTeamOneIncrement: () {
+                            setState(() {
+                              decl150TeamOne++;
+                            });
+                          },
+                          onTeamTwoIncrement: () {
+                            setState(() {
+                              decl150TeamTwo++;
+                            });
+                          },
+                          onTeamOneUndo: () {
+                            setState(() {
+                              if (decl150TeamOne > 0) decl150TeamOne--;
+                            });
+                          },
+                          onTeamTwoUndo: () {
+                            setState(() {
+                              if (decl150TeamTwo > 0) decl150TeamTwo--;
+                            });
+                          },
+                        ),
+                        _buildDeclarationRow(
+                          label: '200',
+                          teamOneCount: decl200TeamOne,
+                          teamTwoCount: decl200TeamTwo,
+                          onTeamOneIncrement: () {
+                            setState(() {
+                              decl200TeamOne++;
+                            });
+                          },
+                          onTeamTwoIncrement: () {
+                            setState(() {
+                              decl200TeamTwo++;
+                            });
+                          },
+                          onTeamOneUndo: () {
+                            setState(() {
+                              if (decl200TeamOne > 0) decl200TeamOne--;
+                            });
+                          },
+                          onTeamTwoUndo: () {
+                            setState(() {
+                              if (decl200TeamTwo > 0) decl200TeamTwo--;
+                            });
+                          },
+                        ),
+                        _buildDeclarationRow(
+                          label: 'Štiglja',
+                          fontSize: 20,
+                          teamOneCount: declStigljaTeamOne,
+                          teamTwoCount: declStigljaTeamTwo,
+                          onTeamOneIncrement: () {
+                            setState(() {
+                              declStigljaTeamOne++;
+                            });
+                          },
+                          onTeamTwoIncrement: () {
+                            setState(() {
+                              declStigljaTeamTwo++;
+                            });
+                          },
+                          onTeamOneUndo: () {
+                            setState(() {
+                              if (declStigljaTeamOne > 0) declStigljaTeamOne--;
+                            });
+                          },
+                          onTeamTwoUndo: () {
+                            setState(() {
+                              if (declStigljaTeamTwo > 0) declStigljaTeamTwo--;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

@@ -10,7 +10,7 @@ class DeclarationButton extends StatelessWidget {
   const DeclarationButton({
     super.key,
     required this.text,
-    this.width = 100,
+    this.width = 125,
     this.fontSize = 28,
     this.fontWeight = FontWeight.w600,
     required this.onPressed,
@@ -25,8 +25,8 @@ class DeclarationButton extends StatelessWidget {
         child: OutlinedButton(
           onPressed: onPressed,
           style: OutlinedButton.styleFrom(
-            // minimumSize: Size.zero,
-            padding: EdgeInsets.zero,
+            minimumSize: Size.fromHeight(50),
+            // padding: EdgeInsets.zero,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
           child: Text(
