@@ -3,65 +3,16 @@ import 'package:flutter/material.dart';
 class TotalScoreDisplay extends StatelessWidget {
   final int scoreTeamOne;
   final int scoreTeamTwo;
-  final int declarationScoreTeamOne;
-  final int declarationScoreTeamTwo;
-  final bool? isTeamOneSelected;
-  final bool interactable;
-  final VoidCallback? onTeamOneTap;
-  final VoidCallback? onTeamTwoTap;
-
-  const TotalScoreDisplay({
-    super.key,
-    required this.scoreTeamOne,
-    required this.scoreTeamTwo,
-    this.declarationScoreTeamOne = 0,
-    this.declarationScoreTeamTwo = 0,
-    this.isTeamOneSelected,
-    this.interactable = false,
-    this.onTeamOneTap,
-    this.onTeamTwoTap,
-  });
+  const TotalScoreDisplay({super.key, required this.scoreTeamOne, required this.scoreTeamTwo});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    Widget teamWidget({
-      required String label,
-      required int score,
-      required int declScore,
-      required bool selected,
-      required Color color,
-      required VoidCallback? onTap,
-    }) {
-      // Container decoration remains unchanged.
+    Widget teamWidget({required String label, required int score}) {
       final BoxDecoration decoration = BoxDecoration(
-        color: selected ? color.withOpacity(0.1) : Colors.transparent,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(8),
-      );
-
-      // Combine the main score and the declaration score in a single Row.
-      final Widget scoreWidget = Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            score.toString(),
-            style: TextStyle(
-              fontSize: 48,
-              fontWeight: FontWeight.bold,
-              color: selected ? color : theme.colorScheme.onSurface,
-            ),
-          ),
-          if (declScore > 0)
-            Text(
-              " + $declScore",
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.normal,
-                color: selected ? color : theme.colorScheme.onSurface,
-              ),
-            ),
-        ],
       );
 
       final Widget content = Container(
@@ -71,49 +22,25 @@ class TotalScoreDisplay extends StatelessWidget {
           children: [
             Text(
               label,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: selected ? color : theme.colorScheme.onSurface,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface),
             ),
             const SizedBox(height: 4),
-            scoreWidget,
+            Text(
+              score.toString(),
+              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: theme.colorScheme.onSurface),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       );
-
-      if (interactable && onTap != null) {
-        return GestureDetector(behavior: HitTestBehavior.opaque, onTap: onTap, child: content);
-      }
       return content;
     }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        // Team One ("Mi")
-        Expanded(
-          child: teamWidget(
-            label: "Mi",
-            score: scoreTeamOne,
-            declScore: declarationScoreTeamOne,
-            selected: isTeamOneSelected == true,
-            color: theme.colorScheme.primary,
-            onTap: onTeamOneTap,
-          ),
-        ),
-        // Team Two ("Vi")
-        Expanded(
-          child: teamWidget(
-            label: "Vi",
-            score: scoreTeamTwo,
-            declScore: declarationScoreTeamTwo,
-            selected: isTeamOneSelected == false,
-            color: theme.colorScheme.secondary,
-            onTap: onTeamTwoTap,
-          ),
-        ),
+        Expanded(child: teamWidget(label: "Mi", score: scoreTeamOne)),
+        Expanded(child: teamWidget(label: "Vi", score: scoreTeamTwo)),
       ],
     );
   }

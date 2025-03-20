@@ -1,6 +1,6 @@
+import 'package:bela_blok/widgets/add_round_score_display.dart';
 import 'package:bela_blok/widgets/declaration_button.dart';
 import 'package:bela_blok/widgets/numeric_keyboard.dart';
-import 'package:bela_blok/widgets/total_score_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -49,8 +49,9 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     _tabController = TabController(length: 2, vsync: this);
     isTeamOneSelected = widget.isTeamOneSelected;
 
-    // If we're editing an existing round, initialize the scores.
+    // If we're editing an existing round, initialize the scores and declarations.
     if (widget.roundToEdit != null) {
+      // Set the active score.
       if (isTeamOneSelected) {
         activeScore = widget.roundToEdit!.scoreTeamOne.toString();
       } else {
@@ -59,6 +60,19 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
       if (activeScore != '0') {
         hasStartedInput = true;
       }
+      // Load declaration counters.
+      decl20TeamOne = widget.roundToEdit!.decl20TeamOne;
+      decl20TeamTwo = widget.roundToEdit!.decl20TeamTwo;
+      decl50TeamOne = widget.roundToEdit!.decl50TeamOne;
+      decl50TeamTwo = widget.roundToEdit!.decl50TeamTwo;
+      decl100TeamOne = widget.roundToEdit!.decl100TeamOne;
+      decl100TeamTwo = widget.roundToEdit!.decl100TeamTwo;
+      decl150TeamOne = widget.roundToEdit!.decl150TeamOne;
+      decl150TeamTwo = widget.roundToEdit!.decl150TeamTwo;
+      decl200TeamOne = widget.roundToEdit!.decl200TeamOne;
+      decl200TeamTwo = widget.roundToEdit!.decl200TeamTwo;
+      declStigljaTeamOne = widget.roundToEdit!.declStigljaTeamOne;
+      declStigljaTeamTwo = widget.roundToEdit!.declStigljaTeamTwo;
     }
   }
 
@@ -113,7 +127,23 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   }
 
   void _saveRound() {
-    final round = Round(scoreTeamOne: teamOneScore, scoreTeamTwo: teamTwoScore);
+    final round = Round(
+      scoreTeamOne: teamOneScore,
+      scoreTeamTwo: teamTwoScore,
+      decl20TeamOne: decl20TeamOne,
+      decl20TeamTwo: decl20TeamTwo,
+      decl50TeamOne: decl50TeamOne,
+      decl50TeamTwo: decl50TeamTwo,
+      decl100TeamOne: decl100TeamOne,
+      decl100TeamTwo: decl100TeamTwo,
+      decl150TeamOne: decl150TeamOne,
+      decl150TeamTwo: decl150TeamTwo,
+      decl200TeamOne: decl200TeamOne,
+      decl200TeamTwo: decl200TeamTwo,
+      declStigljaTeamOne: declStigljaTeamOne,
+      declStigljaTeamTwo: declStigljaTeamTwo,
+    );
+
     if (widget.roundIndex != null) {
       ref.read(currentGameProvider.notifier).updateRound(widget.roundIndex!, round);
     } else {
@@ -220,7 +250,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
         decl100TeamOne * 100 +
         decl150TeamOne * 150 +
         decl200TeamOne * 200 +
-        declStigljaTeamOne * 90;
+        declStigljaTeamOne * 0; // Adjust value for Štiglja if needed.
 
     final int declScoreTeamTwo =
         decl20TeamTwo * 20 +
@@ -228,7 +258,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
         decl100TeamTwo * 100 +
         decl150TeamTwo * 150 +
         decl200TeamTwo * 200 +
-        declStigljaTeamTwo * 90;
+        declStigljaTeamTwo * 0; // Adjust value for Štiglja if needed.
 
     final theme = Theme.of(context);
     return Scaffold(
@@ -237,13 +267,12 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
         child: Column(
           children: [
-            TotalScoreDisplay(
+            AddRoundScoreDisplay(
               scoreTeamOne: teamOneScore,
               scoreTeamTwo: teamTwoScore,
               declarationScoreTeamOne: declScoreTeamOne,
               declarationScoreTeamTwo: declScoreTeamTwo,
               isTeamOneSelected: isTeamOneSelected,
-              interactable: true,
               onTeamOneTap: () => _setTeamSelection(true),
               onTeamTwoTap: () => _setTeamSelection(false),
             ),
@@ -274,9 +303,9 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                 controller: _tabController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  // Bodovi tab
+                  // Bodovi tab.
                   NumericKeyboard(onKeyPressed: _updateScore, onDelete: _deleteDigit, onClear: _clearScore),
-                  // Zvanja tab with declaration rows
+                  // Zvanja tab with declaration rows.
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
