@@ -260,13 +260,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   // Bodovi tab
-                  Expanded(
-                    child: NumericKeyboard(
-                      onKeyPressed: _updateScore,
-                      onDelete: _deleteDigit,
-                      onClear: _clearScore,
-                    ),
-                  ),
+                  NumericKeyboard(onKeyPressed: _updateScore, onDelete: _deleteDigit, onClear: _clearScore),
                   // Zvanja tab with declaration rows
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
