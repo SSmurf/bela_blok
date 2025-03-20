@@ -138,7 +138,8 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   }
 
   // Helper method to build each declaration row.
-  // Layout: [Team One Undo] [optional Team One Counter] [Declaration Button] [optional Team Two Counter] [Team Two Undo]
+  // Layout:
+  // [Team One Undo] [Fixed-width Team One Counter] [Declaration Button] [Fixed-width Team Two Counter] [Team Two Undo]
   // The declaration button adds declaration to the team that is currently selected.
   Widget _buildDeclarationRow({
     required String label,
@@ -150,32 +151,36 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     required VoidCallback onTeamOneUndo,
     required VoidCallback onTeamTwoUndo,
   }) {
-    // Use a fixed width spacer for undo buttons when not visible; 63 is an approximate width.
-    const double undoWidth = 63;
+    const double fixedWidth = 48;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Undo button for Team One or spacer
-        teamOneCount > 0
-            ? IconButton(icon: const Icon(HugeIcons.strokeRoundedRemoveSquare), onPressed: onTeamOneUndo)
-            : const SizedBox(width: undoWidth),
-        // Display Team One counter if > 0
-        if (teamOneCount > 0)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2),
+        // Undo button for Team One in a fixed-width box
+        SizedBox(
+          width: fixedWidth,
+          child:
+              teamOneCount > 0
+                  ? IconButton(
+                    icon: const Icon(HugeIcons.strokeRoundedRemoveSquare),
+                    onPressed: onTeamOneUndo,
+                  )
+                  : const SizedBox.shrink(),
+        ),
+        // Fixed-width Team One counter
+        SizedBox(
+          width: fixedWidth,
+          child: Center(
             child: Text(
-              'x${teamOneCount.toString()}',
+              teamOneCount > 0 ? 'x$teamOneCount' : '',
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
             ),
-          )
-        else
-          const SizedBox(width: 8),
+          ),
+        ),
         // Declaration button which adds declaration to the selected team
         DeclarationButton(
           text: label,
           fontSize: fontSize,
           onPressed: () {
-            // Add declaration to the team that is selected
             if (isTeamOneSelected) {
               onTeamOneIncrement();
             } else {
@@ -183,21 +188,27 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
             }
           },
         ),
-        // Display Team Two counter if > 0
-        if (teamTwoCount > 0)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2),
+        // Fixed-width Team Two counter
+        SizedBox(
+          width: fixedWidth,
+          child: Center(
             child: Text(
-              'x${teamTwoCount.toString()}',
+              teamTwoCount > 0 ? 'x$teamTwoCount' : '',
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
             ),
-          )
-        else
-          const SizedBox(width: 8),
-        // Undo button for Team Two or spacer
-        teamTwoCount > 0
-            ? IconButton(icon: const Icon(HugeIcons.strokeRoundedRemoveSquare), onPressed: onTeamTwoUndo)
-            : const SizedBox(width: undoWidth),
+          ),
+        ),
+        // Undo button for Team Two in a fixed-width box
+        SizedBox(
+          width: fixedWidth,
+          child:
+              teamTwoCount > 0
+                  ? IconButton(
+                    icon: const Icon(HugeIcons.strokeRoundedRemoveSquare),
+                    onPressed: onTeamTwoUndo,
+                  )
+                  : const SizedBox.shrink(),
+        ),
       ],
     );
   }
@@ -393,7 +404,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                         // Declaration row for "Štiglja" with max 1 declaration per team
                         _buildDeclarationRow(
                           label: 'Štiglja',
-                          fontSize: 20,
+                          fontSize: 24,
                           teamOneCount: declStigljaTeamOne,
                           teamTwoCount: declStigljaTeamTwo,
                           onTeamOneIncrement: () {
