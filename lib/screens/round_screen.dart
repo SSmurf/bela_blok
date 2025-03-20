@@ -1,7 +1,8 @@
+import 'package:bela_blok/widgets/declaration_button.dart';
+import 'package:bela_blok/widgets/numeric_keyboard.dart';
 import 'package:bela_blok/widgets/total_score_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hugeicons/hugeicons.dart';
 
 import '../models/round.dart';
 import '../providers/game_provider.dart';
@@ -159,7 +160,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                 tabs: const [Tab(text: 'Bodovi'), Tab(text: 'Zvanja')],
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -174,13 +175,34 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                     ),
                   ),
                   // Zvanja tab
-                  Container(
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: theme.colorScheme.outline.withOpacity(0.5)),
-                    ),
-                    child: const Center(child: Text('Zvanja Content', style: TextStyle(fontSize: 18))),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            DeclarationButton(text: '20', onPressed: () {}),
+                            DeclarationButton(text: '50', onPressed: () {}),
+                            DeclarationButton(text: '100', onPressed: () {}),
+                            DeclarationButton(text: '150', onPressed: () {}),
+                            DeclarationButton(text: '200', onPressed: () {}),
+                            DeclarationButton(text: 'Štiglja', fontSize: 24, onPressed: () {}),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            DeclarationButton(text: '20', onPressed: () {}),
+                            DeclarationButton(text: '50', onPressed: () {}),
+                            DeclarationButton(text: '100', onPressed: () {}),
+                            DeclarationButton(text: '150', onPressed: () {}),
+                            DeclarationButton(text: '200', onPressed: () {}),
+                            DeclarationButton(text: 'Štiglja', fontSize: 24, onPressed: () {}),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -198,108 +220,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
             ),
             const SizedBox(height: 24),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class NumericKeyboard extends StatelessWidget {
-  final Function(String) onKeyPressed;
-  final VoidCallback onDelete;
-  final VoidCallback onClear;
-
-  const NumericKeyboard({
-    super.key,
-    required this.onKeyPressed,
-    required this.onDelete,
-    required this.onClear,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Column(
-      children: [
-        Expanded(
-          child: Row(
-            children: [
-              _buildKeyButton('1', onKeyPressed, theme),
-              _buildKeyButton('2', onKeyPressed, theme),
-              _buildKeyButton('3', onKeyPressed, theme),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Row(
-            children: [
-              _buildKeyButton('4', onKeyPressed, theme),
-              _buildKeyButton('5', onKeyPressed, theme),
-              _buildKeyButton('6', onKeyPressed, theme),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Row(
-            children: [
-              _buildKeyButton('7', onKeyPressed, theme),
-              _buildKeyButton('8', onKeyPressed, theme),
-              _buildKeyButton('9', onKeyPressed, theme),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Row(
-            children: [
-              _buildActionButton(onClear, theme, HugeIcons.strokeRoundedDelete02, false),
-              _buildKeyButton('0', onKeyPressed, theme),
-              _buildActionButton(onDelete, theme, HugeIcons.strokeRoundedEraser01, true),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildKeyButton(String text, Function(String) onPressed, ThemeData theme) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: ElevatedButton(
-          onPressed: () => onPressed(text),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: theme.colorScheme.surface,
-            foregroundColor: theme.colorScheme.onSurface,
-            padding: EdgeInsets.zero,
-            elevation: 0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-          ),
-          child: Center(child: Text(text, style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold))),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionButton(VoidCallback onPressed, ThemeData theme, IconData icon, bool reverseIcon) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: ElevatedButton(
-          onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: theme.colorScheme.surface,
-            foregroundColor: theme.colorScheme.onSurface,
-            elevation: 0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-          ),
-          child: Center(
-            child: Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.rotationY(reverseIcon ? 3.14159 : 0),
-              child: Icon(icon, size: 40),
-            ),
-          ),
         ),
       ),
     );

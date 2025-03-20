@@ -41,9 +41,11 @@ class HomeScreen extends ConsumerWidget {
               scoreTeamOne: gameNotifier.teamOneTotal,
               scoreTeamTwo: gameNotifier.teamTwoTotal,
             ),
+            //todo provjeri kaj je bolje
             const SizedBox(height: 6),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Divider()),
             const SizedBox(height: 12),
+            // SizedBox(height: 24),
             Expanded(
               child:
                   rounds.isEmpty
