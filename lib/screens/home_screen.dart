@@ -61,9 +61,26 @@ class HomeScreen extends ConsumerWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Igra je završena!', style: Theme.of(context).textTheme.headlineMedium),
-                            const SizedBox(height: 12),
-                            Text('Pobjednik: $winningTeam', style: Theme.of(context).textTheme.headlineSmall),
+                            const SizedBox(height: 24),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  HugeIcons.strokeRoundedLaurelWreathLeft02,
+                                  size: 64,
+                                  color: Theme.of(context).colorScheme.tertiary,
+                                ),
+                                Text(
+                                  winningTeam,
+                                  style: TextStyle(fontSize: 56, fontWeight: FontWeight.w500),
+                                ),
+                                Icon(
+                                  HugeIcons.strokeRoundedLaurelWreathRight02,
+                                  size: 64,
+                                  color: Theme.of(context).colorScheme.tertiary,
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 24),
                             // Undo last round button.
                             if (rounds.isNotEmpty)
