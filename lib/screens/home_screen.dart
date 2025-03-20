@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../widgets/add_round_button.dart';
+import 'round_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -44,7 +45,15 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [AddRoundButton(text: 'Nova runda', color: Colors.green, onPressed: () {})],
+              children: [
+                AddRoundButton(
+                  text: 'Nova runda',
+                  color: Colors.green,
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => RoundScreen()));
+                  },
+                ),
+              ],
             ),
             const SizedBox(height: 24),
           ],

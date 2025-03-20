@@ -13,6 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_riverpod: ^2.6.1
   material_symbols_icons: ^4.2810.1
+  hugeicons: ^0.0.10
 
 dev_dependencies:
   flutter_test:
