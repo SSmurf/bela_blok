@@ -16,7 +16,7 @@ class RoundDisplay extends StatelessWidget {
         children: [
           SizedBox(
             width: 32,
-            child: Text('$roundIndex.', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
+            child: Text('${roundIndex + 1}.', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
           ),
 
           Expanded(

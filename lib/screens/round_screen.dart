@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
 
+import '../models/round.dart';
+import '../providers/game_provider.dart';
 import '../widgets/add_round_button.dart';
 
 class RoundScreen extends ConsumerStatefulWidget {
   final bool isTeamOneSelected;
+  final Round? roundToEdit;
+  final int? roundIndex;
 
-  const RoundScreen({super.key, this.isTeamOneSelected = true});
+  const RoundScreen({super.key, this.isTeamOneSelected = true, this.roundToEdit, this.roundIndex});
 
   @override
   ConsumerState<RoundScreen> createState() => _RoundScreenState();
@@ -26,6 +30,19 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     isTeamOneSelected = widget.isTeamOneSelected;
+
+    // If we're editing an existing round, initialize the scores
+    if (widget.roundToEdit != null) {
+      if (isTeamOneSelected) {
+        activeScore = widget.roundToEdit!.scoreTeamOne.toString();
+      } else {
+        activeScore = widget.roundToEdit!.scoreTeamTwo.toString();
+      }
+
+      if (activeScore != '0') {
+        hasStartedInput = true;
+      }
+    }
   }
 
   @override
@@ -76,6 +93,18 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   int get teamTwoScore {
     if (!hasStartedInput) return 0;
     return isTeamOneSelected ? totalPoints - int.parse(activeScore) : int.parse(activeScore);
+  }
+
+  void _saveRound() {
+    final round = Round(scoreTeamOne: teamOneScore, scoreTeamTwo: teamTwoScore);
+
+    if (widget.roundIndex != null) {
+      ref.read(currentGameProvider.notifier).updateRound(widget.roundIndex!, round);
+    } else {
+      ref.read(currentGameProvider.notifier).addRound(round);
+    }
+
+    Navigator.of(context).pop();
   }
 
   @override
@@ -152,7 +181,9 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                   text: 'Spremi',
                   color: theme.colorScheme.primary,
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    if (hasStartedInput) {
+                      _saveRound();
+                    }
                   },
                 ),
               ],

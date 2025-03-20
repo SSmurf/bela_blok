@@ -1,38 +1,37 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/game.dart';
+import '../models/round.dart';
 
-class GamesNotifier extends StateNotifier<List<Game>> {
-  GamesNotifier() : super([]);
+class CurrentGameNotifier extends StateNotifier<List<Round>> {
+  CurrentGameNotifier() : super([]);
 
-  void addGame(Game game) {
-    state = [...state, game];
+  void addRound(Round round) {
+    state = [...state, round];
   }
 
-  void updateGame(Game updatedGame) {
-    state = [
-      for (final game in state)
-        if (game.id == updatedGame.id) updatedGame else game,
-    ];
+  void removeRound(int index) {
+    if (index < 0 || index >= state.length) return;
+
+    final newList = List<Round>.from(state);
+    newList.removeAt(index);
+    state = newList;
   }
 
-  void deleteGame(String gameId) {
-    state = state.where((game) => game.id != gameId).toList();
+  void clearRounds() {
+    state = [];
   }
 
-  Game? getGameById(String gameId) {
-    try {
-      return state.firstWhere((game) => game.id == gameId);
-    } catch (_) {
-      return null;
-    }
+  void updateRound(int index, Round round) {
+    if (index < 0 || index >= state.length) return;
+
+    final newList = List<Round>.from(state);
+    newList[index] = round;
+    state = newList;
   }
+
+  int get teamOneTotal => state.fold(0, (sum, round) => sum + round.scoreTeamOne);
+  int get teamTwoTotal => state.fold(0, (sum, round) => sum + round.scoreTeamTwo);
 }
 
-final gamesProvider = StateNotifierProvider<GamesNotifier, List<Game>>((ref) {
-  return GamesNotifier();
-});
-
-final gameProvider = Provider.family<Game?, String>((ref, gameId) {
-  final games = ref.watch(gamesProvider);
-  return games.firstWhere((game) => game.id == gameId);
+final currentGameProvider = StateNotifierProvider<CurrentGameNotifier, List<Round>>((ref) {
+  return CurrentGameNotifier();
 });
