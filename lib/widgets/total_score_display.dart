@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class TotalScoreDisplay extends StatelessWidget {
   final int scoreTeamOne;
   final int scoreTeamTwo;
+  final int declarationScoreTeamOne;
+  final int declarationScoreTeamTwo;
   final bool? isTeamOneSelected;
   final bool interactable;
   final VoidCallback? onTeamOneTap;
@@ -12,6 +14,8 @@ class TotalScoreDisplay extends StatelessWidget {
     super.key,
     required this.scoreTeamOne,
     required this.scoreTeamTwo,
+    this.declarationScoreTeamOne = 0,
+    this.declarationScoreTeamTwo = 0,
     this.isTeamOneSelected,
     this.interactable = false,
     this.onTeamOneTap,
@@ -25,14 +29,39 @@ class TotalScoreDisplay extends StatelessWidget {
     Widget teamWidget({
       required String label,
       required int score,
+      required int declScore,
       required bool selected,
       required Color color,
       required VoidCallback? onTap,
     }) {
-      // Always supply a background color to make entire area clickable.
+      // Container decoration remains unchanged.
       final BoxDecoration decoration = BoxDecoration(
         color: selected ? color.withOpacity(0.1) : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
+      );
+
+      // Combine the main score and the declaration score in a single Row.
+      final Widget scoreWidget = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            score.toString(),
+            style: TextStyle(
+              fontSize: 48,
+              fontWeight: FontWeight.bold,
+              color: selected ? color : theme.colorScheme.onSurface,
+            ),
+          ),
+          if (declScore > 0)
+            Text(
+              " + $declScore",
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.normal,
+                color: selected ? color : theme.colorScheme.onSurface,
+              ),
+            ),
+        ],
       );
 
       final Widget content = Container(
@@ -49,15 +78,7 @@ class TotalScoreDisplay extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            Text(
-              score.toString(),
-              style: TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                color: selected ? color : theme.colorScheme.onSurface,
-              ),
-              textAlign: TextAlign.center,
-            ),
+            scoreWidget,
           ],
         ),
       );
@@ -76,6 +97,7 @@ class TotalScoreDisplay extends StatelessWidget {
           child: teamWidget(
             label: "Mi",
             score: scoreTeamOne,
+            declScore: declarationScoreTeamOne,
             selected: isTeamOneSelected == true,
             color: theme.colorScheme.primary,
             onTap: onTeamOneTap,
@@ -86,6 +108,7 @@ class TotalScoreDisplay extends StatelessWidget {
           child: teamWidget(
             label: "Vi",
             score: scoreTeamTwo,
+            declScore: declarationScoreTeamTwo,
             selected: isTeamOneSelected == false,
             color: theme.colorScheme.secondary,
             onTap: onTeamTwoTap,

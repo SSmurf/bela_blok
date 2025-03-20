@@ -49,7 +49,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     _tabController = TabController(length: 2, vsync: this);
     isTeamOneSelected = widget.isTeamOneSelected;
 
-    // If we're editing an existing round, initialize the scores
+    // If we're editing an existing round, initialize the scores.
     if (widget.roundToEdit != null) {
       if (isTeamOneSelected) {
         activeScore = widget.roundToEdit!.scoreTeamOne.toString();
@@ -114,13 +114,11 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
 
   void _saveRound() {
     final round = Round(scoreTeamOne: teamOneScore, scoreTeamTwo: teamTwoScore);
-
     if (widget.roundIndex != null) {
       ref.read(currentGameProvider.notifier).updateRound(widget.roundIndex!, round);
     } else {
       ref.read(currentGameProvider.notifier).addRound(round);
     }
-
     Navigator.of(context).pop();
   }
 
@@ -128,7 +126,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     if (isTeamOneSelected != selectTeamOne) {
       setState(() {
         isTeamOneSelected = selectTeamOne;
-        // Invert the score if input has already started
+        // Invert the score if input has already started.
         if (hasStartedInput) {
           int current = int.parse(activeScore);
           activeScore = (totalPoints - current).toString();
@@ -140,7 +138,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   // Helper method to build each declaration row.
   // Layout:
   // [Team One Undo] [Fixed-width Team One Counter] [Declaration Button] [Fixed-width Team Two Counter] [Team Two Undo]
-  // The declaration button adds declaration to the team that is currently selected.
+  // The declaration button adds a declaration to the team that is currently selected.
   Widget _buildDeclarationRow({
     required String label,
     double fontSize = 28,
@@ -155,7 +153,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Undo button for Team One in a fixed-width box
+        // Undo button for Team One.
         SizedBox(
           width: fixedWidth,
           child:
@@ -166,7 +164,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                   )
                   : const SizedBox.shrink(),
         ),
-        // Fixed-width Team One counter
+        // Team One counter.
         SizedBox(
           width: fixedWidth,
           child: Center(
@@ -176,7 +174,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
             ),
           ),
         ),
-        // Declaration button which adds declaration to the selected team
+        // Declaration button.
         DeclarationButton(
           text: label,
           fontSize: fontSize,
@@ -188,7 +186,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
             }
           },
         ),
-        // Fixed-width Team Two counter
+        // Team Two counter.
         SizedBox(
           width: fixedWidth,
           child: Center(
@@ -198,7 +196,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
             ),
           ),
         ),
-        // Undo button for Team Two in a fixed-width box
+        // Undo button for Team Two.
         SizedBox(
           width: fixedWidth,
           child:
@@ -215,8 +213,24 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    // Calculate the declaration scores for each team.
+    final int declScoreTeamOne =
+        decl20TeamOne * 20 +
+        decl50TeamOne * 50 +
+        decl100TeamOne * 100 +
+        decl150TeamOne * 150 +
+        decl200TeamOne * 200 +
+        declStigljaTeamOne * 90;
 
+    final int declScoreTeamTwo =
+        decl20TeamTwo * 20 +
+        decl50TeamTwo * 50 +
+        decl100TeamTwo * 100 +
+        decl150TeamTwo * 150 +
+        decl200TeamTwo * 200 +
+        declStigljaTeamTwo * 90;
+
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -226,13 +240,14 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
             TotalScoreDisplay(
               scoreTeamOne: teamOneScore,
               scoreTeamTwo: teamTwoScore,
+              declarationScoreTeamOne: declScoreTeamOne,
+              declarationScoreTeamTwo: declScoreTeamTwo,
               isTeamOneSelected: isTeamOneSelected,
               interactable: true,
               onTeamOneTap: () => _setTeamSelection(true),
               onTeamTwoTap: () => _setTeamSelection(false),
             ),
             const SizedBox(height: 24),
-            // Tab selector
             Container(
               height: 48,
               decoration: BoxDecoration(
@@ -265,7 +280,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      // Declaration row for "20" with max 5 declarations per team
                       _buildDeclarationRow(
                         label: '20',
                         teamOneCount: decl20TeamOne,
@@ -291,7 +305,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                           });
                         },
                       ),
-                      // Declaration row for "50" with max 4 declarations per team
                       _buildDeclarationRow(
                         label: '50',
                         teamOneCount: decl50TeamOne,
@@ -317,7 +330,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                           });
                         },
                       ),
-                      // Declaration row for "100" with max 4 declarations per team
                       _buildDeclarationRow(
                         label: '100',
                         teamOneCount: decl100TeamOne,
@@ -343,7 +355,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                           });
                         },
                       ),
-                      // Declaration row for "150" with max 1 declaration per team
                       _buildDeclarationRow(
                         label: '150',
                         teamOneCount: decl150TeamOne,
@@ -369,7 +380,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                           });
                         },
                       ),
-                      // Declaration row for "200" with max 1 declaration per team
                       _buildDeclarationRow(
                         label: '200',
                         teamOneCount: decl200TeamOne,
@@ -395,7 +405,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                           });
                         },
                       ),
-                      // Declaration row for "Štiglja" with max 1 declaration per team
                       _buildDeclarationRow(
                         label: 'Štiglja',
                         fontSize: 24,
