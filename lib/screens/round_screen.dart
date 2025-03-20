@@ -145,6 +145,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
             Expanded(
               child: TabBarView(
                 controller: _tabController,
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   // Bodovi tab
                   Column(
