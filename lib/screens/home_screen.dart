@@ -19,14 +19,18 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(icon: const Icon(Icons.settings_outlined), iconSize: 32, onPressed: () {}),
+        leading: IconButton(
+          icon: const Icon(HugeIcons.strokeRoundedSettings02),
+          iconSize: 32,
+          onPressed: () {},
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Symbols.clear),
+            icon: const Icon(HugeIcons.strokeRoundedCancel01),
             iconSize: 32,
             onPressed: rounds.isNotEmpty ? () => _confirmClearGame(context, ref) : null,
           ),
-          IconButton(icon: const Icon(Symbols.history), iconSize: 32, onPressed: () {}),
+          IconButton(icon: const Icon(HugeIcons.strokeRoundedClock02), iconSize: 32, onPressed: () {}),
         ],
       ),
       body: Padding(
