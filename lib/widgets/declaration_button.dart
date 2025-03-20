@@ -26,7 +26,7 @@ class DeclarationButton extends StatelessWidget {
           onPressed: onPressed,
           style: OutlinedButton.styleFrom(
             minimumSize: Size.fromHeight(50),
-            // padding: EdgeInsets.zero,
+            side: BorderSide(color: Colors.transparent),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
           child: Text(
