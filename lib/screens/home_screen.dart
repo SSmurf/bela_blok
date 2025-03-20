@@ -17,6 +17,19 @@ class HomeScreen extends ConsumerWidget {
     final rounds = ref.watch(currentGameProvider);
     final gameNotifier = ref.read(currentGameProvider.notifier);
 
+    // Determine the total scores.
+    final int teamOneTotal = gameNotifier.teamOneTotal;
+    final int teamTwoTotal = gameNotifier.teamTwoTotal;
+    // The game ends when one team's score is at least 1.001.
+    final bool gameEnded = teamOneTotal >= 1001 || teamTwoTotal >= 1001;
+    // Determine the winning team. Adjust the names if necessary.
+    final String winningTeam =
+        teamOneTotal >= 1001
+            ? 'Mi'
+            : teamTwoTotal >= 1001
+            ? 'Vi'
+            : '';
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -28,7 +41,7 @@ class HomeScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(HugeIcons.strokeRoundedCancel01),
             iconSize: 32,
-            onPressed: rounds.isNotEmpty ? () => _confirmClearGame(context, ref) : null,
+            onPressed: rounds.isNotEmpty && !gameEnded ? () => _confirmClearGame(context, ref) : null,
           ),
           IconButton(icon: const Icon(HugeIcons.strokeRoundedClock02), iconSize: 32, onPressed: () {}),
         ],
@@ -37,18 +50,44 @@ class HomeScreen extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
         child: Column(
           children: [
-            TotalScoreDisplay(
-              scoreTeamOne: gameNotifier.teamOneTotal,
-              scoreTeamTwo: gameNotifier.teamTwoTotal,
-            ),
-            //todo provjeri kaj je bolje
+            TotalScoreDisplay(scoreTeamOne: teamOneTotal, scoreTeamTwo: teamTwoTotal),
             const SizedBox(height: 6),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Divider()),
             const SizedBox(height: 12),
-            // SizedBox(height: 24),
             Expanded(
               child:
-                  rounds.isEmpty
+                  gameEnded
+                      ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Igra je završena!', style: Theme.of(context).textTheme.headlineMedium),
+                            const SizedBox(height: 12),
+                            Text('Pobjednik: $winningTeam', style: Theme.of(context).textTheme.headlineSmall),
+                            const SizedBox(height: 24),
+                            // Undo last round button.
+                            if (rounds.isNotEmpty)
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  final int lastIndex = rounds.length - 1;
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => RoundScreen(
+                                            roundToEdit: rounds[lastIndex],
+                                            roundIndex: lastIndex,
+                                            isTeamOneSelected: true,
+                                          ),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(HugeIcons.strokeRoundedUndo),
+                                label: const Text('Poništi zadnju rundu'),
+                              ),
+                          ],
+                        ),
+                      )
+                      : rounds.isEmpty
                       ? Center(
                         child: Text(
                           'Još nema rundi. Dodaj novu rundu!',
@@ -62,9 +101,7 @@ class HomeScreen extends ConsumerWidget {
                             itemCount: rounds.length,
                             itemBuilder: (context, index) {
                               return Dismissible(
-                                key: ValueKey(
-                                  'round_${rounds[index].hashCode}',
-                                ), // Use unique key based on object
+                                key: ValueKey('round_${rounds[index].hashCode}'),
                                 background: Container(
                                   color: Colors.red.withOpacity(0.7),
                                   alignment: Alignment.centerRight,
@@ -73,7 +110,6 @@ class HomeScreen extends ConsumerWidget {
                                 ),
                                 direction: DismissDirection.endToStart,
                                 confirmDismiss: (_) async {
-                                  // Show confirmation dialog
                                   return await showDialog<bool>(
                                         context: context,
                                         builder:
@@ -97,7 +133,6 @@ class HomeScreen extends ConsumerWidget {
                                       false;
                                 },
                                 onDismissed: (_) {
-                                  // This is now safe because we confirmed the dismissal
                                   ref.read(currentGameProvider.notifier).removeRound(index);
                                 },
                                 child: GestureDetector(
@@ -111,16 +146,18 @@ class HomeScreen extends ConsumerWidget {
                       ),
             ),
             const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                AddRoundButton(
-                  text: 'Nova runda',
-                  color: Theme.of(context).colorScheme.primary,
-                  onPressed: () => _addNewRound(context),
-                ),
-              ],
-            ),
+            // Only show "Nova runda" button if the game isn't finished.
+            if (!gameEnded)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  AddRoundButton(
+                    text: 'Nova runda',
+                    color: Theme.of(context).colorScheme.primary,
+                    onPressed: () => _addNewRound(context),
+                  ),
+                ],
+              ),
             const SizedBox(height: 24),
           ],
         ),
