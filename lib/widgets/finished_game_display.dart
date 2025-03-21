@@ -22,7 +22,7 @@ class FinishedGameDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     String? formattedDate;
     if (gameDate != null) {
-      formattedDate = 
+      formattedDate =
           '${gameDate!.day.toString().padLeft(2, '0')}.${gameDate!.month.toString().padLeft(2, '0')}.${gameDate!.year}';
     }
 
@@ -35,12 +35,10 @@ class FinishedGameDisplay extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         subtitle: formattedDate != null ? Text('Datum: $formattedDate') : null,
-        trailing: winningTeam != null
-            ? Text(
-                'Pobjednik: $winningTeam',
-                style: Theme.of(context).textTheme.bodyLarge,
-              )
-            : null,
+        trailing:
+            winningTeam != null
+                ? Text('Pobjednik: $winningTeam', style: Theme.of(context).textTheme.bodyLarge)
+                : null,
       ),
     );
   }

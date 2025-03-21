@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bela_blok/models/game.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/finished_game_display.dart';
@@ -11,7 +12,7 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class HistoryScreenState extends State<HistoryScreen> {
-  late Future<List<Map<String, dynamic>>> _gamesFuture;
+  late Future<List<Game>> _gamesFuture;
 
   @override
   void initState() {
@@ -19,18 +20,20 @@ class HistoryScreenState extends State<HistoryScreen> {
     _gamesFuture = _loadGames();
   }
 
-  Future<List<Map<String, dynamic>>> _loadGames() async {
+  Future<List<Game>> _loadGames() async {
     final prefs = await SharedPreferences.getInstance();
     // Retrieve all keys that start with "saved_game_"
     final keys = prefs.getKeys().where((key) => key.startsWith('saved_game_')).toList();
-    List<Map<String, dynamic>> games = [];
+    List<Game> games = [];
 
     for (String key in keys) {
       final String? gameJson = prefs.getString(key);
       if (gameJson != null) {
         try {
+          // Decode JSON and instantiate a Game model.
           final Map<String, dynamic> gameData = json.decode(gameJson);
-          games.add(gameData);
+          final game = Game.fromJson(gameData);
+          games.add(game);
         } catch (e) {
           // Optionally handle or log the error if JSON decoding fails.
         }
@@ -38,12 +41,7 @@ class HistoryScreenState extends State<HistoryScreen> {
     }
 
     // Sort games by creation date (newest first)
-    games.sort((a, b) {
-      final DateTime dateA = DateTime.parse(a['createdAt'] as String);
-      final DateTime dateB = DateTime.parse(b['createdAt'] as String);
-      return dateB.compareTo(dateA);
-    });
-
+    games.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return games;
   }
 
@@ -51,7 +49,7 @@ class HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Povijest igara')),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
+      body: FutureBuilder<List<Game>>(
         future: _gamesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -60,30 +58,21 @@ class HistoryScreenState extends State<HistoryScreen> {
           if (snapshot.hasError) {
             return const Center(child: Text('Došlo je do greške pri učitavanju igara.'));
           }
-          final List<Map<String, dynamic>> games = snapshot.data ?? [];
+          final List<Game> games = snapshot.data ?? [];
           if (games.isEmpty) {
             return const Center(child: Text('Nema spremljenih igara.'));
           }
           return ListView.builder(
             itemCount: games.length,
             itemBuilder: (context, index) {
-              final gameData = games[index];
-              final String teamOneName = (gameData['teamOneName'] as String?) ?? 'Team One';
-              final String teamTwoName = (gameData['teamTwoName'] as String?) ?? 'Team Two';
-              final int teamOneTotal = (gameData['teamOneTotal'] as int?) ?? 0;
-              final int teamTwoTotal = (gameData['teamTwoTotal'] as int?) ?? 0;
-
-              DateTime? gameDate;
-              if (gameData['createdAt'] != null) {
-                gameDate = DateTime.tryParse(gameData['createdAt'] as String);
-              }
-              
+              final game = games[index];
               return FinishedGameDisplay(
-                teamOneName: teamOneName,
-                teamOneTotal: teamOneTotal,
-                teamTwoTotal: teamTwoTotal,
-                teamTwoName: teamTwoName,
-                gameDate: gameDate,
+                teamOneName: game.teamOneName,
+                teamOneTotal: game.teamOneTotalScore,
+                teamTwoTotal: game.teamTwoTotalScore,
+                teamTwoName: game.teamTwoName,
+                gameDate: game.createdAt,
+                winningTeam: game.winningTeam.isNotEmpty ? game.winningTeam : null,
               );
             },
           );

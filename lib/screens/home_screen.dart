@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bela_blok/models/game.dart';
 import 'package:bela_blok/models/round.dart';
 import 'package:bela_blok/providers/game_provider.dart';
 import 'package:bela_blok/screens/history_screen.dart';
@@ -24,21 +25,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   // A flag to ensure the game is saved only once.
   bool _gameSaved = false;
 
-  Future<void> _saveGameToLocalStorage(List<Round> rounds, int teamOneTotal, int teamTwoTotal) async {
-    // Construct a simple game map.
-    final Map<String, dynamic> gameData = {
-      'teamOneName': 'Mi',
-      'teamTwoName': 'Vi',
-      'rounds': rounds.map((round) => round.toJson()).toList(),
-      'teamOneTotal': teamOneTotal,
-      'teamTwoTotal': teamTwoTotal,
-      'createdAt': DateTime.now().toIso8601String(),
-    };
+  Future<void> _saveGameToLocalStorage(List<Round> rounds) async {
+    // Create a game instance using the current rounds and default team names.
+    final game = Game(
+      teamOneName: 'Mi',
+      teamTwoName: 'Vi',
+      rounds: rounds,
+      createdAt: DateTime.now(),
+      goalScore: 1001,
+    );
 
+    final gameJson = json.encode(game.toJson());
     final prefs = await SharedPreferences.getInstance();
     // Save using a unique key with timestamp.
     final key = 'saved_game_${DateTime.now().millisecondsSinceEpoch}';
-    await prefs.setString(key, json.encode(gameData));
+    await prefs.setString(key, gameJson);
 
     // For debugging purposes.
     debugPrint('Game saved under key: $key');
@@ -61,9 +62,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ? 'Vi'
             : '';
 
-    // Save the game to local storage when gameEnded and it wasn't already saved.
+    // Save the game to local storage using the Game model when gameEnded and it wasn't already saved.
     if (gameEnded && !_gameSaved) {
-      _saveGameToLocalStorage(rounds, teamOneTotal, teamTwoTotal);
+      _saveGameToLocalStorage(rounds);
       setState(() {
         _gameSaved = true;
       });
