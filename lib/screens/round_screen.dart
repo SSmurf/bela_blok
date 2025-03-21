@@ -9,6 +9,8 @@ import '../models/round.dart';
 import '../providers/game_provider.dart';
 import '../widgets/add_round_button.dart';
 
+
+//todo dumb view, move logic and functions to provider, constants to constants file
 class RoundScreen extends ConsumerStatefulWidget {
   final bool isTeamOneSelected;
   final Round? roundToEdit;
