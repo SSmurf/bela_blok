@@ -36,11 +36,15 @@ class FinishedGameDisplay extends StatelessWidget {
             ),
           ),
           // Team One Score
-          Text(
-            '$teamOneTotal',
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontSize: 24, fontWeight: FontWeight.bold),
+          Expanded(
+            child: Text(
+              // '$teamOneTotal',
+              '1134',
+              textAlign: TextAlign.end,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
           ),
           // Dash Separator
           Padding(
@@ -53,11 +57,14 @@ class FinishedGameDisplay extends StatelessWidget {
             ),
           ),
           // Team Two Score
-          Text(
-            '$teamTwoTotal',
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontSize: 24, fontWeight: FontWeight.bold),
+          Expanded(
+            child: Text(
+              '$teamTwoTotal',
+              textAlign: TextAlign.start,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
           ),
           // Team Two Name (right-aligned)
           Expanded(
