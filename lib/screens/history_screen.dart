@@ -1,8 +1,7 @@
-import 'dart:convert';
 import 'package:bela_blok/models/game.dart';
+import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/finished_game_display.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -14,36 +13,12 @@ class HistoryScreen extends StatefulWidget {
 
 class HistoryScreenState extends State<HistoryScreen> {
   late Future<List<Game>> _gamesFuture;
+  final LocalStorageService _localStorageService = LocalStorageService();
 
   @override
   void initState() {
     super.initState();
-    _gamesFuture = _loadGames();
-  }
-
-  Future<List<Game>> _loadGames() async {
-    final prefs = await SharedPreferences.getInstance();
-    // Retrieve all keys that start with "saved_game_"
-    final keys = prefs.getKeys().where((key) => key.startsWith('saved_game_')).toList();
-    List<Game> games = [];
-
-    for (String key in keys) {
-      final String? gameJson = prefs.getString(key);
-      if (gameJson != null) {
-        try {
-          // Decode JSON and instantiate a Game model.
-          final Map<String, dynamic> gameData = json.decode(gameJson);
-          final game = Game.fromJson(gameData);
-          games.add(game);
-        } catch (e) {
-          // Optionally handle or log the error if JSON decoding fails.
-        }
-      }
-    }
-
-    // Sort games by creation date (newest first)
-    games.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    return games;
+    _gamesFuture = _localStorageService.loadGames();
   }
 
   @override

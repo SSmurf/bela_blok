@@ -1,17 +1,14 @@
-import 'dart:convert';
-import 'package:bela_blok/models/game.dart';
 import 'package:bela_blok/models/round.dart';
 import 'package:bela_blok/providers/game_provider.dart';
 import 'package:bela_blok/screens/history_screen.dart';
+import 'package:bela_blok/screens/round_screen.dart';
+import 'package:bela_blok/services/local_storage_service.dart';
+import 'package:bela_blok/widgets/add_round_button.dart';
 import 'package:bela_blok/widgets/round_display.dart';
 import 'package:bela_blok/widgets/total_score_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../widgets/add_round_button.dart';
-import 'round_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -21,28 +18,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  // A flag to ensure the game is saved only once.
   bool _gameSaved = false;
-
-  Future<void> _saveGameToLocalStorage(List<Round> rounds) async {
-    // Create a game instance using the current rounds and default team names.
-    final game = Game(
-      teamOneName: 'Mi',
-      teamTwoName: 'Vi',
-      rounds: rounds,
-      createdAt: DateTime.now(),
-      goalScore: 1001,
-    );
-
-    final gameJson = json.encode(game.toJson());
-    final prefs = await SharedPreferences.getInstance();
-    // Save using a unique key with timestamp.
-    final key = 'saved_game_${DateTime.now().millisecondsSinceEpoch}';
-    await prefs.setString(key, gameJson);
-
-    // For debugging purposes.
-    debugPrint('Game saved under key: $key');
-  }
+  final LocalStorageService _localStorageService = LocalStorageService();
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +28,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final int teamOneTotal = gameNotifier.teamOneTotal;
     final int teamTwoTotal = gameNotifier.teamTwoTotal;
-    // The game ends when one team's score is at least 1001.
     final bool gameEnded = teamOneTotal >= 1001 || teamTwoTotal >= 1001;
-    // Determine the winning team.
     final String winningTeam =
         teamOneTotal >= 1001
             ? 'Mi'
@@ -61,9 +36,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ? 'Vi'
             : '';
 
-    // Save the game to local storage using the Game model when gameEnded and it wasn't already saved.
     if (gameEnded && !_gameSaved) {
-      _saveGameToLocalStorage(rounds);
+      _localStorageService.saveGame(rounds);
       setState(() {
         _gameSaved = true;
       });
@@ -97,7 +71,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             TotalScoreDisplay(scoreTeamOne: teamOneTotal, scoreTeamTwo: teamTwoTotal),
             const SizedBox(height: 6),
-            // const Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Divider()),
             Row(
               children: [
                 Expanded(child: const Divider(height: 1, thickness: 1)),
@@ -124,7 +97,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ),
                                 Text(
                                   winningTeam,
-                                  style: TextStyle(fontSize: 56, fontWeight: FontWeight.w500),
+                                  style: const TextStyle(fontSize: 56, fontWeight: FontWeight.w500),
                                 ),
                                 Icon(
                                   HugeIcons.strokeRoundedLaurelWreathRight02,
@@ -222,7 +195,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   color: Theme.of(context).colorScheme.primary,
                   onPressed: () {
                     if (gameEnded) {
-                      // Start a new game by clearing rounds and resetting _gameSaved.
                       ref.read(currentGameProvider.notifier).clearRounds();
                       setState(() {
                         _gameSaved = false;

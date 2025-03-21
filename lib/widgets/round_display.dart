@@ -7,6 +7,7 @@ class RoundDisplay extends StatelessWidget {
 
   const RoundDisplay({super.key, required this.round, required this.roundIndex});
 
+  //todo makni ovo
   int get totalTeamOne {
     return round.scoreTeamOne +
         round.decl20TeamOne * 20 +
