@@ -38,8 +38,7 @@ class FinishedGameDisplay extends StatelessWidget {
           // Team One Score
           Expanded(
             child: Text(
-              // '$teamOneTotal',
-              '1134',
+              '$teamOneTotal',
               textAlign: TextAlign.end,
               style: Theme.of(
                 context,
