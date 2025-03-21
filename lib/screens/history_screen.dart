@@ -49,34 +49,42 @@ class HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Povijest igara')),
-      body: FutureBuilder<List<Game>>(
-        future: _gamesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return const Center(child: Text('Došlo je do greške pri učitavanju igara.'));
-          }
-          final List<Game> games = snapshot.data ?? [];
-          if (games.isEmpty) {
-            return const Center(child: Text('Nema spremljenih igara.'));
-          }
-          return ListView.builder(
-            itemCount: games.length,
-            itemBuilder: (context, index) {
-              final game = games[index];
-              return FinishedGameDisplay(
-                teamOneName: game.teamOneName,
-                teamOneTotal: game.teamOneTotalScore,
-                teamTwoTotal: game.teamTwoTotalScore,
-                teamTwoName: game.teamTwoName,
-                gameDate: game.createdAt,
-                winningTeam: game.winningTeam.isNotEmpty ? game.winningTeam : null,
-              );
-            },
-          );
-        },
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: FutureBuilder<List<Game>>(
+          future: _gamesFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return const Center(child: Text('Došlo je do greške pri učitavanju igara.'));
+            }
+            final List<Game> games = snapshot.data ?? [];
+            if (games.isEmpty) {
+              return const Center(child: Text('Nema spremljenih igara.'));
+            }
+            return ListView.separated(
+              itemCount: games.length,
+              separatorBuilder:
+                  (context, index) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: const Divider(height: 1, thickness: 1),
+                  ),
+              itemBuilder: (context, index) {
+                final game = games[index];
+                return FinishedGameDisplay(
+                  teamOneName: game.teamOneName,
+                  teamOneTotal: game.teamOneTotalScore,
+                  teamTwoTotal: game.teamTwoTotalScore,
+                  teamTwoName: game.teamTwoName,
+                  gameDate: game.createdAt,
+                  winningTeam: game.winningTeam.isNotEmpty ? game.winningTeam : null,
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

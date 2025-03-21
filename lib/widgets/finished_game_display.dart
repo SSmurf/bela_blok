@@ -20,25 +20,56 @@ class FinishedGameDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? formattedDate;
-    if (gameDate != null) {
-      formattedDate =
-          '${gameDate!.day.toString().padLeft(2, '0')}.${gameDate!.month.toString().padLeft(2, '0')}.${gameDate!.year}';
-    }
-
-    return Card(
-      margin: const EdgeInsets.all(8),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        title: Text(
-          '$teamOneName $teamOneTotal  $teamTwoTotal $teamTwoName',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        subtitle: formattedDate != null ? Text('Datum: $formattedDate') : null,
-        trailing:
-            winningTeam != null
-                ? Text('Pobjednik: $winningTeam', style: Theme.of(context).textTheme.bodyLarge)
-                : null,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 36),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // Team One Name (left-aligned)
+          Expanded(
+            child: Text(
+              teamOneName,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontSize: 32, fontWeight: FontWeight.w500),
+              textAlign: TextAlign.start,
+            ),
+          ),
+          // Team One Score
+          Text(
+            '$teamOneTotal',
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          // Dash Separator
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              '-',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontSize: 24, fontWeight: FontWeight.w500),
+            ),
+          ),
+          // Team Two Score
+          Text(
+            '$teamTwoTotal',
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          // Team Two Name (right-aligned)
+          Expanded(
+            child: Text(
+              teamTwoName,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontSize: 32, fontWeight: FontWeight.w500),
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
       ),
     );
   }
