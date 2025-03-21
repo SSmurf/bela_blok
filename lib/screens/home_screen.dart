@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bela_blok/models/round.dart';
 import 'package:bela_blok/providers/game_provider.dart';
+import 'package:bela_blok/screens/history_screen.dart';
 import 'package:bela_blok/widgets/round_display.dart';
 import 'package:bela_blok/widgets/total_score_display.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +82,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             iconSize: 32,
             onPressed: rounds.isNotEmpty && !gameEnded ? () => _confirmClearGame(context) : null,
           ),
-          IconButton(icon: const Icon(HugeIcons.strokeRoundedClock02), iconSize: 32, onPressed: () {}),
+          IconButton(
+            icon: const Icon(HugeIcons.strokeRoundedClock02),
+            iconSize: 32,
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const HistoryScreen()));
+            },
+          ),
         ],
       ),
       body: Padding(
