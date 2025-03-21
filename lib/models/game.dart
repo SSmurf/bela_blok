@@ -21,8 +21,27 @@ class Game {
        rounds = rounds ?? [],
        createdAt = createdAt ?? DateTime.now();
 
-  int get teamOneTotalScore => rounds.fold(0, (sum, round) => sum + round.scoreTeamOne);
-  int get teamTwoTotalScore => rounds.fold(0, (sum, round) => sum + round.scoreTeamTwo);
+  int get teamOneTotalScore => rounds.fold(0, (sum, round) {
+    return sum +
+        round.scoreTeamOne +
+        round.decl20TeamOne * 20 +
+        round.decl50TeamOne * 50 +
+        round.decl100TeamOne * 100 +
+        round.decl150TeamOne * 150 +
+        round.decl200TeamOne * 200 +
+        round.declStigljaTeamOne * 90;
+  });
+
+  int get teamTwoTotalScore => rounds.fold(0, (sum, round) {
+    return sum +
+        round.scoreTeamTwo +
+        round.decl20TeamTwo * 20 +
+        round.decl50TeamTwo * 50 +
+        round.decl100TeamTwo * 100 +
+        round.decl150TeamTwo * 150 +
+        round.decl200TeamTwo * 200 +
+        round.declStigljaTeamTwo * 90;
+  });
 
   bool get isFinished => teamOneTotalScore >= goalScore || teamTwoTotalScore >= goalScore;
 
