@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:bela_blok/models/game.dart';
 import 'package:bela_blok/models/round.dart';
@@ -98,7 +99,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             TotalScoreDisplay(scoreTeamOne: teamOneTotal, scoreTeamTwo: teamTwoTotal),
             const SizedBox(height: 6),
-            const Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Divider()),
+            // const Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Divider()),
+            Row(
+              children: [
+                Expanded(child: const Divider(height: 1, thickness: 1)),
+                Icon(HugeIcons.strokeRoundedRecord, size: 16),
+                Expanded(child: const Divider(height: 1, thickness: 1)),
+              ],
+            ),
             const SizedBox(height: 12),
             Expanded(
               child:

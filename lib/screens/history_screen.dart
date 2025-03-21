@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:bela_blok/models/game.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/finished_game_display.dart';
 
@@ -67,9 +68,12 @@ class HistoryScreenState extends State<HistoryScreen> {
             return ListView.separated(
               itemCount: games.length,
               separatorBuilder:
-                  (context, index) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: const Divider(height: 1, thickness: 1),
+                  (context, index) => Row(
+                    children: [
+                      Expanded(child: const Divider(height: 1, thickness: 1)),
+                      Icon(HugeIcons.strokeRoundedRecord, size: 16),
+                      Expanded(child: const Divider(height: 1, thickness: 1)),
+                    ],
                   ),
               itemBuilder: (context, index) {
                 final game = games[index];
