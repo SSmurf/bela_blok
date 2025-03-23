@@ -101,8 +101,10 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
       titleTextStyle: GoogleFonts.nunito(fontSize: 20, fontWeight: FontWeight.w600, color: textColor),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        textStyle: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600),
+      style: ButtonStyle(
+        elevation: WidgetStateProperty.all(0),
+        foregroundColor: WidgetStateProperty.all(textColor),
+        textStyle: WidgetStateProperty.all(GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600)),
       ),
     ),
     textButtonTheme: TextButtonThemeData(

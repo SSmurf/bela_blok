@@ -275,17 +275,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 );
                               },
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 32),
 
                             // New section: Game stats summary
                             Container(
                               padding: const EdgeInsets.all(16),
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface.withOpacity(0.7),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                                 ),
                               ),
                               child: Column(
