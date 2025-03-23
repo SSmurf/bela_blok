@@ -74,6 +74,7 @@ const Color darkBackgroundColor = Color(0xFF13110f);
 ThemeData getTheme(ThemeType type, ColorPalette palette) {
   final isPaletteDark = type == ThemeType.dark;
   final colors = isPaletteDark ? darkPaletteColors[palette]! : lightPaletteColors[palette]!;
+  final textColor = isPaletteDark ? darkTextColor : lightTextColor;
 
   final textTheme = GoogleFonts.nunitoTextTheme(
     isPaletteDark ? ThemeData.dark().textTheme : ThemeData.light().textTheme,
@@ -90,18 +91,14 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
       tertiary: colors['tertiary']!,
       onTertiary: isPaletteDark ? darkBackgroundColor : lightTextColor,
       surface: isPaletteDark ? darkBackgroundColor : lightBackgroundColor,
-      onSurface: isPaletteDark ? darkTextColor : lightTextColor,
+      onSurface: textColor,
       error: isPaletteDark ? const Color(0xffF2B8B5) : const Color(0xffB3261E),
       onError: isPaletteDark ? const Color(0xff601410) : const Color(0xffFFFFFF),
     ),
     scaffoldBackgroundColor: isPaletteDark ? darkBackgroundColor : lightBackgroundColor,
     textTheme: textTheme,
     appBarTheme: AppBarTheme(
-      titleTextStyle: GoogleFonts.nunito(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        color: isPaletteDark ? darkTextColor : lightTextColor,
-      ),
+      titleTextStyle: GoogleFonts.nunito(fontSize: 20, fontWeight: FontWeight.w600, color: textColor),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -112,8 +109,11 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
       style: TextButton.styleFrom(textStyle: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600)),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        textStyle: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600),
+      style: ButtonStyle(
+        foregroundColor: WidgetStateProperty.all(textColor),
+        textStyle: WidgetStateProperty.all(GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600)),
+        side: WidgetStateProperty.all(BorderSide(color: Colors.transparent)),
+        shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
       ),
     ),
     tabBarTheme: TabBarTheme(
