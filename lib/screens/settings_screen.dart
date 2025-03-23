@@ -292,7 +292,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onTap: () {},
               ),
               ListTile(
-                leading: const Icon(HugeIcons.strokeRoundedLanguageSquare),
+                leading: const Icon(HugeIcons.strokeRoundedLanguageSkill),
                 title: const Text('Jezik'),
                 trailing: const Text('Hrvatski'),
                 onTap: () {},
