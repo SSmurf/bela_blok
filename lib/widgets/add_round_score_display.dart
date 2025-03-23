@@ -8,6 +8,8 @@ class AddRoundScoreDisplay extends StatelessWidget {
   final bool? isTeamOneSelected;
   final VoidCallback? onTeamOneTap;
   final VoidCallback? onTeamTwoTap;
+  final String teamOneName;
+  final String teamTwoName;
 
   const AddRoundScoreDisplay({
     super.key,
@@ -18,6 +20,8 @@ class AddRoundScoreDisplay extends StatelessWidget {
     this.isTeamOneSelected,
     this.onTeamOneTap,
     this.onTeamTwoTap,
+    required this.teamOneName,
+    required this.teamTwoName,
   });
 
   @override
@@ -90,7 +94,7 @@ class AddRoundScoreDisplay extends StatelessWidget {
       children: [
         Expanded(
           child: teamWidget(
-            label: "Mi",
+            label: teamOneName,
             score: scoreTeamOne,
             declScore: declarationScoreTeamOne,
             selected: isTeamOneSelected == true,
@@ -100,7 +104,7 @@ class AddRoundScoreDisplay extends StatelessWidget {
         ),
         Expanded(
           child: teamWidget(
-            label: "Vi",
+            label: teamTwoName,
             score: scoreTeamTwo,
             declScore: declarationScoreTeamTwo,
             selected: isTeamOneSelected == false,

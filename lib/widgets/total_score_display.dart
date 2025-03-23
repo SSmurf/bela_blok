@@ -3,7 +3,16 @@ import 'package:flutter/material.dart';
 class TotalScoreDisplay extends StatelessWidget {
   final int scoreTeamOne;
   final int scoreTeamTwo;
-  const TotalScoreDisplay({super.key, required this.scoreTeamOne, required this.scoreTeamTwo});
+  final String teamOneName;
+  final String teamTwoName;
+
+  const TotalScoreDisplay({
+    super.key,
+    required this.scoreTeamOne,
+    required this.scoreTeamTwo,
+    this.teamOneName = 'Mi',
+    this.teamTwoName = 'Vi',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +48,8 @@ class TotalScoreDisplay extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Expanded(child: teamWidget(label: "Mi", score: scoreTeamOne)),
-        Expanded(child: teamWidget(label: "Vi", score: scoreTeamTwo)),
+        Expanded(child: teamWidget(label: teamOneName, score: scoreTeamOne)),
+        Expanded(child: teamWidget(label: teamTwoName, score: scoreTeamTwo)),
       ],
     );
   }

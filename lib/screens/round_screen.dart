@@ -15,8 +15,17 @@ class RoundScreen extends ConsumerStatefulWidget {
   final bool isTeamOneSelected;
   final Round? roundToEdit;
   final int? roundIndex;
+  final String teamOneName;
+  final String teamTwoName;
 
-  const RoundScreen({super.key, this.isTeamOneSelected = true, this.roundToEdit, this.roundIndex});
+  const RoundScreen({
+    super.key,
+    this.isTeamOneSelected = true,
+    this.roundToEdit,
+    this.roundIndex,
+    required this.teamOneName,
+    required this.teamTwoName,
+  });
 
   @override
   ConsumerState<RoundScreen> createState() => _RoundScreenState();
@@ -278,6 +287,8 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
               isTeamOneSelected: isTeamOneSelected,
               onTeamOneTap: () => _setTeamSelection(true),
               onTeamTwoTap: () => _setTeamSelection(false),
+              teamOneName: widget.teamOneName,
+              teamTwoName: widget.teamTwoName,
             ),
             const SizedBox(height: 24),
             Container(

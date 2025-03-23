@@ -47,16 +47,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  void _addNewRound(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => const RoundScreen(isTeamOneSelected: true)));
-  }
-
-  void _editRound(BuildContext context, Round round, int index) {
+  _addNewRound(BuildContext context, {required String teamOneName, required String teamTwoName}) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => RoundScreen(roundToEdit: round, roundIndex: index, isTeamOneSelected: true),
+        builder:
+            (context) =>
+                RoundScreen(isTeamOneSelected: true, teamOneName: teamOneName, teamTwoName: teamTwoName),
+      ),
+    );
+  }
+
+  _editRound(
+    BuildContext context,
+    Round round,
+    int index, {
+    required String teamOneName,
+    required String teamTwoName,
+  }) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder:
+            (context) => RoundScreen(
+              roundToEdit: round,
+              roundIndex: index,
+              isTeamOneSelected: true,
+              teamOneName: teamOneName,
+              teamTwoName: teamTwoName,
+            ),
       ),
     );
   }
@@ -71,13 +88,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final bool gameEnded = teamOneTotal >= currentGoal || teamTwoTotal >= currentGoal;
     final String winningTeam =
         teamOneTotal >= currentGoal
-            ? 'Mi'
+            ? settings.teamOneName
             : teamTwoTotal >= currentGoal
-            ? 'Vi'
+            ? settings.teamTwoName
             : '';
 
     if (gameEnded && !_gameSaved) {
-      _localStorageService.saveGame(rounds, goalScore: currentGoal);
+      _localStorageService.saveGame(
+        rounds,
+        goalScore: currentGoal,
+        teamOneName: settings.teamOneName,
+        teamTwoName: settings.teamTwoName,
+      );
       setState(() {
         _gameSaved = true;
       });
@@ -111,7 +133,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
         child: Column(
           children: [
-            TotalScoreDisplay(scoreTeamOne: teamOneTotal, scoreTeamTwo: teamTwoTotal),
+            TotalScoreDisplay(
+              scoreTeamOne: teamOneTotal,
+              scoreTeamTwo: teamTwoTotal,
+              teamOneName: settings.teamOneName,
+              teamTwoName: settings.teamTwoName,
+            ),
             const SizedBox(height: 6),
             Row(
               children: [
@@ -160,6 +187,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             roundToEdit: rounds[lastIndex],
                                             roundIndex: lastIndex,
                                             isTeamOneSelected: true,
+                                            teamOneName: settings.teamOneName,
+                                            teamTwoName: settings.teamTwoName,
                                           ),
                                     ),
                                   );
@@ -219,7 +248,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   ref.read(currentGameProvider.notifier).removeRound(index);
                                 },
                                 child: GestureDetector(
-                                  onTap: () => _editRound(context, rounds[index], index),
+                                  onTap:
+                                      () => _editRound(
+                                        context,
+                                        rounds[index],
+                                        index,
+                                        teamOneName: settings.teamOneName,
+                                        teamTwoName: settings.teamTwoName,
+                                      ),
                                   child: RoundDisplay(round: rounds[index], roundIndex: index),
                                 ),
                               );
@@ -242,7 +278,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         _gameSaved = false;
                       });
                     } else {
-                      _addNewRound(context);
+                      _addNewRound(
+                        context,
+                        teamOneName: settings.teamOneName,
+                        teamTwoName: settings.teamTwoName,
+                      );
                     }
                   },
                 ),

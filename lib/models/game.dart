@@ -11,8 +11,8 @@ class Game {
 
   Game({
     String? id,
-    this.teamOneName = 'Mi',
-    this.teamTwoName = 'Vi',
+    required this.teamOneName,
+    required this.teamTwoName,
     List<Round>? rounds,
     DateTime? createdAt,
     this.updatedAt,

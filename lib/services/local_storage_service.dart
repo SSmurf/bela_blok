@@ -6,10 +6,11 @@ import '../models/round.dart';
 class LocalStorageService {
   Future<void> saveGame(
     List<Round> rounds, {
-    String teamOneName = 'Mi',
-    String teamTwoName = 'Vi',
+    required String teamOneName,
+    required String teamTwoName,
     int goalScore = 1001,
   }) async {
+    final prefs = await SharedPreferences.getInstance();
     final game = Game(
       teamOneName: teamOneName,
       teamTwoName: teamTwoName,
@@ -18,7 +19,6 @@ class LocalStorageService {
       goalScore: goalScore,
     );
     final gameJson = json.encode(game.toJson());
-    final prefs = await SharedPreferences.getInstance();
     final key = 'saved_game_${DateTime.now().millisecondsSinceEpoch}';
     await prefs.setString(key, gameJson);
     print('Game saved under key: $key');
@@ -50,7 +50,7 @@ class LocalStorageService {
     await prefs.setString('app_settings', settingsJson);
     print('Settings saved: $settingsJson');
   }
-  
+
   Future<Map<String, dynamic>> loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     final settingsJson = prefs.getString('app_settings');

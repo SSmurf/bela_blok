@@ -81,6 +81,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ref.read(settingsProvider.notifier).state = AppSettings(
         goalScore: _goalScore,
         stigljaValue: _stigljaValue,
+        teamOneName: _teamOneName,
+        teamTwoName: _teamTwoName,
       );
       await _localStorageService.saveSettings({'goalScore': _goalScore, 'stigljaValue': _stigljaValue});
     }
@@ -115,6 +117,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ref.read(settingsProvider.notifier).state = AppSettings(
         goalScore: _goalScore,
         stigljaValue: _stigljaValue,
+        teamOneName: _teamOneName,
+        teamTwoName: _teamTwoName,
       );
       await _localStorageService.saveSettings({'goalScore': _goalScore, 'stigljaValue': _stigljaValue});
     }

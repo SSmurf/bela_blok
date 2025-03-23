@@ -7,8 +7,8 @@ class AppSettings {
   AppSettings({
     this.goalScore = 1001,
     this.stigljaValue = 90,
-    this.teamOneName = 'Mi',
-    this.teamTwoName = 'Vi',
+    required this.teamOneName,
+    required this.teamTwoName,
   });
 
   Map<String, dynamic> toJson() => {
