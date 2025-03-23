@@ -20,23 +20,37 @@ class FinishedGameDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double getFontSizeForTeamName(String name) {
+      if (name.length <= 4) return 30.0;
+      if (name.length <= 8) return 24.0;
+      if (name.length <= 12) return 20.0;
+      return 18.0;
+    }
+
+    final double teamOneFontSize = getFontSizeForTeamName(teamOneName);
+    final double teamTwoFontSize = getFontSizeForTeamName(teamTwoName);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 36),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 28),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          // Team One Name (left-aligned)
           Expanded(
+            flex: 3,
             child: Text(
               teamOneName,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontSize: 32, fontWeight: FontWeight.w500),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: teamOneFontSize,
+                fontWeight: FontWeight.w500,
+                height: 1.0,
+              ),
               textAlign: TextAlign.start,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          // Team One Score
           Expanded(
+            flex: 2,
             child: Text(
               '$teamOneTotal',
               textAlign: TextAlign.end,
@@ -45,9 +59,8 @@ class FinishedGameDisplay extends StatelessWidget {
               ).textTheme.titleMedium?.copyWith(fontSize: 22, fontWeight: FontWeight.bold),
             ),
           ),
-          // Dash Separator
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
               '-',
               style: Theme.of(
@@ -55,8 +68,8 @@ class FinishedGameDisplay extends StatelessWidget {
               ).textTheme.titleMedium?.copyWith(fontSize: 24, fontWeight: FontWeight.w500),
             ),
           ),
-          // Team Two Score
           Expanded(
+            flex: 2,
             child: Text(
               '$teamTwoTotal',
               textAlign: TextAlign.start,
@@ -65,14 +78,18 @@ class FinishedGameDisplay extends StatelessWidget {
               ).textTheme.titleMedium?.copyWith(fontSize: 22, fontWeight: FontWeight.bold),
             ),
           ),
-          // Team Two Name (right-aligned)
           Expanded(
+            flex: 3,
             child: Text(
               teamTwoName,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontSize: 32, fontWeight: FontWeight.w500),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: teamTwoFontSize,
+                fontWeight: FontWeight.w500,
+                height: 1.0,
+              ),
               textAlign: TextAlign.end,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
