@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // Theme types
 enum ThemeType { light, dark }
@@ -74,6 +75,10 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
   final isPaletteDark = type == ThemeType.dark;
   final colors = isPaletteDark ? darkPaletteColors[palette]! : lightPaletteColors[palette]!;
 
+  final textTheme = GoogleFonts.nunitoTextTheme(
+    isPaletteDark ? ThemeData.dark().textTheme : ThemeData.light().textTheme,
+  );
+
   return ThemeData(
     brightness: isPaletteDark ? Brightness.dark : Brightness.light,
     colorScheme: ColorScheme(
@@ -90,5 +95,30 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
       onError: isPaletteDark ? const Color(0xff601410) : const Color(0xffFFFFFF),
     ),
     scaffoldBackgroundColor: isPaletteDark ? darkBackgroundColor : lightBackgroundColor,
+    textTheme: textTheme,
+    appBarTheme: AppBarTheme(
+      titleTextStyle: GoogleFonts.nunito(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: isPaletteDark ? darkTextColor : lightTextColor,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        textStyle: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(textStyle: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600)),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        textStyle: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600),
+      ),
+    ),
+    tabBarTheme: TabBarTheme(
+      labelStyle: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600),
+      unselectedLabelStyle: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w400),
+    ),
   );
 }
