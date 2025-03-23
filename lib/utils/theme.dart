@@ -67,9 +67,9 @@ const Map<ColorPalette, Map<String, Color>> darkPaletteColors = {
 
 // Light and Dark base colors
 const Color lightTextColor = Color(0xFF333333);
-const Color lightBackgroundColor = Color(0xFFfff8f0);
+const Color lightBackgroundColor = Color(0xFFebe8e6);
 const Color darkTextColor = Color(0xFFcccccc);
-const Color darkBackgroundColor = Color(0xFF0f0800);
+const Color darkBackgroundColor = Color(0xFF13110f);
 
 ThemeData getTheme(ThemeType type, ColorPalette palette) {
   final isPaletteDark = type == ThemeType.dark;
