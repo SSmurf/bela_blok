@@ -8,6 +8,9 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import '../providers/theme_provider.dart';
+import '../widgets/theme_picker_bottom_sheet.dart';
+
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
   @override
@@ -251,6 +254,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return '${teamOne.substring(0, halfLimit)}..., ${teamTwo.substring(0, halfLimit)}...';
   }
 
+  Future<void> _showThemeOptions(BuildContext context) async {
+    final currentSettings = ref.read(themeSettingsProvider);
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      builder: (context) {
+        return ThemePickerBottomSheet(
+          currentSettings: currentSettings,
+          onThemeSettingsChanged: (newSettings) {
+            ref.read(themeSettingsProvider.notifier).state = newSettings;
+            // Save to local storage
+            _localStorageService.saveThemeSettings(newSettings.toJson());
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -278,13 +301,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 trailing: Text(_formatTeamNames(_teamOneName, _teamTwoName), overflow: TextOverflow.ellipsis),
                 onTap: () => _showTeamNamesDialog(context),
               ),
-
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedPaintBoard),
                 title: const Text('Dizajn'),
-                trailing: const Text('Light mode'),
-                onTap: () {},
+                trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
+                onTap: () => _showThemeOptions(context),
               ),
+
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedIdea01),
                 title: const Text('Drži zaslon upaljen'),

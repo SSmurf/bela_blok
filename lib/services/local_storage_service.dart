@@ -64,4 +64,24 @@ class LocalStorageService {
     }
     return {};
   }
+
+  Future<void> saveThemeSettings(Map<String, dynamic> settings) async {
+    final prefs = await SharedPreferences.getInstance();
+    final settingsJson = json.encode(settings);
+    await prefs.setString('theme_settings', settingsJson);
+  }
+
+  Future<Map<String, dynamic>> loadThemeSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final settingsJson = prefs.getString('theme_settings');
+    if (settingsJson != null) {
+      try {
+        return json.decode(settingsJson) as Map<String, dynamic>;
+      } catch (e) {
+        print('Error decoding theme settings: $e');
+        return {};
+      }
+    }
+    return {};
+  }
 }
