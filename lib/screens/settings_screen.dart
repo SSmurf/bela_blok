@@ -2,6 +2,7 @@ import 'package:bela_blok/widgets/delete_history_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -13,11 +14,24 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final String rulesUrl = 'https://hr.wikipedia.org/wiki/Belot#Pravila';
   final String unpublishedRulesUrl = 'https://belaibelot.blogspot.com/p/n-e-p-i-s-n-pravila-bele.html';
+  bool _keepScreenOn = true;
 
   Future<void> _launchURL(String url) async {
     final uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $url';
+    }
+  }
+
+  //todo test na pravom uredaju
+  void _toggleWakelock(bool value) async {
+    setState(() {
+      _keepScreenOn = value;
+    });
+    if (value) {
+      await WakelockPlus.enable();
+    } else {
+      await WakelockPlus.disable();
     }
   }
 
@@ -33,37 +47,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedChampion),
                 title: const Text('Igra se do'),
-                trailing: Text('1001'),
+                trailing: const Text('1001'),
                 onTap: () {},
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedCards02),
                 title: const Text('Vrijednost štiglje'),
-                trailing: Text('90'),
+                trailing: const Text('90'),
                 onTap: () {},
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedUserEdit01),
                 title: const Text('Imena timova'),
-                trailing: Text('Mi Vi'),
+                trailing: const Text('Mi Vi'),
                 onTap: () {},
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedPaintBoard),
                 title: const Text('Dizajn'),
-                trailing: Text('Light mode'),
+                trailing: const Text('Light mode'),
                 onTap: () {},
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedIdea01),
-                title: const Text('Drzi zaslon upaljen'),
-                trailing: Switch(value: true, onChanged: (bool value) {}),
+                title: const Text('Drži zaslon upaljen'),
+                trailing: Switch(value: _keepScreenOn, onChanged: _toggleWakelock),
                 onTap: () {},
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedLanguageSquare),
                 title: const Text('Jezik'),
-                trailing: Text('Hrvatski'),
+                trailing: const Text('Hrvatski'),
                 onTap: () {},
               ),
               ListTile(
@@ -78,11 +92,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _launchURL(unpublishedRulesUrl),
               ),
-              DeleteHistoryTile(),
+              const DeleteHistoryTile(),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedInformationSquare),
                 title: const Text('O aplikaciji'),
-                trailing: Icon(HugeIcons.strokeRoundedArrowRight01),
+                trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () {},
               ),
             ],
