@@ -1,3 +1,4 @@
+import 'package:bela_blok/widgets/delete_history_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -77,12 +78,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _launchURL(unpublishedRulesUrl),
               ),
-              ListTile(
-                leading: const Icon(HugeIcons.strokeRoundedDelete01),
-                title: const Text('Izbrisi povijest igara'),
-                trailing: Icon(HugeIcons.strokeRoundedArrowRight01),
-                onTap: () {},
-              ),
+              DeleteHistoryTile(),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedInformationSquare),
                 title: const Text('O aplikaciji'),
