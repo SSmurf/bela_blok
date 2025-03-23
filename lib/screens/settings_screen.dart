@@ -20,6 +20,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _keepScreenOn = true;
   int _goalScore = 1001;
   int _stigljaValue = 90;
+  String _teamOneName = 'Mi';
+  String _teamTwoName = 'Vi';
   final LocalStorageService _localStorageService = LocalStorageService();
 
   @override
@@ -36,6 +38,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       setState(() {
         _goalScore = settings.goalScore;
         _stigljaValue = settings.stigljaValue;
+        _teamOneName = settings.teamOneName;
+        _teamTwoName = settings.teamTwoName;
       });
       ref.read(settingsProvider.notifier).state = settings;
     }
@@ -127,6 +131,72 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Future<void> _showTeamNamesDialog(BuildContext context) async {
+    final teamOneController = TextEditingController(text: _teamOneName);
+    final teamTwoController = TextEditingController(text: _teamTwoName);
+
+    final result = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Imena timova'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: teamOneController,
+                decoration: const InputDecoration(labelText: 'Prvi tim'),
+                textCapitalization: TextCapitalization.words,
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: teamTwoController,
+                decoration: const InputDecoration(labelText: 'Drugi tim'),
+                textCapitalization: TextCapitalization.words,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Odustani')),
+            TextButton(
+              onPressed: () {
+                // Prevent empty team names
+                final teamOne =
+                    teamOneController.text.trim().isNotEmpty ? teamOneController.text.trim() : 'Mi';
+                final teamTwo =
+                    teamTwoController.text.trim().isNotEmpty ? teamTwoController.text.trim() : 'Vi';
+
+                Navigator.of(context).pop({'teamOne': teamOne, 'teamTwo': teamTwo});
+              },
+              child: const Text('Spremi'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != null) {
+      setState(() {
+        _teamOneName = result['teamOne']!;
+        _teamTwoName = result['teamTwo']!;
+      });
+
+      ref.read(settingsProvider.notifier).state = AppSettings(
+        goalScore: _goalScore,
+        stigljaValue: _stigljaValue,
+        teamOneName: _teamOneName,
+        teamTwoName: _teamTwoName,
+      );
+
+      await _localStorageService.saveSettings({
+        'goalScore': _goalScore,
+        'stigljaValue': _stigljaValue,
+        'teamOneName': _teamOneName,
+        'teamTwoName': _teamTwoName,
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,8 +221,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedUserEdit01),
                 title: const Text('Imena timova'),
-                trailing: const Text('Mi Vi'),
-                onTap: () {},
+                trailing: Text('$_teamOneName, $_teamTwoName'),
+                onTap: () => _showTeamNamesDialog(context),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedPaintBoard),
