@@ -177,6 +177,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     return null;
                   },
                 ),
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    teamOneController.text = 'Mi';
+                    teamTwoController.text = 'Vi';
+                  },
+                  icon: const Icon(HugeIcons.strokeRoundedUndo),
+                  label: const Text('Postavi na Mi / Vi'),
+                  style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(40)),
+                ),
               ],
             ),
           ),
