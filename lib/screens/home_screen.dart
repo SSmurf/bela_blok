@@ -156,24 +156,54 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const SizedBox(height: 24),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  HugeIcons.strokeRoundedLaurelWreathLeft02,
-                                  size: 64,
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                ),
-                                Text(
-                                  winningTeam,
-                                  style: const TextStyle(fontSize: 56, fontWeight: FontWeight.w500),
-                                ),
-                                Icon(
-                                  HugeIcons.strokeRoundedLaurelWreathRight02,
-                                  size: 64,
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                ),
-                              ],
+                            // Winner display with dynamic text size
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                // Determine text size based on winning team name length
+                                final double fontSize =
+                                    winningTeam.length <= 4
+                                        ? 56
+                                        : winningTeam.length <= 8
+                                        ? 44
+                                        : winningTeam.length <= 12
+                                        ? 36
+                                        : 28;
+
+                                // Calculate icon size based on text size for proportional scaling
+                                final double iconSize = fontSize + 8;
+
+                                return SizedBox(
+                                  width: constraints.maxWidth * 0.9,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        HugeIcons.strokeRoundedLaurelWreathLeft02,
+                                        size: iconSize,
+                                        color: Theme.of(context).colorScheme.tertiary,
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          winningTeam,
+                                          style: TextStyle(
+                                            fontSize: fontSize,
+                                            fontWeight: FontWeight.w500,
+                                            height: 1.1,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Icon(
+                                        HugeIcons.strokeRoundedLaurelWreathRight02,
+                                        size: iconSize,
+                                        color: Theme.of(context).colorScheme.tertiary,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
                             const SizedBox(height: 24),
                             if (rounds.isNotEmpty)
