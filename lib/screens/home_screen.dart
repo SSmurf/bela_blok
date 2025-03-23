@@ -78,6 +78,76 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  // Calculate total declaration points (excluding stiglja)
+  int _calculateTotalDeclarations(List<Round> rounds, {required bool teamOne}) {
+    return rounds.fold(0, (sum, round) {
+      if (teamOne) {
+        return sum +
+            round.decl20TeamOne * 20 +
+            round.decl50TeamOne * 50 +
+            round.decl100TeamOne * 100 +
+            round.decl150TeamOne * 150 +
+            round.decl200TeamOne * 200;
+      } else {
+        return sum +
+            round.decl20TeamTwo * 20 +
+            round.decl50TeamTwo * 50 +
+            round.decl100TeamTwo * 100 +
+            round.decl150TeamTwo * 150 +
+            round.decl200TeamTwo * 200;
+      }
+    });
+  }
+
+  // Count total stiglja
+  int _countTotalStiglja(List<Round> rounds, {required bool teamOne}) {
+    return rounds.fold(0, (sum, round) {
+      if (teamOne) {
+        return sum + round.declStigljaTeamOne;
+      } else {
+        return sum + round.declStigljaTeamTwo;
+      }
+    });
+  }
+
+  // Build a stat row with team values and label
+  Widget _buildStatRow({
+    required BuildContext context,
+    required String label,
+    required int teamOneValue,
+    required int teamTwoValue,
+    required String teamOneName,
+    required String teamTwoName,
+  }) {
+    return Row(
+      children: [
+        // Team One Value
+        Expanded(
+          child: Text(
+            teamOneValue.toString(),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+        ),
+
+        // Label
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          child: Text(label, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+        ),
+
+        // Team Two Value
+        Expanded(
+          child: Text(
+            teamTwoValue.toString(),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final rounds = ref.watch(currentGameProvider);
@@ -205,6 +275,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 );
                               },
                             ),
+                            const SizedBox(height: 24),
+
+                            // New section: Game stats summary
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.surface.withOpacity(0.7),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  // Row for total declarations
+                                  _buildStatRow(
+                                    context: context,
+                                    label: "Ukupno zvanja",
+                                    teamOneValue: _calculateTotalDeclarations(rounds, teamOne: true),
+                                    teamTwoValue: _calculateTotalDeclarations(rounds, teamOne: false),
+                                    teamOneName: settings.teamOneName,
+                                    teamTwoName: settings.teamTwoName,
+                                  ),
+
+                                  const SizedBox(height: 12),
+                                  Divider(
+                                    height: 1,
+                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                                  ),
+                                  const SizedBox(height: 12),
+
+                                  // Row for total stiglja
+                                  _buildStatRow(
+                                    context: context,
+                                    label: "Ukupno štiglji",
+                                    teamOneValue: _countTotalStiglja(rounds, teamOne: true),
+                                    teamTwoValue: _countTotalStiglja(rounds, teamOne: false),
+                                    teamOneName: settings.teamOneName,
+                                    teamTwoName: settings.teamTwoName,
+                                  ),
+                                ],
+                              ),
+                            ),
+
                             const SizedBox(height: 24),
                             if (rounds.isNotEmpty)
                               ElevatedButton.icon(
