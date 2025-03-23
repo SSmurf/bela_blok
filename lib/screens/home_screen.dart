@@ -5,6 +5,7 @@ import 'package:bela_blok/screens/history_screen.dart';
 import 'package:bela_blok/screens/round_screen.dart';
 import 'package:bela_blok/screens/settings_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
+import 'package:bela_blok/services/score_calculator.dart';
 import 'package:bela_blok/widgets/add_round_button.dart';
 import 'package:bela_blok/widgets/round_display.dart';
 import 'package:bela_blok/widgets/total_score_display.dart';
@@ -14,7 +15,6 @@ import 'package:hugeicons/hugeicons.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
-
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
@@ -23,17 +23,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _gameSaved = false;
   final LocalStorageService _localStorageService = LocalStorageService();
 
+  void _confirmClearGame(BuildContext context) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Brisanje igre'),
+            content: const Text('Jesi li siguran da želiš obrisati sve runde?'),
+            actions: [
+              TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Odustani')),
+              TextButton(
+                onPressed: () {
+                  ref.read(currentGameProvider.notifier).clearRounds();
+                  setState(() {
+                    _gameSaved = false;
+                  });
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Obriši'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _addNewRound(BuildContext context) {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const RoundScreen(isTeamOneSelected: true)));
+  }
+
+  void _editRound(BuildContext context, Round round, int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => RoundScreen(roundToEdit: round, roundIndex: index, isTeamOneSelected: true),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final rounds = ref.watch(currentGameProvider);
-    final gameNotifier = ref.read(currentGameProvider.notifier);
-    // Retrieve current settings.
     final settings = ref.watch(settingsProvider);
     final int currentGoal = settings.goalScore;
-
-    final int teamOneTotal = gameNotifier.teamOneTotal;
-    final int teamTwoTotal = gameNotifier.teamTwoTotal;
-    // Use the currentGoal from settings instead of hardcoding 1001.
+    final int teamOneTotal = ScoreCalculator(stigljaValue: settings.stigljaValue).computeTeamOneTotal(rounds);
+    final int teamTwoTotal = ScoreCalculator(stigljaValue: settings.stigljaValue).computeTeamTwoTotal(rounds);
     final bool gameEnded = teamOneTotal >= currentGoal || teamTwoTotal >= currentGoal;
     final String winningTeam =
         teamOneTotal >= currentGoal
@@ -42,7 +76,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ? 'Vi'
             : '';
 
-    // Save the game using the current goal score.
     if (gameEnded && !_gameSaved) {
       _localStorageService.saveGame(rounds, goalScore: currentGoal);
       setState(() {
@@ -219,44 +252,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  void _addNewRound(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => const RoundScreen(isTeamOneSelected: true)));
-  }
-
-  void _editRound(BuildContext context, Round round, int index) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => RoundScreen(roundToEdit: round, roundIndex: index, isTeamOneSelected: true),
-      ),
-    );
-  }
-
-  void _confirmClearGame(BuildContext context) {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Brisanje igre'),
-            content: const Text('Jesi li siguran da želiš obrisati sve runde?'),
-            actions: [
-              TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Odustani')),
-              TextButton(
-                onPressed: () {
-                  ref.read(currentGameProvider.notifier).clearRounds();
-                  setState(() {
-                    _gameSaved = false;
-                  });
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Obriši'),
-              ),
-            ],
-          ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bela_blok/providers/settings_provider.dart';
 import 'package:bela_blok/widgets/add_round_score_display.dart';
 import 'package:bela_blok/widgets/declaration_button.dart';
 import 'package:bela_blok/widgets/numeric_keyboard.dart';
@@ -8,7 +9,6 @@ import 'package:hugeicons/hugeicons.dart';
 import '../models/round.dart';
 import '../providers/game_provider.dart';
 import '../widgets/add_round_button.dart';
-
 
 //todo dumb view, move logic and functions to provider, constants to constants file
 class RoundScreen extends ConsumerStatefulWidget {
@@ -245,14 +245,15 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    // Calculate the declaration scores for each team.
+    int stigljaValue = ref.watch(settingsProvider).stigljaValue;
+
     final int declScoreTeamOne =
         decl20TeamOne * 20 +
         decl50TeamOne * 50 +
         decl100TeamOne * 100 +
         decl150TeamOne * 150 +
         decl200TeamOne * 200 +
-        declStigljaTeamOne * 0; // Adjust value for Štiglja if needed.
+        declStigljaTeamOne * stigljaValue;
 
     final int declScoreTeamTwo =
         decl20TeamTwo * 20 +
@@ -260,7 +261,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
         decl100TeamTwo * 100 +
         decl150TeamTwo * 150 +
         decl200TeamTwo * 200 +
-        declStigljaTeamTwo * 0; // Adjust value for Štiglja if needed.
+        declStigljaTeamTwo * stigljaValue;
 
     final theme = Theme.of(context);
     return Scaffold(

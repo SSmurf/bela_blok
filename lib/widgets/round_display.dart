@@ -1,35 +1,21 @@
+import 'package:bela_blok/providers/settings_provider.dart';
+import 'package:bela_blok/services/score_calculator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/round.dart';
 
-class RoundDisplay extends StatelessWidget {
+class RoundDisplay extends ConsumerWidget {
   final Round round;
   final int roundIndex;
 
   const RoundDisplay({super.key, required this.round, required this.roundIndex});
 
-  //todo makni ovo
-  int get totalTeamOne {
-    return round.scoreTeamOne +
-        round.decl20TeamOne * 20 +
-        round.decl50TeamOne * 50 +
-        round.decl100TeamOne * 100 +
-        round.decl150TeamOne * 150 +
-        round.decl200TeamOne * 200 +
-        round.declStigljaTeamOne * 90;
-  }
-
-  int get totalTeamTwo {
-    return round.scoreTeamTwo +
-        round.decl20TeamTwo * 20 +
-        round.decl50TeamTwo * 50 +
-        round.decl100TeamTwo * 100 +
-        round.decl150TeamTwo * 150 +
-        round.decl200TeamTwo * 200 +
-        round.declStigljaTeamTwo * 90;
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    int stigljaValue = ref.watch(settingsProvider).stigljaValue;
+    int teamOneTotal = ScoreCalculator(stigljaValue: stigljaValue).computeTeamOneRoundTotal(round);
+    int teamTwoTotal = ScoreCalculator(stigljaValue: stigljaValue).computeTeamTwoRoundTotal(round);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -46,7 +32,7 @@ class RoundDisplay extends StatelessWidget {
           // Team One total score.
           Expanded(
             child: Text(
-              totalTeamOne.toString(),
+              teamOneTotal.toString(),
               style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
               textAlign: TextAlign.center,
             ),
@@ -61,7 +47,7 @@ class RoundDisplay extends StatelessWidget {
           // Team Two total score.
           Expanded(
             child: Text(
-              totalTeamTwo.toString(),
+              teamTwoTotal.toString(),
               style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
               textAlign: TextAlign.center,
             ),
