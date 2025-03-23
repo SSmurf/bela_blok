@@ -139,38 +139,57 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final teamOneController = TextEditingController(text: _teamOneName);
     final teamTwoController = TextEditingController(text: _teamTwoName);
 
+    // Create keys for form validation
+    final formKey = GlobalKey<FormState>();
+
     final result = await showDialog<Map<String, String>>(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Imena timova'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: teamOneController,
-                decoration: const InputDecoration(labelText: 'Prvi tim'),
-                textCapitalization: TextCapitalization.words,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: teamTwoController,
-                decoration: const InputDecoration(labelText: 'Drugi tim'),
-                textCapitalization: TextCapitalization.words,
-              ),
-            ],
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: teamOneController,
+                  decoration: const InputDecoration(labelText: 'Prvi tim'),
+                  textCapitalization: TextCapitalization.words,
+                  maxLength: 20,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Ime tima ne može biti prazno';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: teamTwoController,
+                  decoration: const InputDecoration(labelText: 'Drugi tim'),
+                  textCapitalization: TextCapitalization.words,
+                  maxLength: 20,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Ime tima ne može biti prazno';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Odustani')),
             TextButton(
               onPressed: () {
-                // Prevent empty team names
-                final teamOne =
-                    teamOneController.text.trim().isNotEmpty ? teamOneController.text.trim() : 'Mi';
-                final teamTwo =
-                    teamTwoController.text.trim().isNotEmpty ? teamTwoController.text.trim() : 'Vi';
+                if (formKey.currentState!.validate()) {
+                  final teamOne = teamOneController.text.trim();
+                  final teamTwo = teamTwoController.text.trim();
 
-                Navigator.of(context).pop({'teamOne': teamOne, 'teamTwo': teamTwo});
+                  Navigator.of(context).pop({'teamOne': teamOne, 'teamTwo': teamTwo});
+                }
               },
               child: const Text('Spremi'),
             ),
@@ -201,6 +220,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  String _formatTeamNames(String teamOne, String teamTwo) {
+    final combined = '$teamOne, $teamTwo';
+    final halfLimit = 12;
+
+    if (combined.length <= 24) {
+      return combined;
+    }
+
+    if (teamOne.length <= halfLimit) {
+      final remainingSpace = 24 - teamOne.length - 2;
+      return '$teamOne, ${teamTwo.substring(0, remainingSpace.clamp(0, teamTwo.length))}...';
+    }
+
+    if (teamTwo.length <= halfLimit) {
+      final remainingSpace = 24 - teamTwo.length - 2;
+      return '${teamOne.substring(0, remainingSpace.clamp(0, teamOne.length))}..., $teamTwo';
+    }
+
+    return '${teamOne.substring(0, halfLimit)}..., ${teamTwo.substring(0, halfLimit)}...';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -225,9 +265,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedUserEdit01),
                 title: const Text('Imena timova'),
-                trailing: Text('$_teamOneName, $_teamTwoName'),
+                trailing: Text(_formatTeamNames(_teamOneName, _teamTwoName), overflow: TextOverflow.ellipsis),
                 onTap: () => _showTeamNamesDialog(context),
               ),
+
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedPaintBoard),
                 title: const Text('Dizajn'),

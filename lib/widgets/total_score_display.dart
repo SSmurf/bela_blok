@@ -29,9 +29,16 @@ class TotalScoreDisplay extends StatelessWidget {
         decoration: decoration,
         child: Column(
           children: [
-            Text(
-              label,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
             ),
             const SizedBox(height: 4),
             Text(
