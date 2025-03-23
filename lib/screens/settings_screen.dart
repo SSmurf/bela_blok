@@ -1,21 +1,48 @@
+import 'package:bela_blok/providers/settings_provider.dart';
+import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/widgets/delete_history_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
-class SettingsScreen extends StatefulWidget {
+import '../models/app_settings.dart';
+
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final String rulesUrl = 'https://hr.wikipedia.org/wiki/Belot#Pravila';
-  final String unpublishedRulesUrl = 'https://belaibelot.blogspot.com/p/n-e-p-i-s-n-pravila-bele.html';
+  final String unpublishedRulesUrl =
+      'https://belaibelot.blogspot.com/p/n-e-p-i-s-n-pravila-bele.html';
   bool _keepScreenOn = true;
   int _goalScore = 1001;
+
+  final LocalStorageService _localStorageService = LocalStorageService();
+
+  @override
+  void initState() {
+    super.initState();
+    WakelockPlus.enable();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final settingsMap = await _localStorageService.loadSettings();
+    // If settings exist, update the local state and provider.
+    if (settingsMap.isNotEmpty) {
+      final settings = AppSettings.fromJson(settingsMap);
+      setState(() {
+        _goalScore = settings.goalScore;
+      });
+      ref.read(settingsProvider.notifier).state = settings;
+    }
+  }
 
   Future<void> _launchURL(String url) async {
     final uri = Uri.parse(url);
@@ -24,7 +51,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  //todo testiraj na uredaju
+  // Show a bottom sheet to choose the goal score.
+  Future<void> _showGoalOptions(BuildContext context) async {
+    const options = [501, 701, 1001];
+    final int? selectedOption = await showModalBottomSheet<int>(
+      context: context,
+      builder: (BuildContext ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: options.map((option) {
+              return ListTile(
+                title: Text(option.toString()),
+                trailing: _goalScore == option
+                    ? const Icon(Icons.check, color: Colors.green)
+                    : null,
+                onTap: () {
+                  Navigator.pop(ctx, option);
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+    if (selectedOption != null) {
+      setState(() {
+        _goalScore = selectedOption;
+      });
+      // Update the provider.
+      ref.read(settingsProvider.notifier).state =
+          AppSettings(goalScore: _goalScore);
+      // Save the updated settings to local storage.
+      await _localStorageService.saveSettings({'goalScore': _goalScore});
+    }
+  }
+
+  // Toggle the screen-on (wakelock).
   void _toggleWakelock(bool value) async {
     setState(() {
       _keepScreenOn = value;
@@ -36,35 +99,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  Future<void> _showGoalOptions(BuildContext context) async {
-    final options = [501, 701, 1001];
-    await showModalBottomSheet(
-      context: context,
-      builder: (BuildContext ctx) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children:
-                options.map((option) {
-                  return ListTile(
-                    title: Text(option.toString()),
-                    trailing: _goalScore == option ? const Icon(Icons.check, color: Colors.green) : null,
-                    onTap: () {
-                      setState(() {
-                        _goalScore = option;
-                      });
-                      Navigator.pop(ctx);
-                    },
-                  );
-                }).toList(),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    // The rest of your settings options remain the same.
     return Scaffold(
       appBar: AppBar(title: const Text('Postavke')),
       body: SafeArea(
@@ -99,7 +136,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedIdea01),
                 title: const Text('Drži zaslon upaljen'),
-                trailing: Switch(value: _keepScreenOn, onChanged: _toggleWakelock),
+                trailing: Switch(
+                  value: _keepScreenOn,
+                  onChanged: _toggleWakelock,
+                ),
                 onTap: () {},
               ),
               ListTile(

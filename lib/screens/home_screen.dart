@@ -1,7 +1,9 @@
 import 'package:bela_blok/models/round.dart';
 import 'package:bela_blok/providers/game_provider.dart';
+import 'package:bela_blok/providers/settings_provider.dart';
 import 'package:bela_blok/screens/history_screen.dart';
 import 'package:bela_blok/screens/round_screen.dart';
+import 'package:bela_blok/screens/settings_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/widgets/add_round_button.dart';
 import 'package:bela_blok/widgets/round_display.dart';
@@ -9,8 +11,6 @@ import 'package:bela_blok/widgets/total_score_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
-
-import 'settings_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -27,19 +27,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final rounds = ref.watch(currentGameProvider);
     final gameNotifier = ref.read(currentGameProvider.notifier);
+    // Retrieve current settings.
+    final settings = ref.watch(settingsProvider);
+    final int currentGoal = settings.goalScore;
 
     final int teamOneTotal = gameNotifier.teamOneTotal;
     final int teamTwoTotal = gameNotifier.teamTwoTotal;
-    final bool gameEnded = teamOneTotal >= 1001 || teamTwoTotal >= 1001;
+    // Use the currentGoal from settings instead of hardcoding 1001.
+    final bool gameEnded = teamOneTotal >= currentGoal || teamTwoTotal >= currentGoal;
     final String winningTeam =
-        teamOneTotal >= 1001
+        teamOneTotal >= currentGoal
             ? 'Mi'
-            : teamTwoTotal >= 1001
+            : teamTwoTotal >= currentGoal
             ? 'Vi'
             : '';
 
+    // Save the game using the current goal score.
     if (gameEnded && !_gameSaved) {
-      _localStorageService.saveGame(rounds);
+      _localStorageService.saveGame(rounds, goalScore: currentGoal);
       setState(() {
         _gameSaved = true;
       });
