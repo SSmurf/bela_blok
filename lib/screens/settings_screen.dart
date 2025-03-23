@@ -15,6 +15,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final String rulesUrl = 'https://hr.wikipedia.org/wiki/Belot#Pravila';
   final String unpublishedRulesUrl = 'https://belaibelot.blogspot.com/p/n-e-p-i-s-n-pravila-bele.html';
   bool _keepScreenOn = true;
+  int _goalScore = 1001;
 
   Future<void> _launchURL(String url) async {
     final uri = Uri.parse(url);
@@ -23,7 +24,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  //todo test na pravom uredaju
+  //todo testiraj na uredaju
   void _toggleWakelock(bool value) async {
     setState(() {
       _keepScreenOn = value;
@@ -33,6 +34,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } else {
       await WakelockPlus.disable();
     }
+  }
+
+  Future<void> _showGoalOptions(BuildContext context) async {
+    final options = [501, 701, 1001];
+    await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children:
+                options.map((option) {
+                  return ListTile(
+                    title: Text(option.toString()),
+                    trailing: _goalScore == option ? const Icon(Icons.check, color: Colors.green) : null,
+                    onTap: () {
+                      setState(() {
+                        _goalScore = option;
+                      });
+                      Navigator.pop(ctx);
+                    },
+                  );
+                }).toList(),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -47,8 +75,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedChampion),
                 title: const Text('Igra se do'),
-                trailing: const Text('1001'),
-                onTap: () {},
+                trailing: Text(_goalScore.toString()),
+                onTap: () => _showGoalOptions(context),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedCards02),
