@@ -37,12 +37,24 @@ class AddRoundScoreDisplay extends StatelessWidget {
       required VoidCallback? onTap,
     }) {
       final BoxDecoration decoration = BoxDecoration(
-        color: selected ? color.withOpacity(0.1) : Colors.transparent,
+        color: selected ? color.withOpacity(0.3) : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
       );
 
+      double determineDeclarationFontSize() {
+        final scoreDigits = score.toString().length;
+        final declDigits = declScore.toString().length;
+        if (scoreDigits >= 3 && declDigits >= 3) {
+          return 20.0;
+        } else if (scoreDigits + declDigits >= 5) {
+          return 24.0;
+        }
+        return 28.0;
+      }
+
       final Widget scoreWidget = Row(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             score.toString(),
@@ -53,12 +65,15 @@ class AddRoundScoreDisplay extends StatelessWidget {
             ),
           ),
           if (declScore > 0)
-            Text(
-              " + $declScore",
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.normal,
-                color: selected ? color : theme.colorScheme.onSurface,
+            Flexible(
+              child: Text(
+                " + $declScore",
+                style: TextStyle(
+                  fontSize: determineDeclarationFontSize(),
+                  fontWeight: FontWeight.normal,
+                  color: selected ? color : theme.colorScheme.onSurface,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
         ],
@@ -76,6 +91,8 @@ class AddRoundScoreDisplay extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 color: selected ? color : theme.colorScheme.onSurface,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
             scoreWidget,
