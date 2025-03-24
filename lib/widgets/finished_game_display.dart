@@ -42,6 +42,7 @@ class FinishedGameDisplay extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontSize: teamOneFontSize,
                 fontWeight: FontWeight.w500,
+                fontFamily: 'Nunito',
                 height: 1.0,
               ),
               textAlign: TextAlign.start,
@@ -54,18 +55,22 @@ class FinishedGameDisplay extends StatelessWidget {
             child: Text(
               '$teamOneTotal',
               textAlign: TextAlign.end,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontSize: 22, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Nunito',
+              ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
               '-',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontSize: 24, fontWeight: FontWeight.w500),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Nunito',
+              ),
             ),
           ),
           Expanded(
@@ -73,9 +78,11 @@ class FinishedGameDisplay extends StatelessWidget {
             child: Text(
               '$teamTwoTotal',
               textAlign: TextAlign.start,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontSize: 22, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Nunito',
+              ),
             ),
           ),
           Expanded(
@@ -85,6 +92,7 @@ class FinishedGameDisplay extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontSize: teamTwoFontSize,
                 fontWeight: FontWeight.w500,
+                fontFamily: 'Nunito',
                 height: 1.0,
               ),
               textAlign: TextAlign.end,

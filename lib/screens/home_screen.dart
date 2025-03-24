@@ -125,7 +125,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Expanded(
           child: Text(
             teamOneValue.toString(),
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, fontFamily: 'Nunito'),
             textAlign: TextAlign.center,
           ),
         ),
@@ -133,14 +133,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         // Label
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          child: Text(label, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+          ),
         ),
 
         // Team Two Value
         Expanded(
           child: Text(
             teamTwoValue.toString(),
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, fontFamily: 'Nunito'),
             textAlign: TextAlign.center,
           ),
         ),
@@ -258,6 +261,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           style: TextStyle(
                                             fontSize: fontSize,
                                             fontWeight: FontWeight.w500,
+                                            fontFamily: 'Nunito',
                                             height: 1.1,
                                           ),
                                           textAlign: TextAlign.center,
@@ -338,7 +342,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   );
                                 },
                                 icon: const Icon(HugeIcons.strokeRoundedUndo),
-                                label: const Text('Poništi zadnju rundu'),
+                                label: const Text(
+                                  'Poništi zadnju rundu',
+                                  style: TextStyle(fontFamily: 'Nunito'),
+                                ),
                               ),
                           ],
                         ),

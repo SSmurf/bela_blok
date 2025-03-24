@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 // Theme types
 enum ThemeType { light, dark }
@@ -75,13 +74,11 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
   final isPaletteDark = type == ThemeType.dark;
   final colors = isPaletteDark ? darkPaletteColors[palette]! : lightPaletteColors[palette]!;
   final textColor = isPaletteDark ? darkTextColor : lightTextColor;
-
-  final textTheme = GoogleFonts.nunitoTextTheme(
-    isPaletteDark ? ThemeData.dark().textTheme : ThemeData.light().textTheme,
-  );
+  final baseTheme = isPaletteDark ? ThemeData.dark() : ThemeData.light();
 
   return ThemeData(
     brightness: isPaletteDark ? Brightness.dark : Brightness.light,
+    fontFamily: 'Nunito',
     colorScheme: ColorScheme(
       brightness: isPaletteDark ? Brightness.dark : Brightness.light,
       primary: colors['primary']!,
@@ -96,31 +93,42 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
       onError: isPaletteDark ? const Color(0xff601410) : const Color(0xffFFFFFF),
     ),
     scaffoldBackgroundColor: isPaletteDark ? darkBackgroundColor : lightBackgroundColor,
-    textTheme: textTheme,
+    textTheme: baseTheme.textTheme,
     appBarTheme: AppBarTheme(
-      titleTextStyle: GoogleFonts.nunito(fontSize: 20, fontWeight: FontWeight.w600, color: textColor),
+      titleTextStyle: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: textColor,
+        fontFamily: 'Nunito',
+      ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         elevation: WidgetStateProperty.all(0),
         foregroundColor: WidgetStateProperty.all(textColor),
-        textStyle: WidgetStateProperty.all(GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600)),
+        textStyle: WidgetStateProperty.all(
+          const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Nunito'),
+        ),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(textStyle: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600)),
+      style: TextButton.styleFrom(
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Nunito'),
+      ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: ButtonStyle(
         foregroundColor: WidgetStateProperty.all(textColor),
-        textStyle: WidgetStateProperty.all(GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600)),
-        side: WidgetStateProperty.all(BorderSide(color: Colors.transparent)),
+        textStyle: WidgetStateProperty.all(
+          const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Nunito'),
+        ),
+        side: WidgetStateProperty.all(const BorderSide(color: Colors.transparent)),
         shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
       ),
     ),
     tabBarTheme: TabBarTheme(
-      labelStyle: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600),
-      unselectedLabelStyle: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w400),
+      labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Nunito'),
+      unselectedLabelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Nunito'),
     ),
   );
 }

@@ -26,21 +26,21 @@ class RoundDisplay extends ConsumerWidget {
             width: 32,
             child: Text(
               '${roundIndex + 1}.',
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, fontFamily: 'Nunito'),
             ),
           ),
           // Team One total score.
           Expanded(
             child: Text(
               teamOneTotal.toString(),
-              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
               textAlign: TextAlign.center,
             ),
           ),
           const Expanded(
             child: Text(
               '-',
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w400),
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w400, fontFamily: 'Nunito'),
               textAlign: TextAlign.center,
             ),
           ),
@@ -48,7 +48,7 @@ class RoundDisplay extends ConsumerWidget {
           Expanded(
             child: Text(
               teamTwoTotal.toString(),
-              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
               textAlign: TextAlign.center,
             ),
           ),

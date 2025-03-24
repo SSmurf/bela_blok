@@ -286,39 +286,48 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedChampion),
                 title: const Text('Igra se do'),
-                trailing: Text(_goalScore.toString()),
+                trailing: Text(_goalScore.toString(), style: TextStyle(fontSize: 14, fontFamily: 'Nunito')),
                 onTap: () => _showGoalOptions(context),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedCards02),
                 title: const Text('Vrijednost štiglje'),
-                trailing: Text(_stigljaValue.toString()),
+                trailing: Text(
+                  _stigljaValue.toString(),
+                  style: TextStyle(fontSize: 14, fontFamily: 'Nunito'),
+                ),
                 onTap: () => _showStigljaOptions(context),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedUserEdit01),
                 title: const Text('Imena timova'),
-                trailing: Text(_formatTeamNames(_teamOneName, _teamTwoName), overflow: TextOverflow.ellipsis),
+                trailing: Text(
+                  _formatTeamNames(_teamOneName, _teamTwoName),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 14, fontFamily: 'Nunito'),
+                ),
                 onTap: () => _showTeamNamesDialog(context),
+              ),
+              ListTile(
+                leading: const Icon(HugeIcons.strokeRoundedLanguageSkill),
+                title: const Text('Jezik'),
+                trailing: const Text('Hrvatski', style: TextStyle(fontSize: 14, fontFamily: 'Nunito')),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: const Icon(HugeIcons.strokeRoundedIdea01),
+                title: const Text('Drži zaslon upaljen'),
+                trailing: Transform.scale(
+                  scale: 0.9,
+                  child: Switch(value: _keepScreenOn, onChanged: _toggleWakelock),
+                ),
+                onTap: () {},
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedPaintBoard),
                 title: const Text('Dizajn'),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _showThemeOptions(context),
-              ),
-
-              ListTile(
-                leading: const Icon(HugeIcons.strokeRoundedIdea01),
-                title: const Text('Drži zaslon upaljen'),
-                trailing: Switch(value: _keepScreenOn, onChanged: _toggleWakelock),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: const Icon(HugeIcons.strokeRoundedLanguageSkill),
-                title: const Text('Jezik'),
-                trailing: const Text('Hrvatski'),
-                onTap: () {},
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedBookOpen01),

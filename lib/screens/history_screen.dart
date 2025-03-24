@@ -52,13 +52,16 @@ class HistoryScreenState extends State<HistoryScreen> {
                   ),
               itemBuilder: (context, index) {
                 final game = games[index];
-                return FinishedGameDisplay(
-                  teamOneName: game.teamOneName,
-                  teamOneTotal: game.teamOneTotalScore,
-                  teamTwoTotal: game.teamTwoTotalScore,
-                  teamTwoName: game.teamTwoName,
-                  gameDate: game.createdAt,
-                  winningTeam: game.winningTeam.isNotEmpty ? game.winningTeam : null,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: FinishedGameDisplay(
+                    teamOneName: game.teamOneName,
+                    teamOneTotal: game.teamOneTotalScore,
+                    teamTwoTotal: game.teamTwoTotalScore,
+                    teamTwoName: game.teamTwoName,
+                    gameDate: game.createdAt,
+                    winningTeam: game.winningTeam.isNotEmpty ? game.winningTeam : null,
+                  ),
                 );
               },
             );

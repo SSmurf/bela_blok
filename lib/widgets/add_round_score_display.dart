@@ -61,6 +61,7 @@ class AddRoundScoreDisplay extends StatelessWidget {
             style: TextStyle(
               fontSize: 48,
               fontWeight: FontWeight.bold,
+              fontFamily: 'Nunito',
               color: selected ? color : theme.colorScheme.onSurface,
             ),
           ),
@@ -71,6 +72,7 @@ class AddRoundScoreDisplay extends StatelessWidget {
                 style: TextStyle(
                   fontSize: determineDeclarationFontSize(),
                   fontWeight: FontWeight.normal,
+                  fontFamily: 'Nunito',
                   color: selected ? color : theme.colorScheme.onSurface,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -87,8 +89,9 @@ class AddRoundScoreDisplay extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.w600,
+                fontFamily: 'Nunito',
                 color: selected ? color : theme.colorScheme.onSurface,
               ),
               maxLines: 1,

@@ -36,6 +36,7 @@ class TotalScoreDisplay extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
+                  fontFamily: 'Nunito',
                   color: theme.colorScheme.onSurface,
                 ),
               ),
@@ -43,7 +44,12 @@ class TotalScoreDisplay extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               score.toString(),
-              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: theme.colorScheme.onSurface),
+              style: TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface,
+                fontFamily: 'Nunito',
+              ),
               textAlign: TextAlign.center,
             ),
           ],
