@@ -1,5 +1,6 @@
 import 'package:bela_blok/models/app_settings.dart';
 import 'package:bela_blok/providers/settings_provider.dart';
+import 'package:bela_blok/screens/about_app_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/widgets/delete_history_tile.dart';
 import 'package:flutter/material.dart';
@@ -373,7 +374,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => AboutAppScreen()));
+                },
               ),
             ],
           ),

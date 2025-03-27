@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 class AddRoundButton extends StatelessWidget {
   final String text;
