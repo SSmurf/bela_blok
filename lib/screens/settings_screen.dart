@@ -256,7 +256,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Future<void> _showThemeOptions(BuildContext context) async {
     final currentSettings = ref.read(themeSettingsProvider);
-
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -265,9 +264,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return ThemePickerBottomSheet(
           currentSettings: currentSettings,
           onThemeSettingsChanged: (newSettings) {
-            ref.read(themeSettingsProvider.notifier).state = newSettings;
-            // Save to local storage
-            _localStorageService.saveThemeSettings(newSettings.toJson());
+            ref.read(themeSettingsProvider.notifier).updateThemeSettings(newSettings);
           },
         );
       },
