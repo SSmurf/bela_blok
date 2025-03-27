@@ -27,7 +27,6 @@ class _BelaBlokAppState extends ConsumerState<BelaBlokApp> {
     final data = await localStorage.loadThemeSettings();
     if (data.isNotEmpty) {
       final loadedSettings = ThemeSettings.fromJson(data);
-      // ref.read(themeSettingsProvider.notifier).state = loadedSettings;
       ref.read(themeSettingsProvider.notifier).updateThemeSettings(loadedSettings);
     }
   }

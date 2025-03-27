@@ -274,7 +274,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Postavke')),
+      appBar: AppBar(
+        title: const Text('Postavke', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito')),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -282,13 +284,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedChampion),
-                title: const Text('Igra se do'),
+                title: const Text(
+                  'Igra se do',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
                 trailing: Text(_goalScore.toString(), style: TextStyle(fontSize: 14, fontFamily: 'Nunito')),
                 onTap: () => _showGoalOptions(context),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedCards02),
-                title: const Text('Vrijednost štiglje'),
+                title: const Text(
+                  'Vrijednost štiglje',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
                 trailing: Text(
                   _stigljaValue.toString(),
                   style: TextStyle(fontSize: 14, fontFamily: 'Nunito'),
@@ -297,7 +305,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedUserEdit01),
-                title: const Text('Imena timova'),
+                title: const Text(
+                  'Imena timova',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
                 trailing: Text(
                   _formatTeamNames(_teamOneName, _teamTwoName),
                   overflow: TextOverflow.ellipsis,
@@ -305,15 +316,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 onTap: () => _showTeamNamesDialog(context),
               ),
-              ListTile(
-                leading: const Icon(HugeIcons.strokeRoundedLanguageSkill),
-                title: const Text('Jezik'),
-                trailing: const Text('Hrvatski', style: TextStyle(fontSize: 14, fontFamily: 'Nunito')),
-                onTap: () {},
-              ),
+              // ListTile(
+              //   leading: const Icon(HugeIcons.strokeRoundedLanguageSkill),
+              //   title: const Text('Jezik'),
+              //   trailing: const Text('Hrvatski', style: TextStyle(fontSize: 14, fontFamily: 'Nunito')),
+              //   onTap: () {},
+              // ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedIdea01),
-                title: const Text('Drži zaslon upaljen'),
+                title: const Text(
+                  'Drži zaslon upaljen',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
                 trailing: Transform.scale(
                   scale: 0.9,
                   child: Switch(value: _keepScreenOn, onChanged: _toggleWakelock),
@@ -322,26 +336,38 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedPaintBoard),
-                title: const Text('Dizajn'),
+                title: const Text(
+                  'Dizajn',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _showThemeOptions(context),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedBookOpen01),
-                title: const Text('Pravila bele'),
+                title: const Text(
+                  'Pravila bele',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _launchURL(rulesUrl),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedBookOpen02),
-                title: const Text('Nepisana pravila bele'),
+                title: const Text(
+                  'Nepisana pravila bele',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _launchURL(unpublishedRulesUrl),
               ),
               const DeleteHistoryTile(),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedInformationSquare),
-                title: const Text('O aplikaciji'),
+                title: const Text(
+                  'O aplikaciji',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () {},
               ),
