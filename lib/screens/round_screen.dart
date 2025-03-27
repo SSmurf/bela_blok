@@ -274,7 +274,12 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
 
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: Navigator.of(context).pop,
+          icon: Icon(HugeIcons.strokeRoundedArrowLeft01, size: 30),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
         child: Column(

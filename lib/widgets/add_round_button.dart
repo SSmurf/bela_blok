@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class AddRoundButton extends StatelessWidget {
@@ -15,7 +16,7 @@ class AddRoundButton extends StatelessWidget {
       width: 250.0,
       child: ElevatedButton.icon(
         onPressed: onPressed,
-        icon: Icon(Symbols.add, size: 40.0),
+        icon: Icon(HugeIcons.strokeRoundedPlusSign, size: 30.0),
         label: Text(text, style: TextStyle(fontSize: 24.0)),
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,

@@ -276,6 +276,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Postavke', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito')),
+        leading: IconButton(
+          onPressed: Navigator.of(context).pop,
+          icon: Icon(HugeIcons.strokeRoundedArrowLeft01, size: 30),
+        ),
       ),
       body: SafeArea(
         child: Padding(

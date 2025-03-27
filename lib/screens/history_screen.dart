@@ -24,7 +24,16 @@ class HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Povijest igara')),
+      appBar: AppBar(
+        title: const Text(
+          'Povijest igara',
+          style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+        ),
+        leading: IconButton(
+          onPressed: Navigator.of(context).pop,
+          icon: Icon(HugeIcons.strokeRoundedArrowLeft01, size: 30),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: FutureBuilder<List<Game>>(
