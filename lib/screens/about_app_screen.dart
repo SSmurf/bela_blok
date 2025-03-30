@@ -63,7 +63,7 @@ class AboutAppScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Isprobajte i ostale aplikacije za praćenje rezultata u beli. One su bila inspiracija ovoj aplikacijii.',
+                'Isprobajte i ostale aplikacije za praćenje rezultata u beli. One su bile inspiracija ovoj aplikacijii.',
                 style: Theme.of(
                   context,
                 ).textTheme.bodyMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
