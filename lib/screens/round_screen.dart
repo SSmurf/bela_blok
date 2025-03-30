@@ -10,7 +10,6 @@ import '../models/round.dart';
 import '../providers/game_provider.dart';
 import '../widgets/add_round_button.dart';
 
-//todo dumb view, move logic and functions to provider, constants to constants file
 class RoundScreen extends ConsumerStatefulWidget {
   final bool isTeamOneSelected;
   final Round? roundToEdit;
@@ -186,6 +185,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     if (isTeamOneSelected != selectTeamOne) {
       setState(() {
         isTeamOneSelected = selectTeamOne;
+        // Invert the score if input has already started.
         if (hasStartedInput) {
           int current = int.parse(activeScore);
           activeScore = (totalPoints - current).toString();
@@ -265,21 +265,43 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   Widget build(BuildContext context) {
     int stigljaValue = ref.watch(settingsProvider).stigljaValue;
 
-    final int declScoreTeamOne =
-        decl20TeamOne * 20 +
-        decl50TeamOne * 50 +
-        decl100TeamOne * 100 +
-        decl150TeamOne * 150 +
-        decl200TeamOne * 200 +
-        declStigljaTeamOne * stigljaValue;
-
-    final int declScoreTeamTwo =
-        decl20TeamTwo * 20 +
-        decl50TeamTwo * 50 +
-        decl100TeamTwo * 100 +
-        decl150TeamTwo * 150 +
-        decl200TeamTwo * 200 +
-        declStigljaTeamTwo * stigljaValue;
+    // If a team has stiglja, add all declarations from the opposing team to the team with stiglja.
+    final int declScoreTeamOne;
+    final int declScoreTeamTwo;
+    if (declStigljaTeamOne > 0) {
+      declScoreTeamOne =
+          (decl20TeamOne + decl20TeamTwo) * 20 +
+          (decl50TeamOne + decl50TeamTwo) * 50 +
+          (decl100TeamOne + decl100TeamTwo) * 100 +
+          (decl150TeamOne + decl150TeamTwo) * 150 +
+          (decl200TeamOne + decl200TeamTwo) * 200 +
+          (declStigljaTeamOne * stigljaValue);
+      declScoreTeamTwo = 0;
+    } else if (declStigljaTeamTwo > 0) {
+      declScoreTeamTwo =
+          (decl20TeamOne + decl20TeamTwo) * 20 +
+          (decl50TeamOne + decl50TeamTwo) * 50 +
+          (decl100TeamOne + decl100TeamTwo) * 100 +
+          (decl150TeamOne + decl150TeamTwo) * 150 +
+          (decl200TeamOne + decl200TeamTwo) * 200 +
+          (declStigljaTeamTwo * stigljaValue);
+      declScoreTeamOne = 0;
+    } else {
+      declScoreTeamOne =
+          decl20TeamOne * 20 +
+          decl50TeamOne * 50 +
+          decl100TeamOne * 100 +
+          decl150TeamOne * 150 +
+          decl200TeamOne * 200 +
+          (declStigljaTeamOne * stigljaValue);
+      declScoreTeamTwo =
+          decl20TeamTwo * 20 +
+          decl50TeamTwo * 50 +
+          decl100TeamTwo * 100 +
+          decl150TeamTwo * 150 +
+          decl200TeamTwo * 200 +
+          (declStigljaTeamTwo * stigljaValue);
+    }
 
     final theme = Theme.of(context);
     return Scaffold(
@@ -478,7 +500,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                           setState(() {
                             if (declStigljaTeamOne < maxStiglja && declStigljaTeamTwo == 0) {
                               declStigljaTeamOne = 1;
-                              // Force score: team one gets 162, team two 0.
+                              // Force score: team one gets full points, team two 0.
                               activeScore = totalPoints.toString();
                               hasStartedInput = true;
                             }
@@ -488,7 +510,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                           setState(() {
                             if (declStigljaTeamTwo < maxStiglja && declStigljaTeamOne == 0) {
                               declStigljaTeamTwo = 1;
-                              // Force score: team two gets 162, team one 0.
+                              // Force score: team two gets full points, team one 0.
                               activeScore = '0';
                               hasStartedInput = true;
                             }

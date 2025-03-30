@@ -129,16 +129,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             textAlign: TextAlign.center,
           ),
         ),
-
         // Label
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: Text(
             label,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
           ),
         ),
-
         // Team Two Value
         Expanded(
           child: Text(
@@ -232,7 +230,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             // Winner display with dynamic text size
                             LayoutBuilder(
                               builder: (context, constraints) {
-                                // Determine text size based on winning team name length
                                 final double fontSize =
                                     winningTeam.length <= 4
                                         ? 56
@@ -241,10 +238,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         : winningTeam.length <= 12
                                         ? 36
                                         : 28;
-
-                                // Calculate icon size based on text size for proportional scaling
                                 final double iconSize = fontSize + 8;
-
                                 return SizedBox(
                                   width: constraints.maxWidth * 0.9,
                                   child: Row(
@@ -280,8 +274,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               },
                             ),
                             const SizedBox(height: 32),
-
-                            // New section: Game stats summary
+                            // Game stats summary
                             Container(
                               padding: const EdgeInsets.all(16),
                               width: double.infinity,
@@ -293,7 +286,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                               child: Column(
                                 children: [
-                                  // Row for total declarations
                                   _buildStatRow(
                                     context: context,
                                     label: "Ukupno zvanja",
@@ -302,15 +294,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     teamOneName: settings.teamOneName,
                                     teamTwoName: settings.teamTwoName,
                                   ),
-
                                   const SizedBox(height: 12),
                                   Divider(
                                     height: 1,
                                     color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
                                   ),
                                   const SizedBox(height: 12),
-
-                                  // Row for total stiglja
                                   _buildStatRow(
                                     context: context,
                                     label: "Ukupno štiglji",
@@ -322,7 +311,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ],
                               ),
                             ),
-
                             const SizedBox(height: 24),
                             if (rounds.isNotEmpty)
                               ElevatedButton.icon(
