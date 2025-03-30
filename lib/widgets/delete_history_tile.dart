@@ -54,7 +54,7 @@ class DeleteHistoryTile extends StatelessWidget {
     return ListTile(
       leading: const Icon(HugeIcons.strokeRoundedDelete01),
       title: const Text(
-        'Izbrisi povijest igara',
+        'Izbriši povijest igara',
         style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
       ),
       trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
