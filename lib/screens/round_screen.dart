@@ -484,13 +484,14 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 AddRoundButton(
                   text: 'Spremi',
                   color: theme.colorScheme.primary,
+                  isEnabled: hasStartedInput,
                   onPressed: hasStartedInput ? _saveRound : () {},
                 ),
               ],

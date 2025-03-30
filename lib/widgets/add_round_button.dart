@@ -5,21 +5,30 @@ class AddRoundButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
   final Color color;
+  final bool isEnabled;
 
-  const AddRoundButton({super.key, required this.text, required this.onPressed, required this.color});
+  const AddRoundButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    required this.color,
+    this.isEnabled = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 56.0,
+      height: 64.0,
       width: 250.0,
       child: ElevatedButton.icon(
-        onPressed: onPressed,
+        onPressed: isEnabled ? onPressed : null,
         icon: Icon(HugeIcons.strokeRoundedPlusSign, size: 30.0),
         label: Text(text, style: TextStyle(fontSize: 24.0)),
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: color,
+          backgroundColor: isEnabled ? color : color.withValues(alpha: 0.3),
+          disabledForegroundColor: Colors.white.withValues(alpha: 0.3),
+          disabledBackgroundColor: color.withValues(alpha: 0.4),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           elevation: 0,
         ),
