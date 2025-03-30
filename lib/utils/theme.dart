@@ -109,11 +109,13 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
         textStyle: WidgetStateProperty.all(
           const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Nunito'),
         ),
+        splashFactory: NoSplash.splashFactory,
       ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Nunito'),
+        splashFactory: NoSplash.splashFactory,
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -122,10 +124,12 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
         textStyle: WidgetStateProperty.all(
           const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Nunito'),
         ),
+        splashFactory: NoSplash.splashFactory,
         side: WidgetStateProperty.all(const BorderSide(color: Colors.transparent)),
         shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
       ),
     ),
+    iconButtonTheme: IconButtonThemeData(style: ButtonStyle(splashFactory: NoSplash.splashFactory)),
     tabBarTheme: TabBarTheme(
       labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Nunito'),
       unselectedLabelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Nunito'),
