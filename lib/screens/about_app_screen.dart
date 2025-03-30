@@ -19,7 +19,7 @@ class AboutAppScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(HugeIcons.strokeRoundedArrowLeft01),
+          icon: const Icon(HugeIcons.strokeRoundedArrowLeft01, size: 30),
           onPressed: () => Navigator.pop(context),
         ),
         surfaceTintColor: Theme.of(context).colorScheme.surfaceDim,

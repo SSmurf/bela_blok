@@ -136,3 +136,5 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
     ),
   );
 }
+
+//todo card theme
