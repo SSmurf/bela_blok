@@ -30,9 +30,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           (context) => AlertDialog(
             title: const Text('Brisanje igre'),
             content: const Text('Jesi li siguran da želiš obrisati sve runde?'),
+            actionsAlignment: MainAxisAlignment.spaceEvenly,
             actions: [
-              TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Odustani')),
-              TextButton(
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  elevation: 0,
+                ),
+                child: const Text('Odustani', style: TextStyle(fontSize: 18)),
+              ),
+              ElevatedButton(
                 onPressed: () {
                   ref.read(currentGameProvider.notifier).clearRounds();
                   setState(() {
@@ -40,7 +50,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   });
                   Navigator.of(context).pop();
                 },
-                child: const Text('Obriši'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  elevation: 0,
+                ),
+                child: const Text('Obriši', style: TextStyle(fontSize: 18)),
               ),
             ],
           ),
@@ -355,7 +371,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               return Dismissible(
                                 key: ValueKey('round_${rounds[index].hashCode}'),
                                 background: Container(
-                                  color: Colors.red.withOpacity(0.7),
+                                  color: Colors.red.withValues(alpha: 0.7),
                                   alignment: Alignment.centerRight,
                                   padding: const EdgeInsets.only(right: 20),
                                   child: const Icon(Icons.delete, color: Colors.white),
@@ -370,14 +386,42 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               content: const Text(
                                                 'Jesi li siguran da želiš obrisati ovu rundu?',
                                               ),
+                                              actionsAlignment: MainAxisAlignment.spaceEvenly,
                                               actions: [
-                                                TextButton(
-                                                  onPressed: () => Navigator.of(context).pop(false),
-                                                  child: const Text('Odustani'),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    onPressed: () => Navigator.of(context).pop(false),
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Theme.of(context).colorScheme.primary,
+                                                      foregroundColor: Colors.white,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(8),
+                                                      ),
+                                                      elevation: 0,
+                                                    ),
+                                                    child: const Text(
+                                                      'Odustani',
+                                                      style: TextStyle(fontSize: 18),
+                                                    ),
+                                                  ),
                                                 ),
-                                                TextButton(
-                                                  onPressed: () => Navigator.of(context).pop(true),
-                                                  child: const Text('Obriši'),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    onPressed: () => Navigator.of(context).pop(true),
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor:
+                                                          Theme.of(context).colorScheme.secondary,
+                                                      foregroundColor: Colors.white,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(8),
+                                                      ),
+                                                      elevation: 0,
+                                                    ),
+                                                    child: const Text(
+                                                      'Obriši',
+                                                      style: TextStyle(fontSize: 18),
+                                                    ),
+                                                  ),
                                                 ),
                                               ],
                                             ),

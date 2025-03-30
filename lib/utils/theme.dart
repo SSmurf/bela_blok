@@ -134,6 +134,21 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
       labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Nunito'),
       unselectedLabelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Nunito'),
     ),
+    dialogTheme: DialogTheme(
+      titleTextStyle: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        fontFamily: 'Nunito',
+        color: textColor,
+      ),
+      contentTextStyle: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        fontFamily: 'Nunito',
+        color: textColor,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+    ),
   );
 }
 

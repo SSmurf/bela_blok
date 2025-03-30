@@ -18,19 +18,32 @@ class DeleteHistoryTile extends StatelessWidget {
               'Jeste li sigurni da želite izbrisati povijest igara?',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
             ),
+            actionsAlignment: MainAxisAlignment.spaceEvenly,
             actions: [
-              TextButton(
+              ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(false),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  elevation: 0,
+                ),
                 child: const Text(
                   'Odustani',
-                  style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  elevation: 0,
+                ),
                 child: const Text(
                   'Obriši',
-                  style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
               ),
             ],

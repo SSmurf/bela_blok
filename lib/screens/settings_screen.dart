@@ -150,7 +150,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Imena timova'),
+          title: const Text(
+            'Imena timova',
+            style: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
+          ),
           content: Form(
             key: formKey,
             child: Column(
@@ -194,18 +197,39 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ],
             ),
           ),
+          actionsAlignment: MainAxisAlignment.spaceEvenly,
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Odustani')),
-            TextButton(
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                elevation: 0,
+              ),
+              child: const Text(
+                'Odustani',
+                style: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
+              ),
+            ),
+            ElevatedButton(
               onPressed: () {
                 if (formKey.currentState!.validate()) {
                   final teamOne = teamOneController.text.trim();
                   final teamTwo = teamTwoController.text.trim();
-
                   Navigator.of(context).pop({'teamOne': teamOne, 'teamTwo': teamTwo});
                 }
               },
-              child: const Text('Spremi'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                elevation: 0,
+              ),
+              child: const Text(
+                'Spremi',
+                style: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
+              ),
             ),
           ],
         );
