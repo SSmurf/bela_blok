@@ -71,19 +71,19 @@ class AboutAppScreen extends StatelessWidget {
               const SizedBox(height: 16),
               ListTile(
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
-                title: const Text('Bela Blok Pro - Fran Grgić', style: TextStyle(fontFamily: 'Nunito')),
+                title: const Text('\'Bela Blok Pro\' - Fran Grgić', style: TextStyle(fontFamily: 'Nunito')),
                 onTap:
                     () =>
                         _launchUrl('https://apps.apple.com/hr/app/bela-blok-pro-belote-tracker/id1508462578'),
               ),
               ListTile(
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
-                title: const Text('Bela blok - Jakopec', style: TextStyle(fontFamily: 'Nunito')),
+                title: const Text('\'Bela blok\' - Tomislav Jakopec', style: TextStyle(fontFamily: 'Nunito')),
                 onTap: () => _launchUrl('https://apps.apple.com/hr/app/bela-blok/id463442397'),
               ),
               ListTile(
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
-                title: const Text('Bela Blok - Domagoj Bunoza', style: TextStyle(fontFamily: 'Nunito')),
+                title: const Text('\'Bela Blok\' - Domagoj Bunoza', style: TextStyle(fontFamily: 'Nunito')),
                 onTap: () => _launchUrl('https://apps.apple.com/hr/app/bela-blok/id6475651480'),
               ),
               const SizedBox(height: 24),
