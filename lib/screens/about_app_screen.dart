@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutAppScreen extends StatelessWidget {
   const AboutAppScreen({super.key});
+
+  Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +35,7 @@ class AboutAppScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'O aplikaciji',
+                'Općenito',
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
@@ -39,38 +47,6 @@ class AboutAppScreen extends StatelessWidget {
                   context,
                 ).textTheme.bodyMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
               ),
-              const SizedBox(height: 24),
-              Text(
-                'Značajke',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
-              ),
-              const SizedBox(height: 8),
-              const _FeatureItem(
-                icon: HugeIcons.strokeRoundedChampion,
-                title: 'Upravljanje rezultatima',
-                description:
-                    'Jednostavno unosite i pratite rezultate svakog kruga igre bele, kako bi bili uvijek informirani.',
-              ),
-              const _FeatureItem(
-                icon: HugeIcons.strokeRoundedCards02,
-                title: 'Pregled povijesti',
-                description:
-                    'Brzi pregled svih odigranih partija uz vremenski zapis i detaljan statistički prikaz.',
-              ),
-              const _FeatureItem(
-                icon: HugeIcons.strokeRoundedUserEdit01,
-                title: 'Prilagodba timova',
-                description: 'Lako imenovanje timova i prilagodba izgleda prema vašim željama.',
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Dodatne informacije',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
-              ),
               const SizedBox(height: 8),
               Text(
                 'Aplikacija koristi lokalnu pohranu kako bi zadržala vaše postavke i podatke o igri. Svi podaci ostaju privatni i pohranjuju se unutar uređaja.',
@@ -80,7 +56,39 @@ class AboutAppScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                'Autor',
+                'Drugi bela blokovi',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Isprobajte i ostale aplikacije za praćenje rezultata u beli. One su bila inspiracija ovoj aplikacijii.',
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
+                title: const Text('Bela Blok Pro - Fran Grgić', style: TextStyle(fontFamily: 'Nunito')),
+                onTap:
+                    () =>
+                        _launchUrl('https://apps.apple.com/hr/app/bela-blok-pro-belote-tracker/id1508462578'),
+              ),
+              ListTile(
+                trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
+                title: const Text('Bela blok - Jakopec', style: TextStyle(fontFamily: 'Nunito')),
+                onTap: () => _launchUrl('https://apps.apple.com/hr/app/bela-blok/id463442397'),
+              ),
+              ListTile(
+                trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
+                title: const Text('Bela Blok - Domagoj Bunoza', style: TextStyle(fontFamily: 'Nunito')),
+                onTap: () => _launchUrl('https://apps.apple.com/hr/app/bela-blok/id6475651480'),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Developer',
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
@@ -108,7 +116,7 @@ class AboutAppScreen extends StatelessWidget {
                               ).textTheme.titleMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
                             ),
                             Text(
-                              'Developer',
+                              'Student FER-a',
                               style: Theme.of(
                                 context,
                               ).textTheme.bodyMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
@@ -124,50 +132,6 @@ class AboutAppScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _FeatureItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-
-  const _FeatureItem({required this.icon, required this.title, required this.description});
-
-  @override
-  Widget build(BuildContext context) {
-    final onSurfaceColor = Theme.of(context).colorScheme.onSurface;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 27, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
