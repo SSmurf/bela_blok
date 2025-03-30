@@ -1,8 +1,7 @@
+import 'package:bela_blok/models/theme_settings.dart';
+import 'package:bela_blok/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../models/theme_settings.dart';
-import '../utils/theme.dart';
 
 class ThemePickerBottomSheet extends ConsumerStatefulWidget {
   final ThemeSettings currentSettings;
@@ -31,17 +30,30 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
     _useSystemTheme = widget.currentSettings.useSystemTheme;
   }
 
-  void _applyChanges() {
-    widget.onThemeSettingsChanged(
-      ThemeSettings(themeType: _themeType, colorPalette: _colorPalette, useSystemTheme: _useSystemTheme),
+  // Immediately update provider state with current settings.
+  void _updateProviderImmediately() {
+    final newSettings = ThemeSettings(
+      themeType: _themeType,
+      colorPalette: _colorPalette,
+      useSystemTheme: _useSystemTheme,
     );
+    widget.onThemeSettingsChanged(newSettings);
+  }
+
+  // Finalize and apply changes before closing.
+  void _applyChanges() {
+    final newSettings = ThemeSettings(
+      themeType: _themeType,
+      colorPalette: _colorPalette,
+      useSystemTheme: _useSystemTheme,
+    );
+    widget.onThemeSettingsChanged(newSettings);
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return SingleChildScrollView(
       padding: EdgeInsets.only(
         left: 20,
@@ -53,16 +65,16 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Postavke teme', style: theme.textTheme.titleLarge),
-              IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
+              IconButton(icon: const Icon(Icons.close), onPressed: _applyChanges),
             ],
           ),
           const SizedBox(height: 16),
-
-          // Use system theme toggle
+          // Use system theme toggle.
           SwitchListTile(
             title: const Text('Koristi sistemsku temu'),
             subtitle: const Text('Prati postavke uređaja'),
@@ -71,10 +83,10 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
               setState(() {
                 _useSystemTheme = value;
               });
+              _updateProviderImmediately();
             },
           ),
-
-          // Light/Dark mode toggle (enabled only if not using system theme)
+          // Light/Dark mode toggle (only available when not using system theme).
           if (!_useSystemTheme)
             ListTile(
               title: const Text('Tamni način rada'),
@@ -84,17 +96,15 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
                   setState(() {
                     _themeType = value ? ThemeType.dark : ThemeType.light;
                   });
+                  _updateProviderImmediately();
                 },
               ),
             ),
-
           const Divider(),
           const SizedBox(height: 8),
-
-          // Color palette picker
+          // Color palette selection.
           Text('Izbor boje aplikacije', style: theme.textTheme.titleMedium),
           const SizedBox(height: 16),
-
           GridView.count(
             crossAxisCount: 3,
             mainAxisSpacing: 12,
@@ -102,7 +112,6 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              // Green palette
               _buildColorPaletteItem(
                 palette: ColorPalette.green,
                 title: 'Zelena',
@@ -110,8 +119,6 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
                 secondaryColor: lightPaletteColors[ColorPalette.green]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.green]!['tertiary']!,
               ),
-
-              // Blue palette
               _buildColorPaletteItem(
                 palette: ColorPalette.blue,
                 title: 'Plava',
@@ -119,8 +126,6 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
                 secondaryColor: lightPaletteColors[ColorPalette.blue]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.blue]!['tertiary']!,
               ),
-
-              // Red palette
               _buildColorPaletteItem(
                 palette: ColorPalette.red,
                 title: 'Crvena',
@@ -128,8 +133,6 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
                 secondaryColor: lightPaletteColors[ColorPalette.red]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.red]!['tertiary']!,
               ),
-
-              // Purple palette
               _buildColorPaletteItem(
                 palette: ColorPalette.purple,
                 title: 'Ljubičasta',
@@ -137,8 +140,6 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
                 secondaryColor: lightPaletteColors[ColorPalette.purple]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.purple]!['tertiary']!,
               ),
-
-              // Gold palette
               _buildColorPaletteItem(
                 palette: ColorPalette.gold,
                 title: 'Zlatna',
@@ -148,7 +149,6 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
               ),
             ],
           ),
-
           const SizedBox(height: 20),
           ElevatedButton(
             style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
@@ -168,12 +168,12 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
     required Color accentColor,
   }) {
     final isSelected = _colorPalette == palette;
-
     return GestureDetector(
       onTap: () {
         setState(() {
           _colorPalette = palette;
         });
+        _updateProviderImmediately();
       },
       child: Column(
         children: [
