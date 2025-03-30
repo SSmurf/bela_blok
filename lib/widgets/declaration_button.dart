@@ -19,9 +19,10 @@ class DeclarationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: SizedBox(
         width: width,
+        height: 65,
         child: OutlinedButton(
           onPressed: onPressed,
           style: OutlinedButton.styleFrom(
