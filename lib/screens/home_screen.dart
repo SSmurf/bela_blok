@@ -341,8 +341,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       : rounds.isEmpty
                       ? Center(
                         child: Text(
-                          'Još nema rundi. Dodaj novu rundu!',
-                          style: Theme.of(context).textTheme.bodyLarge,
+                          '"Poštuj kartu i karta će poštovati tebe."',
+                          style: TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
+                          textAlign: TextAlign.center,
                         ),
                       )
                       : FadingEdgeScrollView(

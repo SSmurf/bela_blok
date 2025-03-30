@@ -43,11 +43,23 @@ class HistoryScreenState extends State<HistoryScreen> {
               return const Center(child: CircularProgressIndicator());
             }
             if (snapshot.hasError) {
-              return const Center(child: Text('Došlo je do greške pri učitavanju igara.'));
+              return const Center(
+                child: Text(
+                  'Došlo je do greške pri učitavanju igara.',
+                  style: TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
+                  textAlign: TextAlign.center,
+                ),
+              );
             }
             final List<Game> games = snapshot.data ?? [];
             if (games.isEmpty) {
-              return const Center(child: Text('Nema spremljenih igara.'));
+              return const Center(
+                child: Text(
+                  'Nema spremljenih igara.',
+                  style: TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
+                  textAlign: TextAlign.center,
+                ),
+              );
             }
             return ListView.separated(
               itemCount: games.length,
