@@ -94,6 +94,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   }
 
   void _updateScore(String digit) {
+    if (isScoreEditingDisabled) return;
     setState(() {
       hasStartedInput = true;
       if (activeScore == '0') {
@@ -108,6 +109,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   }
 
   void _deleteDigit() {
+    if (isScoreEditingDisabled) return;
     setState(() {
       if (activeScore.length > 1) {
         activeScore = activeScore.substring(0, activeScore.length - 1);
@@ -121,6 +123,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   }
 
   void _clearScore() {
+    if (isScoreEditingDisabled) return;
     setState(() {
       activeScore = '0';
       hasStartedInput = false;
@@ -128,13 +131,29 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   }
 
   int get teamOneScore {
+    if (declStigljaTeamOne > 0) {
+      return totalPoints;
+    }
+    if (declStigljaTeamTwo > 0) {
+      return 0;
+    }
     if (!hasStartedInput) return 0;
     return isTeamOneSelected ? int.parse(activeScore) : totalPoints - int.parse(activeScore);
   }
 
   int get teamTwoScore {
+    if (declStigljaTeamTwo > 0) {
+      return totalPoints;
+    }
+    if (declStigljaTeamOne > 0) {
+      return 0;
+    }
     if (!hasStartedInput) return 0;
     return isTeamOneSelected ? totalPoints - int.parse(activeScore) : int.parse(activeScore);
+  }
+
+  bool get isScoreEditingDisabled {
+    return declStigljaTeamOne > 0 || declStigljaTeamTwo > 0;
   }
 
   void _saveRound() {
@@ -167,7 +186,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     if (isTeamOneSelected != selectTeamOne) {
       setState(() {
         isTeamOneSelected = selectTeamOne;
-        // Invert the score if input has already started.
         if (hasStartedInput) {
           int current = int.parse(activeScore);
           activeScore = (totalPoints - current).toString();
@@ -176,10 +194,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     }
   }
 
-  // Helper method to build each declaration row.
-  // Layout:
-  // [Team One Undo] [Fixed-width Team One Counter] [Declaration Button] [Fixed-width Team Two Counter] [Team Two Undo]
-  // The declaration button adds a declaration to the team that is currently selected.
   Widget _buildDeclarationRow({
     required String label,
     double fontSize = 28,
@@ -194,7 +208,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Undo button for Team One.
         SizedBox(
           width: fixedWidth,
           child:
@@ -205,7 +218,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                   )
                   : const SizedBox.shrink(),
         ),
-        // Team One counter.
         SizedBox(
           width: fixedWidth,
           child: Center(
@@ -215,7 +227,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
             ),
           ),
         ),
-        // Declaration button.
         DeclarationButton(
           text: label,
           fontSize: fontSize,
@@ -227,7 +238,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
             }
           },
         ),
-        // Team Two counter.
         SizedBox(
           width: fixedWidth,
           child: Center(
@@ -237,7 +247,6 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
             ),
           ),
         ),
-        // Undo button for Team Two.
         SizedBox(
           width: fixedWidth,
           child:
@@ -323,8 +332,15 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   // Bodovi tab.
-                  NumericKeyboard(onKeyPressed: _updateScore, onDelete: _deleteDigit, onClear: _clearScore),
-                  // Zvanja tab with declaration rows.
+                  AbsorbPointer(
+                    absorbing: isScoreEditingDisabled,
+                    child: NumericKeyboard(
+                      onKeyPressed: _updateScore,
+                      onDelete: _deleteDigit,
+                      onClear: _clearScore,
+                    ),
+                  ),
+                  // Zvanja tab.
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -460,22 +476,38 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                         teamTwoCount: declStigljaTeamTwo,
                         onTeamOneIncrement: () {
                           setState(() {
-                            if (declStigljaTeamOne < maxStiglja) declStigljaTeamOne++;
+                            if (declStigljaTeamOne < maxStiglja && declStigljaTeamTwo == 0) {
+                              declStigljaTeamOne = 1;
+                              // Force score: team one gets 162, team two 0.
+                              activeScore = totalPoints.toString();
+                              hasStartedInput = true;
+                            }
                           });
                         },
                         onTeamTwoIncrement: () {
                           setState(() {
-                            if (declStigljaTeamTwo < maxStiglja) declStigljaTeamTwo++;
+                            if (declStigljaTeamTwo < maxStiglja && declStigljaTeamOne == 0) {
+                              declStigljaTeamTwo = 1;
+                              // Force score: team two gets 162, team one 0.
+                              activeScore = '0';
+                              hasStartedInput = true;
+                            }
                           });
                         },
                         onTeamOneUndo: () {
                           setState(() {
-                            if (declStigljaTeamOne > 0) declStigljaTeamOne--;
+                            if (declStigljaTeamOne > 0) {
+                              declStigljaTeamOne = 0;
+                              _clearScore();
+                            }
                           });
                         },
                         onTeamTwoUndo: () {
                           setState(() {
-                            if (declStigljaTeamTwo > 0) declStigljaTeamTwo--;
+                            if (declStigljaTeamTwo > 0) {
+                              declStigljaTeamTwo = 0;
+                              _clearScore();
+                            }
                           });
                         },
                       ),
