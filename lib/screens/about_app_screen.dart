@@ -56,7 +56,7 @@ class AboutAppScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                'Drugi bela blokovi',
+                'Ostali bela blokovi',
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
@@ -71,21 +71,52 @@ class AboutAppScreen extends StatelessWidget {
               const SizedBox(height: 16),
               ListTile(
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
-                title: const Text('\'Bela Blok Pro\' - Fran Grgić', style: TextStyle(fontFamily: 'Nunito')),
+                title: Text.rich(
+                  TextSpan(
+                    children: [
+                      const TextSpan(text: '"Bela Blok Pro" - ', style: TextStyle(fontFamily: 'Nunito')),
+                      const TextSpan(
+                        text: 'Fran Grgić',
+                        style: TextStyle(fontFamily: 'Nunito', fontStyle: FontStyle.italic),
+                      ),
+                    ],
+                  ),
+                ),
                 onTap:
                     () =>
                         _launchUrl('https://apps.apple.com/hr/app/bela-blok-pro-belote-tracker/id1508462578'),
               ),
               ListTile(
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
-                title: const Text('\'Bela blok\' - Tomislav Jakopec', style: TextStyle(fontFamily: 'Nunito')),
+                title: Text.rich(
+                  TextSpan(
+                    children: [
+                      const TextSpan(text: '"Bela blok" - ', style: TextStyle(fontFamily: 'Nunito')),
+                      const TextSpan(
+                        text: 'Tomislav Jakopec',
+                        style: TextStyle(fontFamily: 'Nunito', fontStyle: FontStyle.italic),
+                      ),
+                    ],
+                  ),
+                ),
                 onTap: () => _launchUrl('https://apps.apple.com/hr/app/bela-blok/id463442397'),
               ),
               ListTile(
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
-                title: const Text('\'Bela Blok\' - Domagoj Bunoza', style: TextStyle(fontFamily: 'Nunito')),
+                title: Text.rich(
+                  TextSpan(
+                    children: [
+                      const TextSpan(text: '"Bela Blok" - ', style: TextStyle(fontFamily: 'Nunito')),
+                      const TextSpan(
+                        text: 'Domagoj Bunoza',
+                        style: TextStyle(fontFamily: 'Nunito', fontStyle: FontStyle.italic),
+                      ),
+                    ],
+                  ),
+                ),
                 onTap: () => _launchUrl('https://apps.apple.com/hr/app/bela-blok/id6475651480'),
               ),
+
               const SizedBox(height: 24),
               Text(
                 'Developer',
