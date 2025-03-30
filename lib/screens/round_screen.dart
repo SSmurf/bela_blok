@@ -328,11 +328,11 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
             ),
             const SizedBox(height: 24),
             Container(
-              height: 48,
+              height: 50,
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: theme.colorScheme.outline.withOpacity(0.5)),
+                border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.5)),
               ),
               child: TabBar(
                 controller: _tabController,
@@ -343,6 +343,12 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                   color: theme.colorScheme.primary,
                 ),
                 labelColor: theme.colorScheme.onPrimary,
+                labelStyle: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
+                unselectedLabelStyle: TextStyle(
+                  fontFamily: 'Nunito',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                ),
                 unselectedLabelColor: theme.colorScheme.onSurface,
                 tabs: const [Tab(text: 'Bodovi'), Tab(text: 'Zvanja')],
               ),
