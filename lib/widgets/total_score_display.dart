@@ -34,11 +34,12 @@ class TotalScoreDisplay extends StatelessWidget {
               child: Text(
                 label,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Nunito',
                   color: theme.colorScheme.onSurface,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: 4),
