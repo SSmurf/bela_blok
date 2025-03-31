@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ThemePickerBottomSheet extends ConsumerStatefulWidget {
   final ThemeSettings currentSettings;
-  final Function(ThemeSettings) onThemeSettingsChanged;
+  final Function(ThemeSettings) onThemeSettingsChanged; // Callback to update provider state
 
   const ThemePickerBottomSheet({
     super.key,
@@ -54,6 +54,7 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return SingleChildScrollView(
       padding: EdgeInsets.only(
         left: 20,
@@ -65,7 +66,6 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -74,7 +74,6 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
             ],
           ),
           const SizedBox(height: 16),
-          // Use system theme toggle.
           SwitchListTile(
             title: const Text('Koristi sistemsku temu'),
             subtitle: const Text('Prati postavke uređaja'),
@@ -86,20 +85,24 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
               _updateProviderImmediately();
             },
           ),
-          // Light/Dark mode toggle (only available when not using system theme).
-          if (!_useSystemTheme)
-            ListTile(
-              title: const Text('Tamni način rada'),
-              trailing: Switch(
-                value: _themeType == ThemeType.dark,
-                onChanged: (value) {
-                  setState(() {
-                    _themeType = value ? ThemeType.dark : ThemeType.light;
-                  });
-                  _updateProviderImmediately();
-                },
-              ),
+          ListTile(
+            title: Text(
+              'Tamni način rada',
+              style: TextStyle(color: _useSystemTheme ? Theme.of(context).disabledColor : null),
             ),
+            trailing: Switch(
+              value: _themeType == ThemeType.dark,
+              onChanged:
+                  _useSystemTheme
+                      ? null
+                      : (value) {
+                        setState(() {
+                          _themeType = value ? ThemeType.dark : ThemeType.light;
+                        });
+                        _updateProviderImmediately();
+                      },
+            ),
+          ),
           const Divider(),
           const SizedBox(height: 8),
           // Color palette selection.
