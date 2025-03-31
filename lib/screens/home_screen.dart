@@ -232,13 +232,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               teamTwoName: settings.teamTwoName,
             ),
             const SizedBox(height: 6),
-            Row(
-              children: [
-                Expanded(child: const Divider(height: 1, thickness: 1)),
-                Icon(HugeIcons.strokeRoundedRecord, size: 16),
-                Expanded(child: const Divider(height: 1, thickness: 1)),
-              ],
-            ),
+
+            // Row(
+            //   children: [
+            //     Expanded(child: const Divider(height: 1, thickness: 1)),
+            //     Icon(HugeIcons.strokeRoundedRecord, size: 16),
+            //     Expanded(child: const Divider(height: 1, thickness: 1)),
+            //   ],
+            // ),
+            Image.asset('assets/images/divider_1.png', fit: BoxFit.fitWidth, color: Colors.white),
+
             const SizedBox(height: 12),
             Expanded(
               child:
