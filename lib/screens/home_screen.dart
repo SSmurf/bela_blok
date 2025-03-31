@@ -173,12 +173,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final int teamOneTotal = ScoreCalculator(stigljaValue: settings.stigljaValue).computeTeamOneTotal(rounds);
     final int teamTwoTotal = ScoreCalculator(stigljaValue: settings.stigljaValue).computeTeamTwoTotal(rounds);
     final bool gameEnded = teamOneTotal >= currentGoal || teamTwoTotal >= currentGoal;
-    final String winningTeam =
-        teamOneTotal >= currentGoal
-            ? settings.teamOneName
-            : teamTwoTotal >= currentGoal
-            ? settings.teamTwoName
-            : '';
+    String winningTeam = '';
+
+    if (gameEnded) {
+      if (teamOneTotal > teamTwoTotal) {
+        winningTeam = settings.teamOneName;
+      } else if (teamTwoTotal > teamOneTotal) {
+        winningTeam = settings.teamTwoName;
+      } else {
+        winningTeam = 'Remi';
+      }
+    }
 
     if (gameEnded && !_gameSaved) {
       _localStorageService.saveGame(
@@ -255,40 +260,60 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         ? 36
                                         : 28;
                                 final double iconSize = fontSize + 8;
-                                return SizedBox(
-                                  width: constraints.maxWidth * 0.9,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        HugeIcons.strokeRoundedLaurelWreathLeft02,
-                                        size: iconSize,
-                                        color: Theme.of(context).colorScheme.tertiary,
+
+                                if (winningTeam == 'Remi') {
+                                  return SizedBox(
+                                    width: constraints.maxWidth * 0.9,
+                                    child: Text(
+                                      winningTeam,
+                                      style: TextStyle(
+                                        fontSize: fontSize,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: 'Nunito',
+                                        height: 1.1,
                                       ),
-                                      Flexible(
-                                        child: Text(
-                                          winningTeam,
-                                          style: TextStyle(
-                                            fontSize: fontSize,
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: 'Nunito',
-                                            height: 1.1,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  );
+                                } else {
+                                  return SizedBox(
+                                    width: constraints.maxWidth * 0.9,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          HugeIcons.strokeRoundedLaurelWreathLeft02,
+                                          size: iconSize,
+                                          color: Theme.of(context).colorScheme.tertiary,
                                         ),
-                                      ),
-                                      Icon(
-                                        HugeIcons.strokeRoundedLaurelWreathRight02,
-                                        size: iconSize,
-                                        color: Theme.of(context).colorScheme.tertiary,
-                                      ),
-                                    ],
-                                  ),
-                                );
+                                        Flexible(
+                                          child: Text(
+                                            winningTeam,
+                                            style: TextStyle(
+                                              fontSize: fontSize,
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: 'Nunito',
+                                              height: 1.1,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        Icon(
+                                          HugeIcons.strokeRoundedLaurelWreathRight02,
+                                          size: iconSize,
+                                          color: Theme.of(context).colorScheme.tertiary,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
                               },
                             ),
+
                             const SizedBox(height: 32),
                             // Game stats summary
                             Container(
