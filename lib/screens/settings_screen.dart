@@ -20,7 +20,9 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final String rulesUrl = 'https://hr.wikipedia.org/wiki/Belot#Pravila';
-  final String unpublishedRulesUrl = 'https://belaibelot.blogspot.com/p/n-e-p-i-s-n-pravila-bele.html';
+  // final String unpublishedRulesUrl = 'https://belaibelot.blogspot.com/p/n-e-p-i-s-n-pravila-bele.html';
+  final String unspokenRulesUrl =
+      'https://nepisanapravilabele.blogspot.com/2025/04/nepisana-pravila-bele.html';
   bool _keepScreenOn = true;
   int _goalScore = 1001;
   int _stigljaValue = 90;
@@ -550,7 +552,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
-                onTap: () => _launchURL(unpublishedRulesUrl),
+                onTap: () => _launchURL(unspokenRulesUrl),
               ),
               const DeleteHistoryTile(),
               ListTile(
