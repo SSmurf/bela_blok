@@ -137,7 +137,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         child: TextField(
                           keyboardType: TextInputType.number,
                           maxLength: 4,
-                          decoration: const InputDecoration(counterText: '', labelText: 'Unesi broj'),
+                          decoration: const InputDecoration(
+                            labelText: 'Unesi broj',
+                            hintText: '3-4 znamenke',
+                            counterText: '',
+                          ),
                           controller: TextEditingController(text: customValue),
                           onChanged: (val) {
                             setStateSB(() {
