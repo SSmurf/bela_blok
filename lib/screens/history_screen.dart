@@ -25,6 +25,7 @@ class HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Theme.of(context).colorScheme.surface,
         title: const Text(
           'Povijest igara',
           style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito'),

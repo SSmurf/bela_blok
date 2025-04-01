@@ -300,6 +300,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Theme.of(context).colorScheme.surface,
         title: const Text('Postavke', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito')),
         leading: IconButton(
           onPressed: Navigator.of(context).pop,
@@ -310,6 +311,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListView(
+            physics: NeverScrollableScrollPhysics(),
             children: [
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedChampion),

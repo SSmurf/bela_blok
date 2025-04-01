@@ -199,6 +199,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Theme.of(context).colorScheme.surface,
         leading: IconButton(
           icon: const Icon(HugeIcons.strokeRoundedSettings02),
           iconSize: 32,

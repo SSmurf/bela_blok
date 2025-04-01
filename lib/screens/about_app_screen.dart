@@ -22,7 +22,7 @@ class AboutAppScreen extends StatelessWidget {
           icon: const Icon(HugeIcons.strokeRoundedArrowLeft01, size: 30),
           onPressed: () => Navigator.pop(context),
         ),
-        surfaceTintColor: Theme.of(context).colorScheme.surfaceDim,
+        surfaceTintColor: Theme.of(context).colorScheme.surface,
         title: const Text(
           'O aplikaciji',
           style: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500),
