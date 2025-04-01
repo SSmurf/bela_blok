@@ -240,7 +240,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             //     Expanded(child: const Divider(height: 1, thickness: 1)),
             //   ],
             // ),
-            Image.asset('assets/images/divider_1.png', fit: BoxFit.fitWidth, color: Colors.white),
+            Image.asset(
+              'assets/images/divider_1.png',
+              fit: BoxFit.fitWidth,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
 
             const SizedBox(height: 12),
             Expanded(
