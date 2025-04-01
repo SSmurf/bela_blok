@@ -59,10 +59,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _showGoalOptionsDialog(BuildContext context) async {
     // Store the original goal in case the dialog is dismissed.
     final int originalGoal = _goalScore;
-    // Determine if the current goal matches one of the predefined ones.
-    int? selectedOption = (_goalScore == 501 || _goalScore == 701 || _goalScore == 1001) ? _goalScore : -1;
-    bool isCustom = (selectedOption == -1);
-    String customValue = isCustom ? _goalScore.toString() : '';
+    // Ensure the selected option is one of the predefined values.
+    int selectedOption = (_goalScore == 501 || _goalScore == 701 || _goalScore == 1001) ? _goalScore : 1001;
 
     final result = await showDialog<int>(
       context: context,
@@ -70,16 +68,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setStateSB) {
-            // Validate custom input: must be 3 or 4 digits and parseable.
-            bool isCustomValid =
-                customValue.length >= 3 && customValue.length <= 4 && int.tryParse(customValue) != null;
             return AlertDialog(
               // No title.
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Predefined option: 1001.
                     RadioListTile<int>(
                       title: const Text('1001'),
                       controlAffinity: ListTileControlAffinity.trailing,
@@ -87,12 +81,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       groupValue: selectedOption,
                       onChanged: (value) {
                         setStateSB(() {
-                          selectedOption = value;
-                          isCustom = false;
+                          selectedOption = value!;
                         });
                       },
                     ),
-                    // Predefined option: 701.
                     RadioListTile<int>(
                       title: const Text('701'),
                       controlAffinity: ListTileControlAffinity.trailing,
@@ -100,12 +92,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       groupValue: selectedOption,
                       onChanged: (value) {
                         setStateSB(() {
-                          selectedOption = value;
-                          isCustom = false;
+                          selectedOption = value!;
                         });
                       },
                     ),
-                    // Predefined option: 501.
                     RadioListTile<int>(
                       title: const Text('501'),
                       controlAffinity: ListTileControlAffinity.trailing,
@@ -113,43 +103,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       groupValue: selectedOption,
                       onChanged: (value) {
                         setStateSB(() {
-                          selectedOption = value;
-                          isCustom = false;
+                          selectedOption = value!;
                         });
                       },
                     ),
-                    // Custom option.
-                    RadioListTile<int>(
-                      title: const Text('Ostalo'),
-                      controlAffinity: ListTileControlAffinity.trailing,
-                      value: -1,
-                      groupValue: selectedOption == -1 ? -1 : null,
-                      onChanged: (value) {
-                        setStateSB(() {
-                          selectedOption = -1;
-                          isCustom = true;
-                        });
-                      },
-                    ),
-                    if (isCustom)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0, left: 16),
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          maxLength: 4,
-                          decoration: const InputDecoration(
-                            labelText: 'Unesi broj',
-                            hintText: '3-4 znamenke',
-                            counterText: '',
-                          ),
-                          controller: TextEditingController(text: customValue),
-                          onChanged: (val) {
-                            setStateSB(() {
-                              customValue = val;
-                            });
-                          },
-                        ),
-                      ),
                   ],
                 ),
               ),
@@ -168,36 +125,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: const Text('Odbaci', style: TextStyle(fontSize: 18)),
                 ),
                 ElevatedButton(
-                  onPressed:
-                      (isCustom && !isCustomValid)
-                          ? null
-                          : () {
-                            if (isCustom) {
-                              int customGoal = int.parse(customValue);
-                              setState(() {
-                                _goalScore = customGoal;
-                              });
-                            } else {
-                              setState(() {
-                                _goalScore = selectedOption!;
-                              });
-                            }
-                            ref.read(settingsProvider.notifier).state = AppSettings(
-                              goalScore: _goalScore,
-                              stigljaValue: _stigljaValue,
-                              teamOneName: _teamOneName,
-                              teamTwoName: _teamTwoName,
-                            );
-                            _localStorageService.saveSettings({
-                              'goalScore': _goalScore,
-                              'stigljaValue': _stigljaValue,
-                            });
-                            Navigator.of(context).pop(_goalScore);
-                          },
+                  onPressed: () {
+                    setState(() {
+                      _goalScore = selectedOption;
+                    });
+                    ref.read(settingsProvider.notifier).state = AppSettings(
+                      goalScore: _goalScore,
+                      stigljaValue: _stigljaValue,
+                      teamOneName: _teamOneName,
+                      teamTwoName: _teamTwoName,
+                    );
+                    _localStorageService.saveSettings({
+                      'goalScore': _goalScore,
+                      'stigljaValue': _stigljaValue,
+                    });
+                    Navigator.of(context).pop(_goalScore);
+                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.primary.withOpacity(isCustom ? (isCustomValid ? 1.0 : 0.5) : 1.0),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
@@ -212,7 +157,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
 
     // Process dialog result.
-    // If result is null (i.e., user tapped "Odbaci" or dismissed), revert to the original goal.
+    // If result is not null, apply the new goal; else revert to the original goal.
     if (result != null) {
       setState(() {
         _goalScore = result;
@@ -234,26 +179,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _showStigljaOptionsDialog(BuildContext context) async {
     // Store the original stiglja value in case the dialog is dismissed.
     final int originalStiglja = _stigljaValue;
-    // Determine if the current stiglja value matches one of the predefined values.
-    int? selectedOption = (_stigljaValue == 90 || _stigljaValue == 100) ? _stigljaValue : -1;
-    bool isCustom = (selectedOption == -1);
-    String customValue = isCustom ? _stigljaValue.toString() : '';
+    // Ensure the selected option is one of the predefined values.
+    int selectedOption = (_stigljaValue == 90 || _stigljaValue == 100) ? _stigljaValue : 90;
 
     final result = await showDialog<int>(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: true, // Allow the user to tap outside
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setStateSB) {
-            // Validate custom input: must be 1 to 3 digits and parseable.
-            bool isCustomValid =
-                customValue.length >= 1 && customValue.length <= 3 && int.tryParse(customValue) != null;
             return AlertDialog(
+              // No title.
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Predefined option: 90.
                     RadioListTile<int>(
                       title: const Text('90'),
                       controlAffinity: ListTileControlAffinity.trailing,
@@ -261,12 +201,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       groupValue: selectedOption,
                       onChanged: (value) {
                         setStateSB(() {
-                          selectedOption = value;
-                          isCustom = false;
+                          selectedOption = value!;
                         });
                       },
                     ),
-                    // Predefined option: 100.
                     RadioListTile<int>(
                       title: const Text('100'),
                       controlAffinity: ListTileControlAffinity.trailing,
@@ -274,50 +212,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       groupValue: selectedOption,
                       onChanged: (value) {
                         setStateSB(() {
-                          selectedOption = value;
-                          isCustom = false;
+                          selectedOption = value!;
                         });
                       },
                     ),
-                    // Custom option: Ostalo.
-                    RadioListTile<int>(
-                      title: const Text('Ostalo'),
-                      controlAffinity: ListTileControlAffinity.trailing,
-                      value: -1,
-                      groupValue: selectedOption == -1 ? -1 : null,
-                      onChanged: (value) {
-                        setStateSB(() {
-                          selectedOption = -1;
-                          isCustom = true;
-                        });
-                      },
-                    ),
-                    if (isCustom)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0, left: 16),
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          maxLength: 3,
-                          decoration: const InputDecoration(
-                            counterText: '',
-                            labelText: 'Unesi broj',
-                            hintText: '1-3 znamenke',
-                          ),
-                          controller: TextEditingController(text: customValue),
-                          onChanged: (val) {
-                            setStateSB(() {
-                              customValue = val;
-                            });
-                          },
-                        ),
-                      ),
                   ],
                 ),
               ),
               actions: [
                 ElevatedButton(
                   onPressed: () {
-                    // "Odbaci": revert to original value.
+                    // "Odbaci": revert to original stiglja value.
                     Navigator.of(context).pop(null);
                   },
                   style: ElevatedButton.styleFrom(
@@ -329,36 +234,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: const Text('Odbaci', style: TextStyle(fontSize: 18)),
                 ),
                 ElevatedButton(
-                  onPressed:
-                      (isCustom && !isCustomValid)
-                          ? null
-                          : () {
-                            if (isCustom) {
-                              int customStiglja = int.parse(customValue);
-                              setState(() {
-                                _stigljaValue = customStiglja;
-                              });
-                            } else {
-                              setState(() {
-                                _stigljaValue = selectedOption!;
-                              });
-                            }
-                            ref.read(settingsProvider.notifier).state = AppSettings(
-                              goalScore: _goalScore,
-                              stigljaValue: _stigljaValue,
-                              teamOneName: _teamOneName,
-                              teamTwoName: _teamTwoName,
-                            );
-                            _localStorageService.saveSettings({
-                              'goalScore': _goalScore,
-                              'stigljaValue': _stigljaValue,
-                            });
-                            Navigator.of(context).pop(_stigljaValue);
-                          },
+                  onPressed: () {
+                    setState(() {
+                      _stigljaValue = selectedOption;
+                    });
+                    ref.read(settingsProvider.notifier).state = AppSettings(
+                      goalScore: _goalScore,
+                      stigljaValue: _stigljaValue,
+                      teamOneName: _teamOneName,
+                      teamTwoName: _teamTwoName,
+                    );
+                    _localStorageService.saveSettings({
+                      'goalScore': _goalScore,
+                      'stigljaValue': _stigljaValue,
+                    });
+                    Navigator.of(context).pop(_stigljaValue);
+                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.primary.withOpacity(isCustom ? (isCustomValid ? 1.0 : 0.5) : 1.0),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
@@ -373,7 +266,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
 
     // Process dialog result.
-    // If result is not null, apply the new value; else revert to original.
+    // If result is not null, apply the new stiglja value; otherwise, revert to the original value.
     if (result != null) {
       setState(() {
         _stigljaValue = result;
@@ -575,7 +468,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListView(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             children: [
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedChampion),
@@ -583,7 +476,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   'Igra se do',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
-                trailing: Text(_goalScore.toString(), style: TextStyle(fontSize: 14, fontFamily: 'Nunito')),
+                trailing: Text(
+                  _goalScore.toString(),
+                  style: const TextStyle(fontSize: 14, fontFamily: 'Nunito'),
+                ),
                 onTap: () => _showGoalOptionsDialog(context),
               ),
               ListTile(
@@ -594,7 +490,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 trailing: Text(
                   _stigljaValue.toString(),
-                  style: TextStyle(fontSize: 14, fontFamily: 'Nunito'),
+                  style: const TextStyle(fontSize: 14, fontFamily: 'Nunito'),
                 ),
                 onTap: () => _showStigljaOptionsDialog(context),
               ),
@@ -607,7 +503,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 trailing: Text(
                   _formatTeamNames(_teamOneName, _teamTwoName),
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 14, fontFamily: 'Nunito'),
+                  style: const TextStyle(fontSize: 14, fontFamily: 'Nunito'),
                 ),
                 onTap: () => _showTeamNamesDialog(context),
               ),
