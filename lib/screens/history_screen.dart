@@ -67,15 +67,18 @@ class HistoryScreenState extends State<HistoryScreen> {
               separatorBuilder:
                   (context, index) => Row(
                     children: [
-                      Expanded(child: const Divider(height: 1, thickness: 1)),
-                      Icon(HugeIcons.strokeRoundedRecord, size: 16),
-                      Expanded(child: const Divider(height: 1, thickness: 1)),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: const Divider(height: 1, thickness: 1),
+                        ),
+                      ),
                     ],
                   ),
               itemBuilder: (context, index) {
                 final game = games[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  padding: const EdgeInsets.symmetric(vertical: 6.0),
                   child: FinishedGameDisplay(
                     teamOneName: game.teamOneName,
                     teamOneTotal: game.teamOneTotalScore,
