@@ -56,31 +56,162 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  Future<void> _showGoalOptions(BuildContext context) async {
-    const options = [501, 701, 1001];
-    final int? selectedOption = await showModalBottomSheet<int>(
+  Future<void> _showGoalOptionsDialog(BuildContext context) async {
+    // Store the original goal in case the dialog is dismissed.
+    final int originalGoal = _goalScore;
+    // Determine if the current goal matches one of the predefined ones.
+    int? selectedOption = (_goalScore == 501 || _goalScore == 701 || _goalScore == 1001) ? _goalScore : -1;
+    bool isCustom = (selectedOption == -1);
+    String customValue = isCustom ? _goalScore.toString() : '';
+
+    final result = await showDialog<int>(
       context: context,
-      builder: (BuildContext ctx) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children:
-                options.map((option) {
-                  return ListTile(
-                    title: Text(option.toString()),
-                    trailing: _goalScore == option ? const Icon(Icons.check, color: Colors.green) : null,
-                    onTap: () {
-                      Navigator.pop(ctx, option);
-                    },
-                  );
-                }).toList(),
-          ),
+      barrierDismissible: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateSB) {
+            // Validate custom input: must be 3 or 4 digits and parseable.
+            bool isCustomValid =
+                customValue.length >= 3 && customValue.length <= 4 && int.tryParse(customValue) != null;
+            return AlertDialog(
+              // No title.
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Predefined option: 1001.
+                    RadioListTile<int>(
+                      title: const Text('1001'),
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      value: 1001,
+                      groupValue: selectedOption,
+                      onChanged: (value) {
+                        setStateSB(() {
+                          selectedOption = value;
+                          isCustom = false;
+                        });
+                      },
+                    ),
+                    // Predefined option: 701.
+                    RadioListTile<int>(
+                      title: const Text('701'),
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      value: 701,
+                      groupValue: selectedOption,
+                      onChanged: (value) {
+                        setStateSB(() {
+                          selectedOption = value;
+                          isCustom = false;
+                        });
+                      },
+                    ),
+                    // Predefined option: 501.
+                    RadioListTile<int>(
+                      title: const Text('501'),
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      value: 501,
+                      groupValue: selectedOption,
+                      onChanged: (value) {
+                        setStateSB(() {
+                          selectedOption = value;
+                          isCustom = false;
+                        });
+                      },
+                    ),
+                    // Custom option.
+                    RadioListTile<int>(
+                      title: const Text('Ostalo'),
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      value: -1,
+                      groupValue: selectedOption == -1 ? -1 : null,
+                      onChanged: (value) {
+                        setStateSB(() {
+                          selectedOption = -1;
+                          isCustom = true;
+                        });
+                      },
+                    ),
+                    if (isCustom)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, left: 16),
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          maxLength: 4,
+                          decoration: const InputDecoration(counterText: '', labelText: 'Unesi broj'),
+                          controller: TextEditingController(text: customValue),
+                          onChanged: (val) {
+                            setStateSB(() {
+                              customValue = val;
+                            });
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    // "Odbaci": revert to original goal.
+                    Navigator.of(context).pop(null);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    elevation: 0,
+                  ),
+                  child: const Text('Odbaci', style: TextStyle(fontSize: 18)),
+                ),
+                ElevatedButton(
+                  onPressed:
+                      (isCustom && !isCustomValid)
+                          ? null
+                          : () {
+                            if (isCustom) {
+                              int customGoal = int.parse(customValue);
+                              setState(() {
+                                _goalScore = customGoal;
+                              });
+                            } else {
+                              setState(() {
+                                _goalScore = selectedOption!;
+                              });
+                            }
+                            ref.read(settingsProvider.notifier).state = AppSettings(
+                              goalScore: _goalScore,
+                              stigljaValue: _stigljaValue,
+                              teamOneName: _teamOneName,
+                              teamTwoName: _teamTwoName,
+                            );
+                            _localStorageService.saveSettings({
+                              'goalScore': _goalScore,
+                              'stigljaValue': _stigljaValue,
+                            });
+                            Navigator.of(context).pop(_goalScore);
+                          },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(isCustom ? (isCustomValid ? 1.0 : 0.5) : 1.0),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    elevation: 0,
+                  ),
+                  child: const Text('Spremi', style: TextStyle(fontSize: 18)),
+                ),
+              ],
+            );
+          },
         );
       },
     );
-    if (selectedOption != null) {
+
+    // Process dialog result.
+    // If result is null (i.e., user tapped "Odbaci" or dismissed), revert to the original goal.
+    if (result != null) {
       setState(() {
-        _goalScore = selectedOption;
+        _goalScore = result;
       });
       ref.read(settingsProvider.notifier).state = AppSettings(
         goalScore: _goalScore,
@@ -89,6 +220,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         teamTwoName: _teamTwoName,
       );
       await _localStorageService.saveSettings({'goalScore': _goalScore, 'stigljaValue': _stigljaValue});
+    } else {
+      setState(() {
+        _goalScore = originalGoal;
+      });
     }
   }
 
@@ -320,7 +455,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
                 trailing: Text(_goalScore.toString(), style: TextStyle(fontSize: 14, fontFamily: 'Nunito')),
-                onTap: () => _showGoalOptions(context),
+                onTap: () => _showGoalOptionsDialog(context),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedCards02),
