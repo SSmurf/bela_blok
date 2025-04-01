@@ -303,6 +303,10 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
           (declStigljaTeamTwo * stigljaValue);
     }
 
+    final int finalTotalTeamOne = teamOneScore + declScoreTeamOne;
+    final int finalTotalTeamTwo = teamTwoScore + declScoreTeamTwo;
+    bool isSaveEnabled = hasStartedInput && (finalTotalTeamOne != finalTotalTeamTwo);
+
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -551,8 +555,8 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                 AddRoundButton(
                   text: 'Spremi',
                   color: theme.colorScheme.primary,
-                  isEnabled: hasStartedInput,
-                  onPressed: hasStartedInput ? _saveRound : () {},
+                  isEnabled: isSaveEnabled,
+                  onPressed: isSaveEnabled ? _saveRound : () {},
                 ),
               ],
             ),
