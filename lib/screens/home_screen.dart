@@ -396,7 +396,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                       )
                       : FadingEdgeScrollView(
-                        fadeHeight: 0,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: ListView.builder(
