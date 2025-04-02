@@ -51,6 +51,8 @@ class _BelaBlokAppState extends ConsumerState<BelaBlokApp> {
                   ? ThemeMode.system
                   : (themeSettings.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
           builder: (context, child) {
+            final mediaQuery = MediaQuery.of(context);
+            print("Screen width: ${mediaQuery.size.width}, Screen height: ${mediaQuery.size.height}");
             return MediaQuery(
               data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
               child: child!,
