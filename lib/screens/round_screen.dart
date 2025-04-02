@@ -273,6 +273,9 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     final horizontalPadding = isSmallScreen ? 16.0 : 32.0;
     final verticalSpacing = isSmallScreen ? 10.0 : 24.0;
 
+    final mediaPadding = MediaQuery.of(context).padding;
+    final bool hasNavigationBar = mediaPadding.bottom > 34;
+
     int stigljaValue = ref.watch(settingsProvider).stigljaValue;
 
     final int declScoreTeamOne;
@@ -319,6 +322,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     final theme = Theme.of(context);
     return SafeArea(
       top: false,
+      bottom: hasNavigationBar,
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(

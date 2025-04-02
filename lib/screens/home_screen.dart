@@ -175,6 +175,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final bool gameEnded = teamOneTotal >= currentGoal || teamTwoTotal >= currentGoal;
     String winningTeam = '';
 
+    final mediaPadding = MediaQuery.of(context).padding;
+    final bool hasNavigationBar = mediaPadding.bottom > 34;
+
     if (gameEnded) {
       if (teamOneTotal > teamTwoTotal) {
         winningTeam = settings.teamOneName;
@@ -199,6 +202,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return SafeArea(
       top: false,
+      bottom: hasNavigationBar,
       child: Scaffold(
         appBar: AppBar(
           surfaceTintColor: Theme.of(context).colorScheme.surface,
