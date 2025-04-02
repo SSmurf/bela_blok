@@ -427,40 +427,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                 ),
                                                 actionsAlignment: MainAxisAlignment.spaceEvenly,
                                                 actions: [
-                                                  Expanded(
-                                                    child: ElevatedButton(
-                                                      onPressed: () => Navigator.of(context).pop(false),
-                                                      style: ElevatedButton.styleFrom(
-                                                        backgroundColor:
-                                                            Theme.of(context).colorScheme.primary,
-                                                        foregroundColor: Colors.white,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(8),
-                                                        ),
-                                                        elevation: 0,
+                                                  ElevatedButton(
+                                                    onPressed: () => Navigator.of(context).pop(false),
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Theme.of(context).colorScheme.primary,
+                                                      foregroundColor: Colors.white,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(8),
                                                       ),
-                                                      child: const Text(
-                                                        'Odustani',
-                                                        style: TextStyle(fontSize: 18),
-                                                      ),
+                                                      elevation: 0,
+                                                    ),
+                                                    child: const Text(
+                                                      'Odustani',
+                                                      style: TextStyle(fontSize: 18),
                                                     ),
                                                   ),
-                                                  Expanded(
-                                                    child: ElevatedButton(
-                                                      onPressed: () => Navigator.of(context).pop(true),
-                                                      style: ElevatedButton.styleFrom(
-                                                        backgroundColor:
-                                                            Theme.of(context).colorScheme.secondary,
-                                                        foregroundColor: Colors.white,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(8),
-                                                        ),
-                                                        elevation: 0,
+                                                  ElevatedButton(
+                                                    onPressed: () => Navigator.of(context).pop(true),
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor:
+                                                          Theme.of(context).colorScheme.secondary,
+                                                      foregroundColor: Colors.white,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(8),
                                                       ),
-                                                      child: const Text(
-                                                        'Obriši',
-                                                        style: TextStyle(fontSize: 18),
-                                                      ),
+                                                      elevation: 0,
+                                                    ),
+                                                    child: const Text(
+                                                      'Obriši',
+                                                      style: TextStyle(fontSize: 18),
                                                     ),
                                                   ),
                                                 ],
