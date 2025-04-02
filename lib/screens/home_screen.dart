@@ -197,316 +197,320 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       });
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        surfaceTintColor: Theme.of(context).colorScheme.surface,
-        leading: IconButton(
-          icon: const Icon(HugeIcons.strokeRoundedSettings02),
-          iconSize: 32,
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(HugeIcons.strokeRoundedCancel01),
-            iconSize: 32,
-            onPressed: rounds.isNotEmpty && !gameEnded ? () => _confirmClearGame(context) : null,
-          ),
-          IconButton(
-            icon: const Icon(HugeIcons.strokeRoundedClock02),
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        appBar: AppBar(
+          surfaceTintColor: Theme.of(context).colorScheme.surface,
+          leading: IconButton(
+            icon: const Icon(HugeIcons.strokeRoundedSettings02),
             iconSize: 32,
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const HistoryScreen()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
             },
           ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-        child: Column(
-          children: [
-            TotalScoreDisplay(
-              scoreTeamOne: teamOneTotal,
-              scoreTeamTwo: teamTwoTotal,
-              teamOneName: settings.teamOneName,
-              teamTwoName: settings.teamTwoName,
+          actions: [
+            IconButton(
+              icon: const Icon(HugeIcons.strokeRoundedCancel01),
+              iconSize: 32,
+              onPressed: rounds.isNotEmpty && !gameEnded ? () => _confirmClearGame(context) : null,
             ),
-            const SizedBox(height: 6),
-
-            // Row(
-            //   children: [
-            //     Expanded(child: const Divider(height: 1, thickness: 1)),
-            //     Icon(HugeIcons.strokeRoundedRecord, size: 16),
-            //     Expanded(child: const Divider(height: 1, thickness: 1)),
-            //   ],
-            // ),
-            Image.asset(
-              'assets/images/divider_1.png',
-              fit: BoxFit.fitWidth,
-              color: Theme.of(context).colorScheme.onSurface,
+            IconButton(
+              icon: const Icon(HugeIcons.strokeRoundedClock02),
+              iconSize: 32,
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const HistoryScreen()));
+              },
             ),
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+          child: Column(
+            children: [
+              TotalScoreDisplay(
+                scoreTeamOne: teamOneTotal,
+                scoreTeamTwo: teamTwoTotal,
+                teamOneName: settings.teamOneName,
+                teamTwoName: settings.teamTwoName,
+              ),
+              const SizedBox(height: 6),
 
-            const SizedBox(height: 12),
-            Expanded(
-              child:
-                  gameEnded
-                      ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const SizedBox(height: 24),
-                            // Winner display with dynamic text size
-                            LayoutBuilder(
-                              builder: (context, constraints) {
-                                final double fontSize =
-                                    winningTeam.length <= 4
-                                        ? 56
-                                        : winningTeam.length <= 8
-                                        ? 44
-                                        : winningTeam.length <= 12
-                                        ? 36
-                                        : 28;
-                                final double iconSize = fontSize + 8;
+              // Row(
+              //   children: [
+              //     Expanded(child: const Divider(height: 1, thickness: 1)),
+              //     Icon(HugeIcons.strokeRoundedRecord, size: 16),
+              //     Expanded(child: const Divider(height: 1, thickness: 1)),
+              //   ],
+              // ),
+              Image.asset(
+                'assets/images/divider_1.png',
+                fit: BoxFit.fitWidth,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
 
-                                if (winningTeam == 'Remi') {
-                                  return SizedBox(
-                                    width: constraints.maxWidth * 0.9,
-                                    child: Text(
-                                      winningTeam,
-                                      style: TextStyle(
-                                        fontSize: fontSize,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Nunito',
-                                        height: 1.1,
+              const SizedBox(height: 12),
+              Expanded(
+                child:
+                    gameEnded
+                        ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 24),
+                              // Winner display with dynamic text size
+                              LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final double fontSize =
+                                      winningTeam.length <= 4
+                                          ? 56
+                                          : winningTeam.length <= 8
+                                          ? 44
+                                          : winningTeam.length <= 12
+                                          ? 36
+                                          : 28;
+                                  final double iconSize = fontSize + 8;
+
+                                  if (winningTeam == 'Remi') {
+                                    return SizedBox(
+                                      width: constraints.maxWidth * 0.9,
+                                      child: Text(
+                                        winningTeam,
+                                        style: TextStyle(
+                                          fontSize: fontSize,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Nunito',
+                                          height: 1.1,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  );
-                                } else {
-                                  return SizedBox(
-                                    width: constraints.maxWidth * 0.9,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          HugeIcons.strokeRoundedLaurelWreathLeft02,
-                                          size: iconSize,
-                                          color: Theme.of(context).colorScheme.tertiary,
-                                        ),
-                                        Flexible(
-                                          child: Text(
-                                            winningTeam,
-                                            style: TextStyle(
-                                              fontSize: fontSize,
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: 'Nunito',
-                                              height: 1.1,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
+                                    );
+                                  } else {
+                                    return SizedBox(
+                                      width: constraints.maxWidth * 0.9,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            HugeIcons.strokeRoundedLaurelWreathLeft02,
+                                            size: iconSize,
+                                            color: Theme.of(context).colorScheme.tertiary,
                                           ),
-                                        ),
-                                        Icon(
-                                          HugeIcons.strokeRoundedLaurelWreathRight02,
-                                          size: iconSize,
-                                          color: Theme.of(context).colorScheme.tertiary,
-                                        ),
-                                      ],
+                                          Flexible(
+                                            child: Text(
+                                              winningTeam,
+                                              style: TextStyle(
+                                                fontSize: fontSize,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: 'Nunito',
+                                                height: 1.1,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          Icon(
+                                            HugeIcons.strokeRoundedLaurelWreathRight02,
+                                            size: iconSize,
+                                            color: Theme.of(context).colorScheme.tertiary,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+
+                              const SizedBox(height: 32),
+                              // Game stats summary
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    _buildStatRow(
+                                      context: context,
+                                      label: "Ukupno zvanja",
+                                      teamOneValue: _calculateTotalDeclarations(rounds, teamOne: true),
+                                      teamTwoValue: _calculateTotalDeclarations(rounds, teamOne: false),
+                                      teamOneName: settings.teamOneName,
+                                      teamTwoName: settings.teamTwoName,
                                     ),
-                                  );
-                                }
+                                    const SizedBox(height: 12),
+                                    Divider(
+                                      height: 1,
+                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _buildStatRow(
+                                      context: context,
+                                      label: "Ukupno štiglji",
+                                      teamOneValue: _countTotalStiglja(rounds, teamOne: true),
+                                      teamTwoValue: _countTotalStiglja(rounds, teamOne: false),
+                                      teamOneName: settings.teamOneName,
+                                      teamTwoName: settings.teamTwoName,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              if (rounds.isNotEmpty)
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    final int lastIndex = rounds.length - 1;
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => RoundScreen(
+                                              roundToEdit: rounds[lastIndex],
+                                              roundIndex: lastIndex,
+                                              isTeamOneSelected: true,
+                                              teamOneName: settings.teamOneName,
+                                              teamTwoName: settings.teamTwoName,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(HugeIcons.strokeRoundedUndo),
+                                  label: const Text(
+                                    'Poništi zadnju rundu',
+                                    style: TextStyle(fontFamily: 'Nunito'),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        )
+                        : rounds.isEmpty
+                        ? Center(
+                          child: Text(
+                            '"Poštuj kartu i karta će poštovati tebe."',
+                            style: TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                        : FadingEdgeScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: ListView.builder(
+                              itemCount: rounds.length,
+                              itemBuilder: (context, index) {
+                                return Dismissible(
+                                  key: ValueKey('round_${rounds[index].hashCode}'),
+                                  background: Container(
+                                    color: Colors.red.withValues(alpha: 0.7),
+                                    alignment: Alignment.centerRight,
+                                    padding: const EdgeInsets.only(right: 20),
+                                    child: const Icon(Icons.delete, color: Colors.white),
+                                  ),
+                                  direction: DismissDirection.endToStart,
+                                  confirmDismiss: (_) async {
+                                    return await showDialog<bool>(
+                                          context: context,
+                                          builder:
+                                              (context) => AlertDialog(
+                                                title: const Text('Brisanje runde'),
+                                                content: const Text(
+                                                  'Jesi li siguran da želiš obrisati ovu rundu?',
+                                                ),
+                                                actionsAlignment: MainAxisAlignment.spaceEvenly,
+                                                actions: [
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                      onPressed: () => Navigator.of(context).pop(false),
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor:
+                                                            Theme.of(context).colorScheme.primary,
+                                                        foregroundColor: Colors.white,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(8),
+                                                        ),
+                                                        elevation: 0,
+                                                      ),
+                                                      child: const Text(
+                                                        'Odustani',
+                                                        style: TextStyle(fontSize: 18),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                      onPressed: () => Navigator.of(context).pop(true),
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor:
+                                                            Theme.of(context).colorScheme.secondary,
+                                                        foregroundColor: Colors.white,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(8),
+                                                        ),
+                                                        elevation: 0,
+                                                      ),
+                                                      child: const Text(
+                                                        'Obriši',
+                                                        style: TextStyle(fontSize: 18),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                        ) ??
+                                        false;
+                                  },
+                                  onDismissed: (_) {
+                                    ref.read(currentGameProvider.notifier).removeRound(index);
+                                  },
+                                  child: GestureDetector(
+                                    onTap:
+                                        () => _editRound(
+                                          context,
+                                          rounds[index],
+                                          index,
+                                          teamOneName: settings.teamOneName,
+                                          teamTwoName: settings.teamTwoName,
+                                        ),
+                                    child: RoundDisplay(round: rounds[index], roundIndex: index),
+                                  ),
+                                );
                               },
                             ),
-
-                            const SizedBox(height: 32),
-                            // Game stats summary
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                                ),
-                              ),
-                              child: Column(
-                                children: [
-                                  _buildStatRow(
-                                    context: context,
-                                    label: "Ukupno zvanja",
-                                    teamOneValue: _calculateTotalDeclarations(rounds, teamOne: true),
-                                    teamTwoValue: _calculateTotalDeclarations(rounds, teamOne: false),
-                                    teamOneName: settings.teamOneName,
-                                    teamTwoName: settings.teamTwoName,
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Divider(
-                                    height: 1,
-                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  _buildStatRow(
-                                    context: context,
-                                    label: "Ukupno štiglji",
-                                    teamOneValue: _countTotalStiglja(rounds, teamOne: true),
-                                    teamTwoValue: _countTotalStiglja(rounds, teamOne: false),
-                                    teamOneName: settings.teamOneName,
-                                    teamTwoName: settings.teamTwoName,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                            if (rounds.isNotEmpty)
-                              ElevatedButton.icon(
-                                onPressed: () {
-                                  final int lastIndex = rounds.length - 1;
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => RoundScreen(
-                                            roundToEdit: rounds[lastIndex],
-                                            roundIndex: lastIndex,
-                                            isTeamOneSelected: true,
-                                            teamOneName: settings.teamOneName,
-                                            teamTwoName: settings.teamTwoName,
-                                          ),
-                                    ),
-                                  );
-                                },
-                                icon: const Icon(HugeIcons.strokeRoundedUndo),
-                                label: const Text(
-                                  'Poništi zadnju rundu',
-                                  style: TextStyle(fontFamily: 'Nunito'),
-                                ),
-                              ),
-                          ],
-                        ),
-                      )
-                      : rounds.isEmpty
-                      ? Center(
-                        child: Text(
-                          '"Poštuj kartu i karta će poštovati tebe."',
-                          style: TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                      : FadingEdgeScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: ListView.builder(
-                            itemCount: rounds.length,
-                            itemBuilder: (context, index) {
-                              return Dismissible(
-                                key: ValueKey('round_${rounds[index].hashCode}'),
-                                background: Container(
-                                  color: Colors.red.withValues(alpha: 0.7),
-                                  alignment: Alignment.centerRight,
-                                  padding: const EdgeInsets.only(right: 20),
-                                  child: const Icon(Icons.delete, color: Colors.white),
-                                ),
-                                direction: DismissDirection.endToStart,
-                                confirmDismiss: (_) async {
-                                  return await showDialog<bool>(
-                                        context: context,
-                                        builder:
-                                            (context) => AlertDialog(
-                                              title: const Text('Brisanje runde'),
-                                              content: const Text(
-                                                'Jesi li siguran da želiš obrisati ovu rundu?',
-                                              ),
-                                              actionsAlignment: MainAxisAlignment.spaceEvenly,
-                                              actions: [
-                                                Expanded(
-                                                  child: ElevatedButton(
-                                                    onPressed: () => Navigator.of(context).pop(false),
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor: Theme.of(context).colorScheme.primary,
-                                                      foregroundColor: Colors.white,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(8),
-                                                      ),
-                                                      elevation: 0,
-                                                    ),
-                                                    child: const Text(
-                                                      'Odustani',
-                                                      style: TextStyle(fontSize: 18),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: ElevatedButton(
-                                                    onPressed: () => Navigator.of(context).pop(true),
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor:
-                                                          Theme.of(context).colorScheme.secondary,
-                                                      foregroundColor: Colors.white,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(8),
-                                                      ),
-                                                      elevation: 0,
-                                                    ),
-                                                    child: const Text(
-                                                      'Obriši',
-                                                      style: TextStyle(fontSize: 18),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                      ) ??
-                                      false;
-                                },
-                                onDismissed: (_) {
-                                  ref.read(currentGameProvider.notifier).removeRound(index);
-                                },
-                                child: GestureDetector(
-                                  onTap:
-                                      () => _editRound(
-                                        context,
-                                        rounds[index],
-                                        index,
-                                        teamOneName: settings.teamOneName,
-                                        teamTwoName: settings.teamTwoName,
-                                      ),
-                                  child: RoundDisplay(round: rounds[index], roundIndex: index),
-                                ),
-                              );
-                            },
                           ),
                         ),
-                      ),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                AddRoundButton(
-                  text: gameEnded ? 'Nova igra' : 'Nova runda',
-                  color: Theme.of(context).colorScheme.primary,
-                  onPressed: () {
-                    if (gameEnded) {
-                      ref.read(currentGameProvider.notifier).clearRounds();
-                      setState(() {
-                        _gameSaved = false;
-                      });
-                    } else {
-                      _addNewRound(
-                        context,
-                        teamOneName: settings.teamOneName,
-                        teamTwoName: settings.teamTwoName,
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-          ],
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  AddRoundButton(
+                    text: gameEnded ? 'Nova igra' : 'Nova runda',
+                    color: Theme.of(context).colorScheme.primary,
+                    onPressed: () {
+                      if (gameEnded) {
+                        ref.read(currentGameProvider.notifier).clearRounds();
+                        setState(() {
+                          _gameSaved = false;
+                        });
+                      } else {
+                        _addNewRound(
+                          context,
+                          teamOneName: settings.teamOneName,
+                          teamTwoName: settings.teamTwoName,
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );

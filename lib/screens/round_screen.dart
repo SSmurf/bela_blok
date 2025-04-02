@@ -308,260 +308,263 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     bool isSaveEnabled = hasStartedInput && (finalTotalTeamOne != finalTotalTeamTwo);
 
     final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: Navigator.of(context).pop,
-          icon: Icon(HugeIcons.strokeRoundedArrowLeft01, size: 30),
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: Navigator.of(context).pop,
+            icon: Icon(HugeIcons.strokeRoundedArrowLeft01, size: 30),
+          ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-        child: Column(
-          children: [
-            AddRoundScoreDisplay(
-              scoreTeamOne: teamOneScore,
-              scoreTeamTwo: teamTwoScore,
-              declarationScoreTeamOne: declScoreTeamOne,
-              declarationScoreTeamTwo: declScoreTeamTwo,
-              isTeamOneSelected: isTeamOneSelected,
-              onTeamOneTap: () => _setTeamSelection(true),
-              onTeamTwoTap: () => _setTeamSelection(false),
-              teamOneName: widget.teamOneName,
-              teamTwoName: widget.teamTwoName,
-            ),
-            const SizedBox(height: 24),
-            Container(
-              height: 50,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.5)),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+          child: Column(
+            children: [
+              AddRoundScoreDisplay(
+                scoreTeamOne: teamOneScore,
+                scoreTeamTwo: teamTwoScore,
+                declarationScoreTeamOne: declScoreTeamOne,
+                declarationScoreTeamTwo: declScoreTeamTwo,
+                isTeamOneSelected: isTeamOneSelected,
+                onTeamOneTap: () => _setTeamSelection(true),
+                onTeamTwoTap: () => _setTeamSelection(false),
+                teamOneName: widget.teamOneName,
+                teamTwoName: widget.teamTwoName,
               ),
-              child: TabBar(
-                controller: _tabController,
-                indicatorSize: TabBarIndicatorSize.tab,
-                dividerColor: Colors.transparent,
-                indicator: BoxDecoration(
+              const SizedBox(height: 24),
+              Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(8),
-                  color: theme.colorScheme.primary,
+                  border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.5)),
                 ),
-                labelColor: theme.colorScheme.onPrimary,
-                labelStyle: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
-                unselectedLabelStyle: TextStyle(
-                  fontFamily: 'Nunito',
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18,
-                ),
-                unselectedLabelColor: theme.colorScheme.onSurface,
-                tabs: const [Tab(text: 'Bodovi'), Tab(text: 'Zvanja')],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  // Bodovi tab.
-                  AbsorbPointer(
-                    absorbing: isScoreEditingDisabled,
-                    child: NumericKeyboard(
-                      onKeyPressed: _updateScore,
-                      onDelete: _deleteDigit,
-                      onClear: _clearScore,
-                    ),
+                child: TabBar(
+                  controller: _tabController,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  dividerColor: Colors.transparent,
+                  indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: theme.colorScheme.primary,
                   ),
-                  // Zvanja tab.
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildDeclarationRow(
-                        label: '20',
-                        teamOneCount: decl20TeamOne,
-                        teamTwoCount: decl20TeamTwo,
-                        onTeamOneIncrement: () {
-                          setState(() {
-                            if (decl20TeamOne < max20) decl20TeamOne++;
-                          });
-                        },
-                        onTeamTwoIncrement: () {
-                          setState(() {
-                            if (decl20TeamTwo < max20) decl20TeamTwo++;
-                          });
-                        },
-                        onTeamOneUndo: () {
-                          setState(() {
-                            if (decl20TeamOne > 0) decl20TeamOne--;
-                          });
-                        },
-                        onTeamTwoUndo: () {
-                          setState(() {
-                            if (decl20TeamTwo > 0) decl20TeamTwo--;
-                          });
-                        },
+                  labelColor: theme.colorScheme.onPrimary,
+                  labelStyle: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
+                  unselectedLabelStyle: TextStyle(
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                  ),
+                  unselectedLabelColor: theme.colorScheme.onSurface,
+                  tabs: const [Tab(text: 'Bodovi'), Tab(text: 'Zvanja')],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    // Bodovi tab.
+                    AbsorbPointer(
+                      absorbing: isScoreEditingDisabled,
+                      child: NumericKeyboard(
+                        onKeyPressed: _updateScore,
+                        onDelete: _deleteDigit,
+                        onClear: _clearScore,
                       ),
-                      _buildDeclarationRow(
-                        label: '50',
-                        teamOneCount: decl50TeamOne,
-                        teamTwoCount: decl50TeamTwo,
-                        onTeamOneIncrement: () {
-                          setState(() {
-                            if (decl50TeamOne < max50) decl50TeamOne++;
-                          });
-                        },
-                        onTeamTwoIncrement: () {
-                          setState(() {
-                            if (decl50TeamTwo < max50) decl50TeamTwo++;
-                          });
-                        },
-                        onTeamOneUndo: () {
-                          setState(() {
-                            if (decl50TeamOne > 0) decl50TeamOne--;
-                          });
-                        },
-                        onTeamTwoUndo: () {
-                          setState(() {
-                            if (decl50TeamTwo > 0) decl50TeamTwo--;
-                          });
-                        },
-                      ),
-                      _buildDeclarationRow(
-                        label: '100',
-                        teamOneCount: decl100TeamOne,
-                        teamTwoCount: decl100TeamTwo,
-                        onTeamOneIncrement: () {
-                          setState(() {
-                            if (decl100TeamOne < max100) decl100TeamOne++;
-                          });
-                        },
-                        onTeamTwoIncrement: () {
-                          setState(() {
-                            if (decl100TeamTwo < max100) decl100TeamTwo++;
-                          });
-                        },
-                        onTeamOneUndo: () {
-                          setState(() {
-                            if (decl100TeamOne > 0) decl100TeamOne--;
-                          });
-                        },
-                        onTeamTwoUndo: () {
-                          setState(() {
-                            if (decl100TeamTwo > 0) decl100TeamTwo--;
-                          });
-                        },
-                      ),
-                      _buildDeclarationRow(
-                        label: '150',
-                        teamOneCount: decl150TeamOne,
-                        teamTwoCount: decl150TeamTwo,
-                        onTeamOneIncrement: () {
-                          setState(() {
-                            if (decl150TeamOne < max150) decl150TeamOne++;
-                          });
-                        },
-                        onTeamTwoIncrement: () {
-                          setState(() {
-                            if (decl150TeamTwo < max150) decl150TeamTwo++;
-                          });
-                        },
-                        onTeamOneUndo: () {
-                          setState(() {
-                            if (decl150TeamOne > 0) decl150TeamOne--;
-                          });
-                        },
-                        onTeamTwoUndo: () {
-                          setState(() {
-                            if (decl150TeamTwo > 0) decl150TeamTwo--;
-                          });
-                        },
-                      ),
-                      _buildDeclarationRow(
-                        label: '200',
-                        teamOneCount: decl200TeamOne,
-                        teamTwoCount: decl200TeamTwo,
-                        onTeamOneIncrement: () {
-                          setState(() {
-                            if (decl200TeamOne < max200) decl200TeamOne++;
-                          });
-                        },
-                        onTeamTwoIncrement: () {
-                          setState(() {
-                            if (decl200TeamTwo < max200) decl200TeamTwo++;
-                          });
-                        },
-                        onTeamOneUndo: () {
-                          setState(() {
-                            if (decl200TeamOne > 0) decl200TeamOne--;
-                          });
-                        },
-                        onTeamTwoUndo: () {
-                          setState(() {
-                            if (decl200TeamTwo > 0) decl200TeamTwo--;
-                          });
-                        },
-                      ),
-                      _buildDeclarationRow(
-                        label: 'Štiglja',
-                        fontSize: 24,
-                        teamOneCount: declStigljaTeamOne,
-                        teamTwoCount: declStigljaTeamTwo,
-                        onTeamOneIncrement: () {
-                          setState(() {
-                            if (declStigljaTeamOne < maxStiglja && declStigljaTeamTwo == 0) {
-                              declStigljaTeamOne = 1;
-                              // Force score: team one gets full points, team two 0.
-                              activeScore = totalPoints.toString();
-                              hasStartedInput = true;
-                            }
-                          });
-                        },
-                        onTeamTwoIncrement: () {
-                          setState(() {
-                            if (declStigljaTeamTwo < maxStiglja && declStigljaTeamOne == 0) {
-                              declStigljaTeamTwo = 1;
-                              // Force score: team two gets full points, team one 0.
-                              activeScore = '0';
-                              hasStartedInput = true;
-                            }
-                          });
-                        },
-                        onTeamOneUndo: () {
-                          setState(() {
-                            if (declStigljaTeamOne > 0) {
-                              declStigljaTeamOne = 0;
-                              _clearScore();
-                            }
-                          });
-                        },
-                        onTeamTwoUndo: () {
-                          setState(() {
-                            if (declStigljaTeamTwo > 0) {
-                              declStigljaTeamTwo = 0;
-                              _clearScore();
-                            }
-                          });
-                        },
-                      ),
-                    ],
+                    ),
+                    // Zvanja tab.
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildDeclarationRow(
+                          label: '20',
+                          teamOneCount: decl20TeamOne,
+                          teamTwoCount: decl20TeamTwo,
+                          onTeamOneIncrement: () {
+                            setState(() {
+                              if (decl20TeamOne < max20) decl20TeamOne++;
+                            });
+                          },
+                          onTeamTwoIncrement: () {
+                            setState(() {
+                              if (decl20TeamTwo < max20) decl20TeamTwo++;
+                            });
+                          },
+                          onTeamOneUndo: () {
+                            setState(() {
+                              if (decl20TeamOne > 0) decl20TeamOne--;
+                            });
+                          },
+                          onTeamTwoUndo: () {
+                            setState(() {
+                              if (decl20TeamTwo > 0) decl20TeamTwo--;
+                            });
+                          },
+                        ),
+                        _buildDeclarationRow(
+                          label: '50',
+                          teamOneCount: decl50TeamOne,
+                          teamTwoCount: decl50TeamTwo,
+                          onTeamOneIncrement: () {
+                            setState(() {
+                              if (decl50TeamOne < max50) decl50TeamOne++;
+                            });
+                          },
+                          onTeamTwoIncrement: () {
+                            setState(() {
+                              if (decl50TeamTwo < max50) decl50TeamTwo++;
+                            });
+                          },
+                          onTeamOneUndo: () {
+                            setState(() {
+                              if (decl50TeamOne > 0) decl50TeamOne--;
+                            });
+                          },
+                          onTeamTwoUndo: () {
+                            setState(() {
+                              if (decl50TeamTwo > 0) decl50TeamTwo--;
+                            });
+                          },
+                        ),
+                        _buildDeclarationRow(
+                          label: '100',
+                          teamOneCount: decl100TeamOne,
+                          teamTwoCount: decl100TeamTwo,
+                          onTeamOneIncrement: () {
+                            setState(() {
+                              if (decl100TeamOne < max100) decl100TeamOne++;
+                            });
+                          },
+                          onTeamTwoIncrement: () {
+                            setState(() {
+                              if (decl100TeamTwo < max100) decl100TeamTwo++;
+                            });
+                          },
+                          onTeamOneUndo: () {
+                            setState(() {
+                              if (decl100TeamOne > 0) decl100TeamOne--;
+                            });
+                          },
+                          onTeamTwoUndo: () {
+                            setState(() {
+                              if (decl100TeamTwo > 0) decl100TeamTwo--;
+                            });
+                          },
+                        ),
+                        _buildDeclarationRow(
+                          label: '150',
+                          teamOneCount: decl150TeamOne,
+                          teamTwoCount: decl150TeamTwo,
+                          onTeamOneIncrement: () {
+                            setState(() {
+                              if (decl150TeamOne < max150) decl150TeamOne++;
+                            });
+                          },
+                          onTeamTwoIncrement: () {
+                            setState(() {
+                              if (decl150TeamTwo < max150) decl150TeamTwo++;
+                            });
+                          },
+                          onTeamOneUndo: () {
+                            setState(() {
+                              if (decl150TeamOne > 0) decl150TeamOne--;
+                            });
+                          },
+                          onTeamTwoUndo: () {
+                            setState(() {
+                              if (decl150TeamTwo > 0) decl150TeamTwo--;
+                            });
+                          },
+                        ),
+                        _buildDeclarationRow(
+                          label: '200',
+                          teamOneCount: decl200TeamOne,
+                          teamTwoCount: decl200TeamTwo,
+                          onTeamOneIncrement: () {
+                            setState(() {
+                              if (decl200TeamOne < max200) decl200TeamOne++;
+                            });
+                          },
+                          onTeamTwoIncrement: () {
+                            setState(() {
+                              if (decl200TeamTwo < max200) decl200TeamTwo++;
+                            });
+                          },
+                          onTeamOneUndo: () {
+                            setState(() {
+                              if (decl200TeamOne > 0) decl200TeamOne--;
+                            });
+                          },
+                          onTeamTwoUndo: () {
+                            setState(() {
+                              if (decl200TeamTwo > 0) decl200TeamTwo--;
+                            });
+                          },
+                        ),
+                        _buildDeclarationRow(
+                          label: 'Štiglja',
+                          fontSize: 24,
+                          teamOneCount: declStigljaTeamOne,
+                          teamTwoCount: declStigljaTeamTwo,
+                          onTeamOneIncrement: () {
+                            setState(() {
+                              if (declStigljaTeamOne < maxStiglja && declStigljaTeamTwo == 0) {
+                                declStigljaTeamOne = 1;
+                                // Force score: team one gets full points, team two 0.
+                                activeScore = totalPoints.toString();
+                                hasStartedInput = true;
+                              }
+                            });
+                          },
+                          onTeamTwoIncrement: () {
+                            setState(() {
+                              if (declStigljaTeamTwo < maxStiglja && declStigljaTeamOne == 0) {
+                                declStigljaTeamTwo = 1;
+                                // Force score: team two gets full points, team one 0.
+                                activeScore = '0';
+                                hasStartedInput = true;
+                              }
+                            });
+                          },
+                          onTeamOneUndo: () {
+                            setState(() {
+                              if (declStigljaTeamOne > 0) {
+                                declStigljaTeamOne = 0;
+                                _clearScore();
+                              }
+                            });
+                          },
+                          onTeamTwoUndo: () {
+                            setState(() {
+                              if (declStigljaTeamTwo > 0) {
+                                declStigljaTeamTwo = 0;
+                                _clearScore();
+                              }
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  AddRoundButton(
+                    text: 'Spremi',
+                    color: theme.colorScheme.primary,
+                    isEnabled: isSaveEnabled,
+                    onPressed: isSaveEnabled ? _saveRound : () {},
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                AddRoundButton(
-                  text: 'Spremi',
-                  color: theme.colorScheme.primary,
-                  isEnabled: isSaveEnabled,
-                  onPressed: isSaveEnabled ? _saveRound : () {},
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-          ],
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );
