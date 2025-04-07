@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class NumericKeyboard extends StatelessWidget {
@@ -67,13 +69,19 @@ class NumericKeyboard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(2.0),
         child: ElevatedButton(
-          onPressed: enabled ? () => onPressed(text) : null,
+          onPressed:
+              enabled
+                  ? () {
+                    if (Platform.isIOS) {
+                      SystemSound.play(SystemSoundType.click);
+                    }
+                    onPressed(text);
+                  }
+                  : null,
           style: ElevatedButton.styleFrom(
-            backgroundColor: theme.colorScheme.surface,
-            foregroundColor: theme.colorScheme.onSurface,
-            disabledBackgroundColor: theme.colorScheme.surface.withValues(alpha: 0.5),
-            disabledForegroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-            overlayColor: theme.colorScheme.primary,
+            backgroundColor: enabled ? theme.colorScheme.surface : Colors.grey.shade300,
+            foregroundColor: enabled ? theme.colorScheme.onSurface : Colors.grey,
+            overlayColor: enabled ? theme.colorScheme.primary : Colors.transparent,
             padding: EdgeInsets.zero,
             elevation: 0,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
@@ -89,7 +97,12 @@ class NumericKeyboard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: ElevatedButton(
-          onPressed: onPressed,
+          onPressed: () {
+            if (Platform.isIOS) {
+              SystemSound.play(SystemSoundType.click);
+            }
+            onPressed();
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: theme.colorScheme.surface,
             foregroundColor: theme.colorScheme.onSurface,
