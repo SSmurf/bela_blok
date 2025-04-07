@@ -504,6 +504,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         );
                       }
                     },
+                    onLongPress: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder:
+                              (context) => RoundScreen(
+                                teamOneName: settings.teamOneName,
+                                teamTwoName: settings.teamTwoName,
+                                initialTabIndex: 1,
+                              ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

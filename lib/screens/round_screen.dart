@@ -10,7 +10,6 @@ import '../models/round.dart';
 import '../providers/game_provider.dart';
 import '../widgets/add_round_button.dart';
 
-// Constant font sizes for declarations and štiglja (independent of screen size).
 const double declarationFontSize = 28.0;
 const double stigljaFontSize = 26.0;
 
@@ -20,6 +19,7 @@ class RoundScreen extends ConsumerStatefulWidget {
   final int? roundIndex;
   final String teamOneName;
   final String teamTwoName;
+  final int initialTabIndex;
 
   const RoundScreen({
     super.key,
@@ -28,6 +28,7 @@ class RoundScreen extends ConsumerStatefulWidget {
     this.roundIndex,
     required this.teamOneName,
     required this.teamTwoName,
+    this.initialTabIndex = 0,
   });
 
   @override
@@ -60,7 +61,11 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: widget.initialTabIndex,
+    );
     isTeamOneSelected = widget.isTeamOneSelected;
 
     // If we're editing an existing round, initialize the scores and declarations.
@@ -96,6 +101,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     super.dispose();
   }
 
+  // The rest of the code remains unchanged.
   void _updateScore(String digit) {
     if (isScoreEditingDisabled) return;
     setState(() {

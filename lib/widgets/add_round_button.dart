@@ -4,6 +4,7 @@ import 'package:hugeicons/hugeicons.dart';
 class AddRoundButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
+  final VoidCallback? onLongPress;
   final Color color;
   final bool isEnabled;
 
@@ -13,6 +14,7 @@ class AddRoundButton extends StatelessWidget {
     required this.onPressed,
     required this.color,
     this.isEnabled = true,
+    this.onLongPress,
   });
 
   @override
@@ -22,8 +24,9 @@ class AddRoundButton extends StatelessWidget {
       width: 250.0,
       child: ElevatedButton.icon(
         onPressed: isEnabled ? onPressed : null,
+        onLongPress: isEnabled ? onLongPress : null,
         icon: Icon(HugeIcons.strokeRoundedPlusSign, size: 30.0),
-        label: Text(text, style: TextStyle(fontSize: 24.0)),
+        label: Text(text, style: const TextStyle(fontSize: 24.0)),
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: isEnabled ? color : color.withValues(alpha: 0.3),
