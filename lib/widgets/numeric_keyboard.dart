@@ -85,7 +85,7 @@ class NumericKeyboard extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: theme.colorScheme.surface,
             foregroundColor: theme.colorScheme.onSurface,
-            overlayColor: theme.colorScheme.primary.withValues(alpha: 0.5),
+            overlayColor: theme.colorScheme.primary,
             padding: EdgeInsets.zero,
             elevation: 0,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
@@ -105,6 +105,7 @@ class NumericKeyboard extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: theme.colorScheme.surface,
             foregroundColor: theme.colorScheme.onSurface,
+            overlayColor: theme.colorScheme.primary,
             elevation: 0,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           ),

@@ -109,7 +109,7 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
         textStyle: WidgetStateProperty.all(
           const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Nunito'),
         ),
-        splashFactory: NoSplash.splashFactory,
+        // splashFactory: NoSplash.splashFactory,
       ),
     ),
     textButtonTheme: TextButtonThemeData(
@@ -124,7 +124,7 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
         textStyle: WidgetStateProperty.all(
           const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Nunito'),
         ),
-        splashFactory: NoSplash.splashFactory,
+        // splashFactory: NoSplash.splashFactory,
         side: WidgetStateProperty.all(const BorderSide(color: Colors.transparent)),
         shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
       ),
