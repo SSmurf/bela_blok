@@ -61,11 +61,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(
-      length: 2,
-      vsync: this,
-      initialIndex: widget.initialTabIndex,
-    );
+    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.initialTabIndex);
     isTeamOneSelected = widget.isTeamOneSelected;
 
     // If we're editing an existing round, initialize the scores and declarations.
@@ -386,7 +382,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   children: [
                     AbsorbPointer(
                       absorbing: isScoreEditingDisabled,
