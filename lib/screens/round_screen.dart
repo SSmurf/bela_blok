@@ -392,6 +392,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                           onKeyPressed: _updateScore,
                           onDelete: _deleteDigit,
                           onClear: _clearScore,
+                          keysEnabled: !isScoreEditingDisabled,
                         ),
                       ),
                     ),

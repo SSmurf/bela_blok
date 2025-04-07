@@ -5,12 +5,14 @@ class NumericKeyboard extends StatelessWidget {
   final Function(String) onKeyPressed;
   final VoidCallback onDelete;
   final VoidCallback onClear;
+  final bool keysEnabled;
 
   const NumericKeyboard({
     super.key,
     required this.onKeyPressed,
     required this.onDelete,
     required this.onClear,
+    this.keysEnabled = true,
   });
 
   @override
@@ -59,32 +61,18 @@ class NumericKeyboard extends StatelessWidget {
     );
   }
 
-  // Widget _buildKeyButton(String text, Function(String) onPressed, ThemeData theme) {
-  //   return Expanded(
-  //     child: ElevatedButton(
-  //       onPressed: () => onPressed(text),
-  //       style: ButtonStyle(
-  //         backgroundColor: WidgetStateProperty.all(theme.colorScheme.surface),
-  //         foregroundColor: WidgetStateProperty.all(theme.colorScheme.onSurface),
-  //         elevation: WidgetStateProperty.all(0),
-  //         overlayColor: WidgetStateProperty.all(theme.colorScheme.primary.withValues(alpha: 0.5)),
-  //         // padding: WidgetStateProperty.all(EdgeInsets.zero),
-  //         shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
-  //       ),
-  //       child: Center(child: Text(text, style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold))),
-  //     ),
-  //   );
-  // }
-
   Widget _buildKeyButton(String text, Function(String) onPressed, ThemeData theme) {
+    final bool enabled = keysEnabled;
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(2.0),
         child: ElevatedButton(
-          onPressed: () => onPressed(text),
+          onPressed: enabled ? () => onPressed(text) : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: theme.colorScheme.surface,
             foregroundColor: theme.colorScheme.onSurface,
+            disabledBackgroundColor: theme.colorScheme.surface.withValues(alpha: 0.5),
+            disabledForegroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.4),
             overlayColor: theme.colorScheme.primary,
             padding: EdgeInsets.zero,
             elevation: 0,
