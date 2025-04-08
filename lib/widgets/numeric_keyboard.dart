@@ -69,7 +69,15 @@ class NumericKeyboard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(2.0),
         child: ElevatedButton(
-          onPressed: enabled ? () => onPressed(text) : null,
+          onPressed:
+              enabled
+                  ? () {
+                    if (Platform.isIOS) {
+                      SystemSound.play(SystemSoundType.click);
+                    }
+                    onPressed(text);
+                  }
+                  : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: theme.colorScheme.surface,
             foregroundColor: theme.colorScheme.onSurface,
