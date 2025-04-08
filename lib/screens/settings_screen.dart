@@ -28,6 +28,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   int _stigljaValue = 90;
   String _teamOneName = 'Mi';
   String _teamTwoName = 'Vi';
+  String _selectedLanguage = 'Hrvatski';
+
   final LocalStorageService _localStorageService = LocalStorageService();
 
   @override
@@ -298,6 +300,93 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Future<void> _showLanguageOptionsDialog(BuildContext context) async {
+    String selected = _selectedLanguage;
+    final result = await showDialog<String>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateSB) {
+            return AlertDialog(
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    RadioListTile<String>(
+                      title: const Text('Hrvatski 🇭🇷'),
+                      value: 'Hrvatski',
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      groupValue: selected,
+                      onChanged: (value) {
+                        setStateSB(() {
+                          selected = value!;
+                        });
+                      },
+                    ),
+                    RadioListTile<String>(
+                      title: const Text('English 🇬🇧'),
+                      value: 'English',
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      groupValue: selected,
+                      onChanged: (value) {
+                        setStateSB(() {
+                          selected = value!;
+                        });
+                      },
+                    ),
+                    RadioListTile<String>(
+                      title: const Text('Deutsch 🇩🇪'),
+                      value: 'Deutsch',
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      groupValue: selected,
+                      onChanged: (value) {
+                        setStateSB(() {
+                          selected = value!;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(null);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    elevation: 0,
+                  ),
+                  child: const Text('Odbaci', style: TextStyle(fontSize: 18)),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(selected);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    elevation: 0,
+                  ),
+                  child: const Text('Spremi', style: TextStyle(fontSize: 18)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+    if (result != null) {
+      setState(() {
+        _selectedLanguage = result;
+      });
+    }
+  }
+
   Future<void> _showTeamNamesDialog(BuildContext context) async {
     final teamOneController = TextEditingController(text: _teamOneName);
     final teamTwoController = TextEditingController(text: _teamTwoName);
@@ -309,10 +398,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text(
-            'Imena timova',
-            style: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
-          ),
           content: Form(
             key: formKey,
             child: Column(
@@ -509,12 +594,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 onTap: () => _showTeamNamesDialog(context),
               ),
-              // ListTile(
-              //   leading: const Icon(HugeIcons.strokeRoundedLanguageSkill),
-              //   title: const Text('Jezik'),
-              //   trailing: const Text('Hrvatski', style: TextStyle(fontSize: 14, fontFamily: 'Nunito')),
-              //   onTap: () {},
-              // ),
+              ListTile(
+                leading: const Icon(HugeIcons.strokeRoundedLanguageSkill),
+                title: const Text(
+                  'Jezik',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
+                trailing: Text(_selectedLanguage, style: const TextStyle(fontSize: 14, fontFamily: 'Nunito')),
+                onTap: () async {
+                  await _showLanguageOptionsDialog(context);
+                },
+              ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedIdea01),
                 title: const Text(
