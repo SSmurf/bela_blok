@@ -2,8 +2,10 @@ import 'package:bela_blok/models/theme_settings.dart';
 import 'package:bela_blok/providers/theme_provider.dart';
 import 'package:bela_blok/screens/home_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
+import 'package:bela_blok/utils/app_localizations.dart';
 import 'package:bela_blok/utils/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BelaBlokApp extends ConsumerStatefulWidget {
@@ -51,13 +53,18 @@ class _BelaBlokAppState extends ConsumerState<BelaBlokApp> {
                   ? ThemeMode.system
                   : (themeSettings.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
           builder: (context, child) {
-            final mediaQuery = MediaQuery.of(context);
-            print("Screen width: ${mediaQuery.size.width}, Screen height: ${mediaQuery.size.height}");
             return MediaQuery(
               data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
               child: child!,
             );
           },
+          localizationsDelegates: const [
+            AppLocalizationsDelegate(),
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [Locale('hr'), Locale('en'), Locale('de')],
           home: const HomeScreen(),
         );
       },

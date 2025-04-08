@@ -2,6 +2,7 @@ import 'package:bela_blok/models/app_settings.dart';
 import 'package:bela_blok/providers/settings_provider.dart';
 import 'package:bela_blok/screens/about_app_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
+import 'package:bela_blok/utils/app_localizations.dart';
 import 'package:bela_blok/widgets/delete_history_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,6 +33,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   final LocalStorageService _localStorageService = LocalStorageService();
 
+  Locale get _currentLocale {
+    switch (_selectedLanguage) {
+      case 'English':
+        return const Locale('en');
+      case 'Deutsch':
+        return const Locale('de');
+      case 'Hrvatski':
+      default:
+        return const Locale('hr');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -60,7 +73,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  Future<void> _showGoalOptionsDialog(BuildContext context) async {
+  Future<void> _showGoalOptionsDialog(BuildContext context, AppLocalizations loc) async {
     // Store the original goal in case the dialog is dismissed.
     final int originalGoal = _goalScore;
     // Ensure the selected option is one of the predefined values.
@@ -117,7 +130,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               actions: [
                 ElevatedButton(
                   onPressed: () {
-                    // "Odbaci": revert to original goal.
                     Navigator.of(context).pop(null);
                   },
                   style: ElevatedButton.styleFrom(
@@ -126,7 +138,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
                   ),
-                  child: const Text('Odbaci', style: TextStyle(fontSize: 18)),
+                  child: Text(loc.translate('cancel'), style: const TextStyle(fontSize: 18)),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -151,7 +163,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
                   ),
-                  child: const Text('Spremi', style: TextStyle(fontSize: 18)),
+                  child: Text(loc.translate('save'), style: const TextStyle(fontSize: 18)),
                 ),
               ],
             );
@@ -160,8 +172,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       },
     );
 
-    // Process dialog result.
-    // If result is not null, apply the new goal; else revert to the original goal.
     if (result != null) {
       setState(() {
         _goalScore = result;
@@ -180,20 +190,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  Future<void> _showStigljaOptionsDialog(BuildContext context) async {
-    // Store the original stiglja value in case the dialog is dismissed.
+  Future<void> _showStigljaOptionsDialog(BuildContext context, AppLocalizations loc) async {
     final int originalStiglja = _stigljaValue;
-    // Ensure the selected option is one of the predefined values.
     int selectedOption = (_stigljaValue == 90 || _stigljaValue == 100) ? _stigljaValue : 90;
 
     final result = await showDialog<int>(
       context: context,
-      barrierDismissible: true, // Allow the user to tap outside
+      barrierDismissible: true,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setStateSB) {
             return AlertDialog(
-              // No title.
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -226,7 +233,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               actions: [
                 ElevatedButton(
                   onPressed: () {
-                    // "Odbaci": revert to original stiglja value.
                     Navigator.of(context).pop(null);
                   },
                   style: ElevatedButton.styleFrom(
@@ -235,7 +241,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
                   ),
-                  child: const Text('Odbaci', style: TextStyle(fontSize: 18)),
+                  child: Text(loc.translate('cancel'), style: const TextStyle(fontSize: 18)),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -260,7 +266,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
                   ),
-                  child: const Text('Spremi', style: TextStyle(fontSize: 18)),
+                  child: Text(loc.translate('save'), style: const TextStyle(fontSize: 18)),
                 ),
               ],
             );
@@ -269,8 +275,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       },
     );
 
-    // Process dialog result.
-    // If result is not null, apply the new stiglja value; otherwise, revert to the original value.
     if (result != null) {
       setState(() {
         _stigljaValue = result;
@@ -289,18 +293,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  void _toggleWakelock(bool value) async {
-    setState(() {
-      _keepScreenOn = value;
-    });
-    if (value) {
-      await WakelockPlus.enable();
-    } else {
-      await WakelockPlus.disable();
-    }
-  }
-
-  Future<void> _showLanguageOptionsDialog(BuildContext context) async {
+  Future<void> _showLanguageOptionsDialog(BuildContext context, AppLocalizations loc) async {
     String selected = _selectedLanguage;
     final result = await showDialog<String>(
       context: context,
@@ -309,6 +302,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return StatefulBuilder(
           builder: (context, setStateSB) {
             return AlertDialog(
+              title: Text(
+                loc.translate('language'),
+                style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
+              ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -360,7 +357,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
                   ),
-                  child: const Text('Odbaci', style: TextStyle(fontSize: 18)),
+                  child: Text(loc.translate('cancel'), style: const TextStyle(fontSize: 18)),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -372,7 +369,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
                   ),
-                  child: const Text('Spremi', style: TextStyle(fontSize: 18)),
+                  child: Text(loc.translate('save'), style: const TextStyle(fontSize: 18)),
                 ),
               ],
             );
@@ -387,17 +384,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  Future<void> _showTeamNamesDialog(BuildContext context) async {
+  Future<void> _showTeamNamesDialog(BuildContext context, AppLocalizations loc) async {
     final teamOneController = TextEditingController(text: _teamOneName);
     final teamTwoController = TextEditingController(text: _teamTwoName);
 
-    // Create keys for form validation
     final formKey = GlobalKey<FormState>();
 
     final result = await showDialog<Map<String, String>>(
       context: context,
       builder: (context) {
         return AlertDialog(
+          title: Text(
+            loc.translate('teamNames'),
+            style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
+          ),
           content: Form(
             key: formKey,
             child: Column(
@@ -451,9 +451,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 elevation: 0,
               ),
-              child: const Text(
-                'Odustani',
-                style: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
+              child: Text(
+                loc.translate('cancel'),
+                style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
               ),
             ),
             ElevatedButton(
@@ -470,9 +470,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 elevation: 0,
               ),
-              child: const Text(
-                'Spremi',
-                style: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
+              child: Text(
+                loc.translate('save'),
+                style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
               ),
             ),
           ],
@@ -504,7 +504,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   String _formatTeamNames(String teamOne, String teamTwo) {
     final combined = '$teamOne, $teamTwo';
-    final halfLimit = 12;
+    const halfLimit = 12;
 
     if (combined.length <= 24) {
       return combined;
@@ -540,12 +540,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
+  void _toggleWakelock(bool value) async {
+    setState(() {
+      _keepScreenOn = value;
+    });
+    if (value) {
+      await WakelockPlus.enable();
+    } else {
+      await WakelockPlus.disable();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations(_currentLocale);
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Theme.of(context).colorScheme.surface,
-        title: const Text('Postavke', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito')),
+        title: Text(
+          loc.translate('settings'),
+          style: const TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+        ),
         leading: IconButton(
           onPressed: Navigator.of(context).pop,
           icon: Icon(HugeIcons.strokeRoundedArrowLeft01, size: 30),
@@ -559,57 +574,59 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedChampion),
-                title: const Text(
-                  'Igra se do',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                title: Text(
+                  loc.translate('gameTo'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
                 trailing: Text(
                   _goalScore.toString(),
                   style: const TextStyle(fontSize: 14, fontFamily: 'Nunito'),
                 ),
-                onTap: () => _showGoalOptionsDialog(context),
+                onTap: () => _showGoalOptionsDialog(context, loc),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedCards02),
-                title: const Text(
-                  'Vrijednost štiglje',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                title: Text(
+                  loc.translate('stigljaValue'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
                 trailing: Text(
                   _stigljaValue.toString(),
                   style: const TextStyle(fontSize: 14, fontFamily: 'Nunito'),
                 ),
-                onTap: () => _showStigljaOptionsDialog(context),
+                onTap: () => _showStigljaOptionsDialog(context, loc),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedUserEdit01),
-                title: const Text(
-                  'Imena timova',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                title: Text(
+                  loc.translate('teamNames'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
                 trailing: Text(
                   _formatTeamNames(_teamOneName, _teamTwoName),
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 14, fontFamily: 'Nunito'),
                 ),
-                onTap: () => _showTeamNamesDialog(context),
+                onTap: () => _showTeamNamesDialog(context, loc),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedLanguageSkill),
-                title: const Text(
-                  'Jezik',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                title: Text(
+                  loc.translate('language'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
                 trailing: Text(_selectedLanguage, style: const TextStyle(fontSize: 14, fontFamily: 'Nunito')),
                 onTap: () async {
-                  await _showLanguageOptionsDialog(context);
+                  await _showLanguageOptionsDialog(context, loc);
+                  // Force rebuild to have changes reflected.
+                  setState(() {});
                 },
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedIdea01),
-                title: const Text(
-                  'Drži zaslon upaljen',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                title: Text(
+                  loc.translate('keepScreenOn'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
                 trailing: Transform.scale(
                   scale: 0.9,
@@ -619,27 +636,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedPaintBoard),
-                title: const Text(
-                  'Dizajn',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                title: Text(
+                  loc.translate('design'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _showThemeOptions(context),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedBookOpen01),
-                title: const Text(
-                  'Pravila bele',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                title: Text(
+                  loc.translate('rules'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _launchURL(rulesUrl),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedBookOpen02),
-                title: const Text(
-                  'Nepisana pravila bele',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                title: Text(
+                  loc.translate('unspokenRules'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _launchURL(unspokenRulesUrl),
@@ -647,13 +664,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const DeleteHistoryTile(),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedInformationSquare),
-                title: const Text(
-                  'O aplikaciji',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                title: Text(
+                  loc.translate('aboutApp'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => AboutAppScreen()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AboutAppScreen()));
                 },
               ),
             ],
