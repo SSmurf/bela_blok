@@ -7,6 +7,7 @@ import 'package:bela_blok/screens/settings_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/services/score_calculator.dart';
 import 'package:bela_blok/widgets/add_round_button.dart';
+import 'package:bela_blok/widgets/landscape_total_score_display.dart';
 import 'package:bela_blok/widgets/round_display.dart';
 import 'package:bela_blok/widgets/total_score_display.dart';
 import 'package:flutter/material.dart';
@@ -177,6 +178,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final mediaPadding = MediaQuery.of(context).padding;
     final bool hasNavigationBar = mediaPadding.bottom > 34;
+    final orientation = MediaQuery.of(context).orientation;
 
     if (gameEnded) {
       if (teamOneTotal > teamTwoTotal) {
@@ -198,6 +200,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       setState(() {
         _gameSaved = true;
       });
+    }
+
+    if (orientation == Orientation.landscape) {
+      double horizontalPadding = MediaQuery.of(context).size.width <= 640 ? 16 : 64;
+      return Scaffold(
+        body: Padding(
+          padding: EdgeInsets.symmetric(vertical: 64, horizontal: horizontalPadding),
+          child: Center(
+            child: LandscapeTotalScoreDisplay(
+              scoreTeamOne: teamOneTotal,
+              scoreTeamTwo: teamTwoTotal,
+              teamOneName: settings.teamOneName,
+              teamTwoName: settings.teamTwoName,
+            ),
+          ),
+        ),
+      );
     }
 
     return SafeArea(
