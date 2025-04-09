@@ -26,8 +26,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _gameSaved = false;
   final LocalStorageService _localStorageService = LocalStorageService();
 
+  EdgeInsets _getDialogPadding(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth <= 360;
+
+    return isSmallScreen
+        ? const EdgeInsets.symmetric(horizontal: 8, vertical: 8)
+        : const EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+  }
+
   void _confirmClearGame(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth <= 360;
+    final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
+
     showDialog(
       context: context,
       builder:
@@ -36,37 +49,58 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               loc.translate('clearGameTitle'),
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
             ),
+            contentPadding:
+                isSmallScreen
+                    ? const EdgeInsets.fromLTRB(16, 16, 16, 0)
+                    : const EdgeInsets.fromLTRB(24, 20, 24, 0),
             content: Text(
               loc.translate('clearGameContent'),
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
             ),
             actionsAlignment: MainAxisAlignment.spaceEvenly,
+            actionsPadding: _getDialogPadding(context),
             actions: [
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  elevation: 0,
-                ),
-                child: Text(loc.translate('cancel'), style: const TextStyle(fontSize: 18)),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  ref.read(currentGameProvider.notifier).clearRounds();
-                  setState(() {
-                    _gameSaved = false;
-                  });
-                  Navigator.of(context).pop();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  elevation: 0,
-                ),
-                child: Text(loc.translate('delete'), style: const TextStyle(fontSize: 18)),
+              OverflowBar(
+                alignment: MainAxisAlignment.spaceEvenly,
+                spacing: isSmallScreen ? 8 : 16,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 0,
+                      minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                      padding:
+                          isSmallScreen
+                              ? const EdgeInsets.symmetric(horizontal: 8)
+                              : const EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      ref.read(currentGameProvider.notifier).clearRounds();
+                      setState(() {
+                        _gameSaved = false;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 0,
+                      minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                      padding:
+                          isSmallScreen
+                              ? const EdgeInsets.symmetric(horizontal: 8)
+                              : const EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    child: Text(loc.translate('delete'), style: TextStyle(fontSize: buttonFontSize)),
+                  ),
+                ],
               ),
             ],
           ),
@@ -448,6 +482,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   ),
                                   direction: DismissDirection.endToStart,
                                   confirmDismiss: (_) async {
+                                    final screenWidth = MediaQuery.of(context).size.width;
+                                    final isSmallScreen = screenWidth <= 360;
+                                    final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
+
                                     return await showDialog<bool>(
                                           context: context,
                                           builder:
@@ -460,6 +498,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                     fontFamily: 'Nunito',
                                                   ),
                                                 ),
+                                                contentPadding:
+                                                    isSmallScreen
+                                                        ? const EdgeInsets.fromLTRB(16, 16, 16, 0)
+                                                        : const EdgeInsets.fromLTRB(24, 20, 24, 0),
                                                 content: Text(
                                                   loc.translate('deleteRoundContent'),
                                                   style: const TextStyle(
@@ -469,37 +511,65 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                   ),
                                                 ),
                                                 actionsAlignment: MainAxisAlignment.spaceEvenly,
+                                                actionsPadding: _getDialogPadding(context),
                                                 actions: [
-                                                  ElevatedButton(
-                                                    onPressed: () => Navigator.of(context).pop(false),
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor: Theme.of(context).colorScheme.primary,
-                                                      foregroundColor: Colors.white,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(8),
+                                                  OverflowBar(
+                                                    alignment: MainAxisAlignment.spaceEvenly,
+                                                    spacing: isSmallScreen ? 8 : 16,
+                                                    children: [
+                                                      ElevatedButton(
+                                                        onPressed: () => Navigator.of(context).pop(false),
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor:
+                                                              Theme.of(context).colorScheme.primary,
+                                                          foregroundColor: Colors.white,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(8),
+                                                          ),
+                                                          elevation: 0,
+                                                          minimumSize:
+                                                              isSmallScreen
+                                                                  ? const Size(90, 40)
+                                                                  : const Size(100, 40),
+                                                          padding:
+                                                              isSmallScreen
+                                                                  ? const EdgeInsets.symmetric(horizontal: 8)
+                                                                  : const EdgeInsets.symmetric(
+                                                                    horizontal: 16,
+                                                                  ),
+                                                        ),
+                                                        child: Text(
+                                                          loc.translate('cancel'),
+                                                          style: TextStyle(fontSize: buttonFontSize),
+                                                        ),
                                                       ),
-                                                      elevation: 0,
-                                                    ),
-                                                    child: Text(
-                                                      loc.translate('cancel'),
-                                                      style: TextStyle(fontSize: 18),
-                                                    ),
-                                                  ),
-                                                  ElevatedButton(
-                                                    onPressed: () => Navigator.of(context).pop(true),
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor:
-                                                          Theme.of(context).colorScheme.secondary,
-                                                      foregroundColor: Colors.white,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(8),
+                                                      ElevatedButton(
+                                                        onPressed: () => Navigator.of(context).pop(true),
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor:
+                                                              Theme.of(context).colorScheme.secondary,
+                                                          foregroundColor: Colors.white,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(8),
+                                                          ),
+                                                          elevation: 0,
+                                                          minimumSize:
+                                                              isSmallScreen
+                                                                  ? const Size(90, 40)
+                                                                  : const Size(100, 40),
+                                                          padding:
+                                                              isSmallScreen
+                                                                  ? const EdgeInsets.symmetric(horizontal: 8)
+                                                                  : const EdgeInsets.symmetric(
+                                                                    horizontal: 16,
+                                                                  ),
+                                                        ),
+                                                        child: Text(
+                                                          loc.translate('delete'),
+                                                          style: TextStyle(fontSize: buttonFontSize),
+                                                        ),
                                                       ),
-                                                      elevation: 0,
-                                                    ),
-                                                    child: Text(
-                                                      loc.translate('delete'),
-                                                      style: TextStyle(fontSize: 18),
-                                                    ),
+                                                    ],
                                                   ),
                                                 ],
                                               ),

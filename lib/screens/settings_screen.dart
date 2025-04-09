@@ -80,6 +80,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  EdgeInsets _getDialogPadding(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth <= 360;
+
+    return isSmallScreen
+        ? const EdgeInsets.symmetric(horizontal: 8, vertical: 8)
+        : const EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+  }
+
   Future<void> _showGoalOptionsDialog(BuildContext context, AppLocalizations loc) async {
     final int originalGoal = _goalScore;
     int selectedOption = (_goalScore == 501 || _goalScore == 701 || _goalScore == 1001) ? _goalScore : 1001;
@@ -90,7 +99,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setStateSB) {
+            final screenWidth = MediaQuery.of(context).size.width;
+            final isSmallScreen = screenWidth <= 360;
+            final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
+
             return AlertDialog(
+              contentPadding:
+                  isSmallScreen
+                      ? const EdgeInsets.fromLTRB(16, 16, 16, 0)
+                      : const EdgeInsets.fromLTRB(24, 20, 24, 0),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -130,51 +147,68 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ],
               ),
               actionsAlignment: MainAxisAlignment.spaceEvenly,
+              actionsPadding: _getDialogPadding(context),
               actions: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(null);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                  ),
-                  child: Text(loc.translate('cancel'), style: const TextStyle(fontSize: 18)),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _goalScore = selectedOption;
-                    });
-                    ref.read(settingsProvider.notifier).state = AppSettings(
-                      goalScore: _goalScore,
-                      stigljaValue: _stigljaValue,
-                      teamOneName: _teamOneName,
-                      teamTwoName: _teamTwoName,
-                    );
-                    _localStorageService.saveSettings({
-                      'goalScore': _goalScore,
-                      'stigljaValue': _stigljaValue,
-                      'teamOneName': _teamOneName,
-                      'teamTwoName': _teamTwoName,
-                      'selectedLanguage':
-                          ref.read(languageProvider).languageCode == 'en'
-                              ? 'English'
-                              : ref.read(languageProvider).languageCode == 'de'
-                              ? 'Deutsch'
-                              : 'Hrvatski',
-                    });
-                    Navigator.of(context).pop(_goalScore);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                  ),
-                  child: Text(loc.translate('save'), style: const TextStyle(fontSize: 18)),
+                OverflowBar(
+                  alignment: MainAxisAlignment.spaceEvenly,
+                  spacing: isSmallScreen ? 8 : 16,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(null);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                        padding:
+                            isSmallScreen
+                                ? const EdgeInsets.symmetric(horizontal: 8)
+                                : const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _goalScore = selectedOption;
+                        });
+                        ref.read(settingsProvider.notifier).state = AppSettings(
+                          goalScore: _goalScore,
+                          stigljaValue: _stigljaValue,
+                          teamOneName: _teamOneName,
+                          teamTwoName: _teamTwoName,
+                        );
+                        _localStorageService.saveSettings({
+                          'goalScore': _goalScore,
+                          'stigljaValue': _stigljaValue,
+                          'teamOneName': _teamOneName,
+                          'teamTwoName': _teamTwoName,
+                          'selectedLanguage':
+                              ref.read(languageProvider).languageCode == 'en'
+                                  ? 'English'
+                                  : ref.read(languageProvider).languageCode == 'de'
+                                  ? 'Deutsch'
+                                  : 'Hrvatski',
+                        });
+                        Navigator.of(context).pop(_goalScore);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                        padding:
+                            isSmallScreen
+                                ? const EdgeInsets.symmetric(horizontal: 8)
+                                : const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      child: Text(loc.translate('save'), style: TextStyle(fontSize: buttonFontSize)),
+                    ),
+                  ],
                 ),
               ],
             );
@@ -183,6 +217,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       },
     );
 
+    // Rest of the method remains the same
     if (result != null) {
       setState(() {
         _goalScore = result;
@@ -222,7 +257,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setStateSB) {
+            final screenWidth = MediaQuery.of(context).size.width;
+            final isSmallScreen = screenWidth <= 360;
+            final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
+
             return AlertDialog(
+              contentPadding:
+                  isSmallScreen
+                      ? const EdgeInsets.fromLTRB(16, 16, 16, 0)
+                      : const EdgeInsets.fromLTRB(24, 20, 24, 0),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -253,51 +296,68 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
               ),
               actionsAlignment: MainAxisAlignment.spaceEvenly,
+              actionsPadding: _getDialogPadding(context),
               actions: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(null);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                  ),
-                  child: Text(loc.translate('cancel'), style: const TextStyle(fontSize: 18)),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _stigljaValue = selectedOption;
-                    });
-                    ref.read(settingsProvider.notifier).state = AppSettings(
-                      goalScore: _goalScore,
-                      stigljaValue: _stigljaValue,
-                      teamOneName: _teamOneName,
-                      teamTwoName: _teamTwoName,
-                    );
-                    _localStorageService.saveSettings({
-                      'goalScore': _goalScore,
-                      'stigljaValue': _stigljaValue,
-                      'teamOneName': _teamOneName,
-                      'teamTwoName': _teamTwoName,
-                      'selectedLanguage':
-                          ref.read(languageProvider).languageCode == 'en'
-                              ? 'English'
-                              : ref.read(languageProvider).languageCode == 'de'
-                              ? 'Deutsch'
-                              : 'Hrvatski',
-                    });
-                    Navigator.of(context).pop(_stigljaValue);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                  ),
-                  child: Text(loc.translate('save'), style: const TextStyle(fontSize: 18)),
+                OverflowBar(
+                  alignment: MainAxisAlignment.spaceEvenly,
+                  spacing: isSmallScreen ? 8 : 16,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(null);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                        padding:
+                            isSmallScreen
+                                ? const EdgeInsets.symmetric(horizontal: 8)
+                                : const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _stigljaValue = selectedOption;
+                        });
+                        ref.read(settingsProvider.notifier).state = AppSettings(
+                          goalScore: _goalScore,
+                          stigljaValue: _stigljaValue,
+                          teamOneName: _teamOneName,
+                          teamTwoName: _teamTwoName,
+                        );
+                        _localStorageService.saveSettings({
+                          'goalScore': _goalScore,
+                          'stigljaValue': _stigljaValue,
+                          'teamOneName': _teamOneName,
+                          'teamTwoName': _teamTwoName,
+                          'selectedLanguage':
+                              ref.read(languageProvider).languageCode == 'en'
+                                  ? 'English'
+                                  : ref.read(languageProvider).languageCode == 'de'
+                                  ? 'Deutsch'
+                                  : 'Hrvatski',
+                        });
+                        Navigator.of(context).pop(_stigljaValue);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                        padding:
+                            isSmallScreen
+                                ? const EdgeInsets.symmetric(horizontal: 8)
+                                : const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      child: Text(loc.translate('save'), style: TextStyle(fontSize: buttonFontSize)),
+                    ),
+                  ],
                 ),
               ],
             );
@@ -352,7 +412,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setStateSB) {
+            final screenWidth = MediaQuery.of(context).size.width;
+            final isSmallScreen = screenWidth <= 360;
+            final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
+
             return AlertDialog(
+              contentPadding:
+                  isSmallScreen
+                      ? const EdgeInsets.fromLTRB(16, 16, 16, 0)
+                      : const EdgeInsets.fromLTRB(24, 20, 24, 0),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -393,30 +461,47 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ],
                 ),
               ),
+              actionsPadding: _getDialogPadding(context),
               actions: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(null);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                  ),
-                  child: Text(loc.translate('cancel'), style: const TextStyle(fontSize: 18)),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(selected);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                  ),
-                  child: Text(loc.translate('save'), style: const TextStyle(fontSize: 18)),
+                OverflowBar(
+                  alignment: MainAxisAlignment.spaceEvenly,
+                  spacing: isSmallScreen ? 8 : 16,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(null);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                        padding:
+                            isSmallScreen
+                                ? const EdgeInsets.symmetric(horizontal: 8)
+                                : const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(selected);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                        padding:
+                            isSmallScreen
+                                ? const EdgeInsets.symmetric(horizontal: 8)
+                                : const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      child: Text(loc.translate('save'), style: TextStyle(fontSize: buttonFontSize)),
+                    ),
+                  ],
                 ),
               ],
             );
@@ -424,6 +509,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         );
       },
     );
+
     if (result != null) {
       Locale newLocale;
       if (result == 'English') {
@@ -474,8 +560,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _showTeamNamesDialog(BuildContext context, AppLocalizations loc) async {
     final teamOneController = TextEditingController(text: _teamOneName);
     final teamTwoController = TextEditingController(text: _teamTwoName);
-
     final formKey = GlobalKey<FormState>();
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth <= 360;
 
     final result = await showDialog<Map<String, String>>(
       context: context,
@@ -485,6 +572,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             loc.translate('teamNames'),
             style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
           ),
+          contentPadding:
+              isSmallScreen
+                  ? const EdgeInsets.fromLTRB(16, 16, 16, 0)
+                  : const EdgeInsets.fromLTRB(24, 20, 24, 0),
           content: Form(
             key: formKey,
             child: Column(
@@ -529,38 +620,63 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
           actionsAlignment: MainAxisAlignment.spaceEvenly,
+          actionsPadding: _getDialogPadding(context),
           actions: [
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                elevation: 0,
-              ),
-              child: Text(
-                loc.translate('cancel'),
-                style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (formKey.currentState!.validate()) {
-                  final teamOne = teamOneController.text.trim();
-                  final teamTwo = teamTwoController.text.trim();
-                  Navigator.of(context).pop({'teamOne': teamOne, 'teamTwo': teamTwo});
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                elevation: 0,
-              ),
-              child: Text(
-                loc.translate('save'),
-                style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
-              ),
+            OverflowBar(
+              alignment: MainAxisAlignment.spaceEvenly,
+              spacing: isSmallScreen ? 8 : 16,
+              children: [
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    elevation: 0,
+                    minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                    padding:
+                        isSmallScreen
+                            ? const EdgeInsets.symmetric(horizontal: 8)
+                            : const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  child: Text(
+                    loc.translate('cancel'),
+                    style: TextStyle(
+                      fontFamily: 'Nunito',
+                      fontWeight: FontWeight.w500,
+                      fontSize: isSmallScreen ? 16 : 18,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      final teamOne = teamOneController.text.trim();
+                      final teamTwo = teamTwoController.text.trim();
+                      Navigator.of(context).pop({'teamOne': teamOne, 'teamTwo': teamTwo});
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    elevation: 0,
+                    minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                    padding:
+                        isSmallScreen
+                            ? const EdgeInsets.symmetric(horizontal: 8)
+                            : const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  child: Text(
+                    loc.translate('save'),
+                    style: TextStyle(
+                      fontFamily: 'Nunito',
+                      fontWeight: FontWeight.w500,
+                      fontSize: isSmallScreen ? 16 : 18,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -596,6 +712,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   String _formatTeamNames(String teamOne, String teamTwo) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth <= 360;
+
+    if (isSmallScreen) {
+      const smallScreenLimit = 5;
+
+      String formattedTeamOne =
+          teamOne.length <= smallScreenLimit ? teamOne : '${teamOne.substring(0, smallScreenLimit)}...';
+
+      String formattedTeamTwo =
+          teamTwo.length <= smallScreenLimit ? teamTwo : '${teamTwo.substring(0, smallScreenLimit)}...';
+
+      return '$formattedTeamOne, $formattedTeamTwo';
+    }
+
     final combined = '$teamOne, $teamTwo';
     const halfLimit = 12;
 
@@ -663,7 +794,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListView(
-            physics: const NeverScrollableScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             children: [
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedChampion),
