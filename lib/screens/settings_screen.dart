@@ -131,6 +131,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ],
                 ),
               ),
+              actionsAlignment: MainAxisAlignment.spaceEvenly,
               actions: [
                 ElevatedButton(
                   onPressed: () {
@@ -253,6 +254,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ],
                 ),
               ),
+              actionsAlignment: MainAxisAlignment.spaceEvenly,
               actions: [
                 ElevatedButton(
                   onPressed: () {
