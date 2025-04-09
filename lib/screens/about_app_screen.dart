@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../utils/app_localizations.dart';
 
 class AboutAppScreen extends StatelessWidget {
   const AboutAppScreen({super.key});
@@ -14,6 +15,7 @@ class AboutAppScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final onSurfaceColor = Theme.of(context).colorScheme.onSurface;
 
     return Scaffold(
@@ -23,9 +25,9 @@ class AboutAppScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         surfaceTintColor: Theme.of(context).colorScheme.surface,
-        title: const Text(
-          'O aplikaciji',
-          style: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500),
+        title: Text(
+          loc.translate('aboutApp'),
+          style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500),
         ),
       ),
       body: SingleChildScrollView(
@@ -35,35 +37,35 @@ class AboutAppScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Općenito',
+                loc.translate('general'),
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
               ),
               const SizedBox(height: 8),
               Text(
-                'Bela Blok je aplikacija namijenjena ljubiteljima igre bele. Aplikacija omogućuje jednostavno vođenje rezultata, pregled povijesti partija te prilagodbu izgleda prema vašem ukusu. Sve je osmišljeno s lakoćom korištenja, a dizajn koristi moderne principe kako bi vam pružio ugodno iskustvo.',
+                loc.translate('aboutDesc1'),
                 style: Theme.of(
                   context,
                 ).textTheme.bodyMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
               ),
               const SizedBox(height: 8),
               Text(
-                'Aplikacija koristi lokalnu pohranu kako bi zadržala vaše postavke i podatke o igri. Svi podaci ostaju privatni i pohranjuju se unutar uređaja.',
+                loc.translate('aboutDesc2'),
                 style: Theme.of(
                   context,
                 ).textTheme.bodyMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
               ),
               const SizedBox(height: 24),
               Text(
-                'Ostali bela blokovi',
+                loc.translate('otherAppsTitle'),
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
               ),
               const SizedBox(height: 8),
               Text(
-                'Isprobajte i ostale aplikacije za praćenje rezultata u beli. One su bile inspiracija ovoj aplikacijii.',
+                loc.translate('otherAppsDesc'),
                 style: Theme.of(
                   context,
                 ).textTheme.bodyMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
@@ -116,10 +118,9 @@ class AboutAppScreen extends StatelessWidget {
                 ),
                 onTap: () => _launchUrl('https://apps.apple.com/hr/app/bela-blok/id6475651480'),
               ),
-
               const SizedBox(height: 24),
               Text(
-                'Developer',
+                loc.translate('developer'),
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
@@ -147,7 +148,7 @@ class AboutAppScreen extends StatelessWidget {
                               ).textTheme.titleMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
                             ),
                             Text(
-                              'Student FER-a',
+                              loc.translate('ferStudent'),
                               style: Theme.of(
                                 context,
                               ).textTheme.bodyMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),

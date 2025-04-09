@@ -38,6 +38,19 @@ class AppLocalizations {
       'colorRed': 'Crvena',
       'colorPurple': 'Ljubičasta',
       'colorGold': 'Zlatna',
+      'general': 'Općenito',
+      'aboutDesc1':
+          'Bela Blok je aplikacija namijenjena ljubiteljima igre bele. Aplikacija omogućuje jednostavno vođenje rezultata, pregled povijesti partija te prilagodbu izgleda prema vašem ukusu. Sve je osmišljeno s lakoćom korištenja, a dizajn koristi moderne principe kako bi vam pružio ugodno iskustvo.',
+      'aboutDesc2':
+          'Aplikacija koristi lokalnu pohranu kako bi zadržala vaše postavke i podatke o igri. Svi podaci ostaju privatni i pohranjuju se unutar uređaja.',
+      'otherAppsTitle': 'Ostali bela blokovi',
+      'otherAppsDesc':
+          'Isprobajte i ostale aplikacije za praćenje rezultata u beli. One su bile inspiracija ovoj aplikaciji.',
+      'developer': 'Developer',
+      'historyTitle': 'Povijest igara',
+      'historyError': 'Došlo je do greške pri učitavanju igara.',
+      'noSavedGames': 'Nema spremljenih igara.',
+      'ferStudent': 'Student FER-a',
     },
     'en': {
       'settings': 'Settings',
@@ -56,17 +69,29 @@ class AppLocalizations {
       'deleteHistoryDialogTitle': 'Delete History',
       'deleteHistoryDialogContent': 'Are you sure you want to delete the game history?',
       'delete': 'Delete',
-      'themeSettings': 'Theme Settings',
+      'themeSettings': 'Theme settings',
       'systemTheme': 'Use system theme',
       'systemThemeSubtitle': 'Follow device settings',
       'darkMode': 'Dark mode',
-      'colorPalette': 'App Color Palette',
+      'colorPalette': 'App color palette',
       'apply': 'Apply',
       'colorGreen': 'Green',
       'colorBlue': 'Blue',
       'colorRed': 'Red',
       'colorPurple': 'Purple',
       'colorGold': 'Gold',
+      'general': 'General',
+      'aboutDesc1':
+          'Bela Blok is an app for lovers of belote. It makes score keeping, reviewing game history, and customizing the appearance very easy. The design is based on modern principles to provide you a pleasant experience.',
+      'aboutDesc2':
+          'The app uses local storage to save your settings and game data. All data remains private and is stored on your device.',
+      'otherAppsTitle': 'Other Bela Apps',
+      'otherAppsDesc': 'Try other belote score tracking apps. They inspired this one.',
+      'developer': 'Developer',
+      'historyTitle': 'Game history',
+      'historyError': 'An error occurred while loading games.',
+      'noSavedGames': 'No saved games.',
+      'ferStudent': 'FER student',
     },
     'de': {
       'settings': 'Einstellungen',
@@ -96,6 +121,19 @@ class AppLocalizations {
       'colorRed': 'Rot',
       'colorPurple': 'Lila',
       'colorGold': 'Gold',
+      'general': 'Allgemein',
+      'aboutDesc1':
+          'Bela Blok ist eine App für Liebhaber von Belote. Sie ermöglicht die einfache Punkteverwaltung, die Überprüfung der Spielhistorie und die Anpassung des Designs entsprechend Ihrem Geschmack. Alles ist so gestaltet, dass es leicht zu bedienen ist, und das Design folgt modernen Prinzipien, um Ihnen ein angenehmes Erlebnis zu bieten.',
+      'aboutDesc2':
+          'Die App verwendet lokalen Speicher, um Ihre Einstellungen und Spieldaten zu speichern. Alle Daten bleiben privat und werden auf Ihrem Gerät gespeichert.',
+      'otherAppsTitle': 'Weitere Bela Apps',
+      'otherAppsDesc':
+          'Probieren Sie auch unsere anderen Apps zur Punktverfolgung bei Belote aus, die diese App inspiriert haben.',
+      'developer': 'Entwickler',
+      'historyTitle': 'Spielhistorie',
+      'historyError': 'Beim Laden der Spiele ist ein Fehler aufgetreten.',
+      'noSavedGames': 'Keine gespeicherten Spiele.',
+      'ferStudent': 'FER Student',
     },
   };
 

@@ -3,6 +3,7 @@ import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import '../widgets/finished_game_display.dart';
+import '../utils/app_localizations.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -23,12 +24,14 @@ class HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Theme.of(context).colorScheme.surface,
-        title: const Text(
-          'Povijest igara',
-          style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+        title: Text(
+          loc.translate('historyTitle'),
+          style: const TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
         ),
         leading: IconButton(
           onPressed: Navigator.of(context).pop,
@@ -44,20 +47,20 @@ class HistoryScreenState extends State<HistoryScreen> {
               return const Center(child: CircularProgressIndicator());
             }
             if (snapshot.hasError) {
-              return const Center(
+              return Center(
                 child: Text(
-                  'Došlo je do greške pri učitavanju igara.',
-                  style: TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
+                  loc.translate('historyError'),
+                  style: const TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
                   textAlign: TextAlign.center,
                 ),
               );
             }
             final List<Game> games = snapshot.data ?? [];
             if (games.isEmpty) {
-              return const Center(
+              return Center(
                 child: Text(
-                  'Nema spremljenih igara.',
-                  style: TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
+                  loc.translate('noSavedGames'),
+                  style: const TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
                   textAlign: TextAlign.center,
                 ),
               );
