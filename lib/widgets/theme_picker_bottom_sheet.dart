@@ -2,6 +2,7 @@ import 'package:bela_blok/models/theme_settings.dart';
 import 'package:bela_blok/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../utils/app_localizations.dart';
 
 class ThemePickerBottomSheet extends ConsumerStatefulWidget {
   final ThemeSettings currentSettings;
@@ -54,6 +55,7 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return SingleChildScrollView(
       padding: EdgeInsets.only(
@@ -69,14 +71,13 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Postavke teme', style: theme.textTheme.titleLarge),
+              Text(loc.translate('themeSettings'), style: theme.textTheme.titleLarge),
               IconButton(icon: const Icon(Icons.close), onPressed: _applyChanges),
             ],
           ),
           const SizedBox(height: 16),
           SwitchListTile(
-            title: const Text('Koristi sistemsku temu'),
-            subtitle: const Text('Prati postavke uređaja'),
+            title: Text(loc.translate('systemTheme')),
             value: _useSystemTheme,
             onChanged: (value) {
               setState(() {
@@ -87,7 +88,7 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
           ),
           ListTile(
             title: Text(
-              'Tamni način rada',
+              loc.translate('darkMode'),
               style: TextStyle(color: _useSystemTheme ? Theme.of(context).disabledColor : null),
             ),
             trailing: Switch(
@@ -106,7 +107,7 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
           const Divider(),
           const SizedBox(height: 8),
           // Color palette selection.
-          Text('Izbor boje aplikacije', style: theme.textTheme.titleMedium),
+          Text(loc.translate('colorPalette'), style: theme.textTheme.titleMedium),
           const SizedBox(height: 16),
           GridView.count(
             crossAxisCount: 3,
@@ -117,35 +118,35 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
             children: [
               _buildColorPaletteItem(
                 palette: ColorPalette.green,
-                title: 'Zelena',
+                title: loc.translate('colorGreen'),
                 primaryColor: lightPaletteColors[ColorPalette.green]!['primary']!,
                 secondaryColor: lightPaletteColors[ColorPalette.green]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.green]!['tertiary']!,
               ),
               _buildColorPaletteItem(
                 palette: ColorPalette.blue,
-                title: 'Plava',
+                title: loc.translate('colorBlue'),
                 primaryColor: lightPaletteColors[ColorPalette.blue]!['primary']!,
                 secondaryColor: lightPaletteColors[ColorPalette.blue]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.blue]!['tertiary']!,
               ),
               _buildColorPaletteItem(
                 palette: ColorPalette.red,
-                title: 'Crvena',
+                title: loc.translate('colorRed'),
                 primaryColor: lightPaletteColors[ColorPalette.red]!['primary']!,
                 secondaryColor: lightPaletteColors[ColorPalette.red]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.red]!['tertiary']!,
               ),
               _buildColorPaletteItem(
                 palette: ColorPalette.purple,
-                title: 'Ljubičasta',
+                title: loc.translate('colorPurple'),
                 primaryColor: lightPaletteColors[ColorPalette.purple]!['primary']!,
                 secondaryColor: lightPaletteColors[ColorPalette.purple]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.purple]!['tertiary']!,
               ),
               _buildColorPaletteItem(
                 palette: ColorPalette.gold,
-                title: 'Zlatna',
+                title: loc.translate('colorGold'),
                 primaryColor: lightPaletteColors[ColorPalette.gold]!['primary']!,
                 secondaryColor: lightPaletteColors[ColorPalette.gold]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.gold]!['tertiary']!,
@@ -156,7 +157,7 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
           ElevatedButton(
             style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
             onPressed: _applyChanges,
-            child: const Text('Primijeni'),
+            child: Text(loc.translate('apply')),
           ),
         ],
       ),

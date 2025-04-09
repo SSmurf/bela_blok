@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/app_localizations.dart';
 
 class DeleteHistoryTile extends StatelessWidget {
   const DeleteHistoryTile({super.key});
 
   Future<void> _deleteGameHistory(BuildContext context) async {
+    final loc = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text(
-              'Brisanje povijesti',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+            title: Text(
+              loc.translate('deleteHistoryDialogTitle'),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
             ),
-            content: const Text(
-              'Jeste li sigurni da želite izbrisati povijest igara?',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+            content: Text(
+              loc.translate('deleteHistoryDialogContent'),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
             ),
             actionsAlignment: MainAxisAlignment.spaceEvenly,
             actions: [
@@ -28,9 +30,9 @@ class DeleteHistoryTile extends StatelessWidget {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Odustani',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                child: Text(
+                  loc.translate('cancel'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
               ),
               ElevatedButton(
@@ -41,9 +43,9 @@ class DeleteHistoryTile extends StatelessWidget {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Obriši',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                child: Text(
+                  loc.translate('delete'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
               ),
             ],
@@ -64,11 +66,12 @@ class DeleteHistoryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return ListTile(
       leading: const Icon(HugeIcons.strokeRoundedDelete01),
-      title: const Text(
-        'Izbriši povijest igara',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+      title: Text(
+        loc.translate('deleteHistoryTileTitle'),
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
       ),
       trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
       onTap: () => _deleteGameHistory(context),
