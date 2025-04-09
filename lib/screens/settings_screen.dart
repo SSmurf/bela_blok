@@ -91,45 +91,43 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return StatefulBuilder(
           builder: (context, setStateSB) {
             return AlertDialog(
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    RadioListTile<int>(
-                      title: const Text('1001'),
-                      controlAffinity: ListTileControlAffinity.trailing,
-                      value: 1001,
-                      groupValue: selectedOption,
-                      onChanged: (value) {
-                        setStateSB(() {
-                          selectedOption = value!;
-                        });
-                      },
-                    ),
-                    RadioListTile<int>(
-                      title: const Text('701'),
-                      controlAffinity: ListTileControlAffinity.trailing,
-                      value: 701,
-                      groupValue: selectedOption,
-                      onChanged: (value) {
-                        setStateSB(() {
-                          selectedOption = value!;
-                        });
-                      },
-                    ),
-                    RadioListTile<int>(
-                      title: const Text('501'),
-                      controlAffinity: ListTileControlAffinity.trailing,
-                      value: 501,
-                      groupValue: selectedOption,
-                      onChanged: (value) {
-                        setStateSB(() {
-                          selectedOption = value!;
-                        });
-                      },
-                    ),
-                  ],
-                ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RadioListTile<int>(
+                    title: const Text('1001'),
+                    controlAffinity: ListTileControlAffinity.trailing,
+                    value: 1001,
+                    groupValue: selectedOption,
+                    onChanged: (value) {
+                      setStateSB(() {
+                        selectedOption = value!;
+                      });
+                    },
+                  ),
+                  RadioListTile<int>(
+                    title: const Text('701'),
+                    controlAffinity: ListTileControlAffinity.trailing,
+                    value: 701,
+                    groupValue: selectedOption,
+                    onChanged: (value) {
+                      setStateSB(() {
+                        selectedOption = value!;
+                      });
+                    },
+                  ),
+                  RadioListTile<int>(
+                    title: const Text('501'),
+                    controlAffinity: ListTileControlAffinity.trailing,
+                    value: 501,
+                    groupValue: selectedOption,
+                    onChanged: (value) {
+                      setStateSB(() {
+                        selectedOption = value!;
+                      });
+                    },
+                  ),
+                ],
               ),
               actionsAlignment: MainAxisAlignment.spaceEvenly,
               actions: [
@@ -435,8 +433,41 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       } else {
         newLocale = const Locale('hr');
       }
+
+      bool isUsingDefaultTeamNames = false;
+      if (_teamOneName == 'Mi' && _teamTwoName == 'Vi') {
+        isUsingDefaultTeamNames = true;
+      } else if (_teamOneName == 'We' && _teamTwoName == 'You') {
+        isUsingDefaultTeamNames = true;
+      } else if (_teamOneName == 'Wir' && _teamTwoName == 'Ihr') {
+        isUsingDefaultTeamNames = true;
+      }
+
+      if (isUsingDefaultTeamNames) {
+        final newLoc = AppLocalizations(newLocale);
+        setState(() {
+          _teamOneName = newLoc.translate('we');
+          _teamTwoName = newLoc.translate('you');
+        });
+      }
+
       ref.read(languageProvider.notifier).state = newLocale;
       await _saveLanguageSetting(newLocale, result);
+
+      ref.read(settingsProvider.notifier).state = AppSettings(
+        goalScore: _goalScore,
+        stigljaValue: _stigljaValue,
+        teamOneName: _teamOneName,
+        teamTwoName: _teamTwoName,
+      );
+
+      await _localStorageService.saveSettings({
+        'goalScore': _goalScore,
+        'stigljaValue': _stigljaValue,
+        'teamOneName': _teamOneName,
+        'teamTwoName': _teamTwoName,
+        'selectedLanguage': result,
+      });
     }
   }
 
