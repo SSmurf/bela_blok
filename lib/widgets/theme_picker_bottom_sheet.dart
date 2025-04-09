@@ -56,13 +56,17 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context)!;
+    final screenSize = MediaQuery.of(context).size;
+    final isSmallScreen = screenSize.width <= 360 || screenSize.height <= 600;
+    final gridItemHeight = isSmallScreen ? 70.0 : 80.0;
+    final gridSpacing = 12.0;
 
     return SingleChildScrollView(
       padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: 20 + MediaQuery.of(context).viewInsets.bottom,
+        left: isSmallScreen ? 12 : 20,
+        right: isSmallScreen ? 12 : 20,
+        top: isSmallScreen ? 12 : 20,
+        bottom: isSmallScreen ? 12 : 20 + MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -71,13 +75,25 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(loc.translate('themeSettings'), style: theme.textTheme.titleLarge),
-              IconButton(icon: const Icon(Icons.close), onPressed: _applyChanges),
+              Text(
+                loc.translate('themeSettings'),
+                style: isSmallScreen ? theme.textTheme.titleMedium : theme.textTheme.titleLarge,
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: _applyChanges,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: isSmallScreen ? 8 : 16),
           SwitchListTile(
-            title: Text(loc.translate('systemTheme')),
+            title: Text(
+              loc.translate('systemTheme'),
+              style: isSmallScreen ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge,
+            ),
+            dense: isSmallScreen,
             value: _useSystemTheme,
             onChanged: (value) {
               setState(() {
@@ -87,9 +103,13 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
             },
           ),
           ListTile(
+            dense: isSmallScreen,
             title: Text(
               loc.translate('darkMode'),
-              style: TextStyle(color: _useSystemTheme ? Theme.of(context).disabledColor : null),
+              style: TextStyle(
+                color: _useSystemTheme ? Theme.of(context).disabledColor : null,
+                fontSize: isSmallScreen ? 14 : null,
+              ),
             ),
             trailing: Switch(
               value: _themeType == ThemeType.dark,
@@ -105,14 +125,17 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
             ),
           ),
           const Divider(),
-          const SizedBox(height: 8),
+          SizedBox(height: isSmallScreen ? 4 : 8),
           // Color palette selection.
-          Text(loc.translate('colorPalette'), style: theme.textTheme.titleMedium),
-          const SizedBox(height: 16),
+          Text(
+            loc.translate('colorPalette'),
+            style: isSmallScreen ? theme.textTheme.titleSmall : theme.textTheme.titleMedium,
+          ),
+          SizedBox(height: 16),
           GridView.count(
             crossAxisCount: 3,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
+            mainAxisSpacing: gridSpacing,
+            crossAxisSpacing: gridSpacing,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             children: [
@@ -122,6 +145,8 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
                 primaryColor: lightPaletteColors[ColorPalette.green]!['primary']!,
                 secondaryColor: lightPaletteColors[ColorPalette.green]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.green]!['tertiary']!,
+                height: gridItemHeight,
+                isSmallScreen: isSmallScreen,
               ),
               _buildColorPaletteItem(
                 palette: ColorPalette.blue,
@@ -129,6 +154,8 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
                 primaryColor: lightPaletteColors[ColorPalette.blue]!['primary']!,
                 secondaryColor: lightPaletteColors[ColorPalette.blue]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.blue]!['tertiary']!,
+                height: gridItemHeight,
+                isSmallScreen: isSmallScreen,
               ),
               _buildColorPaletteItem(
                 palette: ColorPalette.red,
@@ -136,6 +163,8 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
                 primaryColor: lightPaletteColors[ColorPalette.red]!['primary']!,
                 secondaryColor: lightPaletteColors[ColorPalette.red]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.red]!['tertiary']!,
+                height: gridItemHeight,
+                isSmallScreen: isSmallScreen,
               ),
               _buildColorPaletteItem(
                 palette: ColorPalette.purple,
@@ -143,6 +172,8 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
                 primaryColor: lightPaletteColors[ColorPalette.purple]!['primary']!,
                 secondaryColor: lightPaletteColors[ColorPalette.purple]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.purple]!['tertiary']!,
+                height: gridItemHeight,
+                isSmallScreen: isSmallScreen,
               ),
               _buildColorPaletteItem(
                 palette: ColorPalette.gold,
@@ -150,15 +181,23 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
                 primaryColor: lightPaletteColors[ColorPalette.gold]!['primary']!,
                 secondaryColor: lightPaletteColors[ColorPalette.gold]!['secondary']!,
                 accentColor: lightPaletteColors[ColorPalette.gold]!['tertiary']!,
+                height: gridItemHeight,
+                isSmallScreen: isSmallScreen,
               ),
             ],
           ),
-          const SizedBox(height: 20),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size.fromHeight(isSmallScreen ? 40 : 50),
+              padding:
+                  isSmallScreen
+                      ? const EdgeInsets.symmetric(vertical: 8)
+                      : const EdgeInsets.symmetric(vertical: 12),
+            ),
             onPressed: _applyChanges,
             child: Text(loc.translate('apply')),
           ),
+          SizedBox(height: isSmallScreen ? 6 : 10), // Add extra space at the bottom
         ],
       ),
     );
@@ -170,6 +209,8 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
     required Color primaryColor,
     required Color secondaryColor,
     required Color accentColor,
+    required double height,
+    required bool isSmallScreen,
   }) {
     final isSelected = _colorPalette == palette;
     return GestureDetector(
@@ -182,7 +223,7 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
       child: Column(
         children: [
           Container(
-            height: 80,
+            height: height,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
@@ -207,8 +248,12 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
               ),
             ),
           ),
-          const SizedBox(height: 4),
-          Text(title, style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+          SizedBox(height: isSmallScreen ? 2 : 4),
+          Text(
+            title,
+            style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, fontSize: 14),
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );
