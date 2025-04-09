@@ -8,6 +8,7 @@ import 'package:hugeicons/hugeicons.dart';
 
 import '../models/round.dart';
 import '../providers/game_provider.dart';
+import '../utils/app_localizations.dart';
 import '../widgets/add_round_button.dart';
 
 const double declarationFontSize = 28.0;
@@ -269,7 +270,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    // Using screen size only for padding and layout dimensions.
+    final loc = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
     final bool isSmallScreen = screenWidth <= 360;
     final horizontalPadding = isSmallScreen ? 16.0 : 32.0;
@@ -375,7 +376,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                     fontSize: isSmallScreen ? 20 : 24,
                   ),
                   unselectedLabelColor: theme.colorScheme.onSurface,
-                  tabs: const [Tab(text: 'Bodovi'), Tab(text: 'Zvanja')],
+                  tabs: [Tab(text: loc.translate('pointsTab')), Tab(text: loc.translate('declarationsTab'))],
                 ),
               ),
               SizedBox(height: verticalSpacing),
@@ -710,7 +711,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                               },
                             ),
                             _buildDeclarationRow(
-                              label: 'Štiglja',
+                              label: loc.translate('allTricks'),
                               fontSize: stigljaFontSize,
                               teamOneCount: declStigljaTeamOne,
                               teamTwoCount: declStigljaTeamTwo,
@@ -761,7 +762,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   AddRoundButton(
-                    text: 'Spremi',
+                    text: loc.translate('saveRound'),
                     color: theme.colorScheme.primary,
                     isEnabled: isSaveEnabled,
                     onPressed: isSaveEnabled ? _saveRound : () {},

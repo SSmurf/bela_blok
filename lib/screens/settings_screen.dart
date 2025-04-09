@@ -302,10 +302,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return StatefulBuilder(
           builder: (context, setStateSB) {
             return AlertDialog(
-              title: Text(
-                loc.translate('language'),
-                style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
-              ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -405,12 +401,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               children: [
                 TextFormField(
                   controller: teamOneController,
-                  decoration: const InputDecoration(labelText: 'Prvi tim'),
+                  decoration: InputDecoration(labelText: loc.translate('firstTeam')),
                   textCapitalization: TextCapitalization.words,
                   maxLength: 20,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Ime tima ne može biti prazno';
+                      return loc.translate('emptyTeamName');
                     }
                     return null;
                   },
@@ -418,12 +414,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: teamTwoController,
-                  decoration: const InputDecoration(labelText: 'Drugi tim'),
+                  decoration: InputDecoration(labelText: loc.translate('secondTeam')),
                   textCapitalization: TextCapitalization.words,
                   maxLength: 20,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Ime tima ne može biti prazno';
+                      return loc.translate('emptyTeamName');
                     }
                     return null;
                   },
@@ -431,11 +427,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const SizedBox(height: 16),
                 OutlinedButton.icon(
                   onPressed: () {
-                    teamOneController.text = 'Mi';
-                    teamTwoController.text = 'Vi';
+                    teamOneController.text = loc.translate('we');
+                    teamTwoController.text = loc.translate('you');
                   },
                   icon: const Icon(HugeIcons.strokeRoundedUndo),
-                  label: const Text('Postavi na Mi / Vi'),
+                  label: Text(loc.translate('resetTeamNames')),
                   style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(40)),
                 ),
               ],

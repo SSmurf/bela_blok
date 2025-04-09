@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
 
+import '../utils/app_localizations.dart';
+
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
   @override
@@ -25,12 +27,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final LocalStorageService _localStorageService = LocalStorageService();
 
   void _confirmClearGame(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Brisanje igre'),
-            content: const Text('Jesi li siguran da želiš obrisati sve runde?'),
+            title: Text(
+              loc.translate('clearGameTitle'),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+            ),
+            content: Text(
+              loc.translate('clearGameContent'),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+            ),
             actionsAlignment: MainAxisAlignment.spaceEvenly,
             actions: [
               ElevatedButton(
@@ -41,7 +50,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   elevation: 0,
                 ),
-                child: const Text('Odustani', style: TextStyle(fontSize: 18)),
+                child: Text(loc.translate('cancel'), style: const TextStyle(fontSize: 18)),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -57,7 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   elevation: 0,
                 ),
-                child: const Text('Obriši', style: TextStyle(fontSize: 18)),
+                child: Text(loc.translate('delete'), style: const TextStyle(fontSize: 18)),
               ),
             ],
           ),
@@ -168,6 +177,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final rounds = ref.watch(currentGameProvider);
     final settings = ref.watch(settingsProvider);
     final int currentGoal = settings.goalScore;
@@ -271,7 +281,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 fit: BoxFit.fitWidth,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
-
               const SizedBox(height: 12),
               Expanded(
                 child:
@@ -346,7 +355,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   }
                                 },
                               ),
-
                               const SizedBox(height: 32),
                               // Game stats summary
                               Container(
@@ -362,7 +370,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   children: [
                                     _buildStatRow(
                                       context: context,
-                                      label: "Ukupno zvanja",
+                                      label: loc.translate('totalDeclarations'),
                                       teamOneValue: _calculateTotalDeclarations(rounds, teamOne: true),
                                       teamTwoValue: _calculateTotalDeclarations(rounds, teamOne: false),
                                       teamOneName: settings.teamOneName,
@@ -376,7 +384,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     const SizedBox(height: 12),
                                     _buildStatRow(
                                       context: context,
-                                      label: "Ukupno štiglji",
+                                      label: loc.translate('totalStiglja'),
                                       teamOneValue: _countTotalStiglja(rounds, teamOne: true),
                                       teamTwoValue: _countTotalStiglja(rounds, teamOne: false),
                                       teamOneName: settings.teamOneName,
@@ -404,9 +412,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     );
                                   },
                                   icon: const Icon(HugeIcons.strokeRoundedUndo),
-                                  label: const Text(
-                                    'Poništi zadnju rundu',
-                                    style: TextStyle(fontFamily: 'Nunito'),
+                                  label: Text(
+                                    loc.translate('undoLastRound'),
+                                    style: const TextStyle(fontFamily: 'Nunito'),
                                   ),
                                 ),
                             ],
@@ -415,8 +423,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         : rounds.isEmpty
                         ? Center(
                           child: Text(
-                            '"Poštuj kartu i karta će poštovati tebe."',
-                            style: TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
+                            loc.translate('respectTheCards'),
+                            style: const TextStyle(
+                              fontFamily: 'Nunito',
+                              fontSize: 24,
+                              fontWeight: FontWeight.w500,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         )
@@ -440,9 +452,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           context: context,
                                           builder:
                                               (context) => AlertDialog(
-                                                title: const Text('Brisanje runde'),
-                                                content: const Text(
-                                                  'Jesi li siguran da želiš obrisati ovu rundu?',
+                                                title: Text(
+                                                  loc.translate('deleteRoundTitle'),
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily: 'Nunito',
+                                                  ),
+                                                ),
+                                                content: Text(
+                                                  loc.translate('deleteRoundContent'),
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily: 'Nunito',
+                                                  ),
                                                 ),
                                                 actionsAlignment: MainAxisAlignment.spaceEvenly,
                                                 actions: [
@@ -456,8 +480,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                       ),
                                                       elevation: 0,
                                                     ),
-                                                    child: const Text(
-                                                      'Odustani',
+                                                    child: Text(
+                                                      loc.translate('cancel'),
                                                       style: TextStyle(fontSize: 18),
                                                     ),
                                                   ),
@@ -472,8 +496,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                       ),
                                                       elevation: 0,
                                                     ),
-                                                    child: const Text(
-                                                      'Obriši',
+                                                    child: Text(
+                                                      loc.translate('delete'),
                                                       style: TextStyle(fontSize: 18),
                                                     ),
                                                   ),
@@ -507,7 +531,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   AddRoundButton(
-                    text: gameEnded ? 'Nova igra' : 'Nova runda',
+                    text: gameEnded ? loc.translate('newGame') : loc.translate('newRound'),
                     color: Theme.of(context).colorScheme.primary,
                     onPressed: () {
                       if (gameEnded) {
