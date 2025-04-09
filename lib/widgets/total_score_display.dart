@@ -39,6 +39,8 @@ class TotalScoreDisplay extends StatelessWidget {
                   fontFamily: 'Nunito',
                   color: theme.colorScheme.onSurface,
                 ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
                 textAlign: TextAlign.center,
               ),
             ),
