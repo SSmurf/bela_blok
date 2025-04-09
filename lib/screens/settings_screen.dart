@@ -1,5 +1,6 @@
 import 'package:bela_blok/models/app_settings.dart';
 import 'package:bela_blok/providers/settings_provider.dart';
+import 'package:bela_blok/providers/language_provider.dart';
 import 'package:bela_blok/screens/about_app_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/utils/app_localizations.dart';
@@ -21,29 +22,16 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final String rulesUrl = 'https://hr.wikipedia.org/wiki/Belot#Pravila';
-  // final String unpublishedRulesUrl = 'https://belaibelot.blogspot.com/p/n-e-p-i-s-n-pravila-bele.html';
   final String unspokenRulesUrl =
       'https://nepisanapravilabele.blogspot.com/2025/04/nepisana-pravila-bele.html';
+
   bool _keepScreenOn = true;
   int _goalScore = 1001;
   int _stigljaValue = 90;
   String _teamOneName = 'Mi';
   String _teamTwoName = 'Vi';
-  String _selectedLanguage = 'Hrvatski';
 
   final LocalStorageService _localStorageService = LocalStorageService();
-
-  Locale get _currentLocale {
-    switch (_selectedLanguage) {
-      case 'English':
-        return const Locale('en');
-      case 'Deutsch':
-        return const Locale('de');
-      case 'Hrvatski':
-      default:
-        return const Locale('hr');
-    }
-  }
 
   @override
   void initState() {
@@ -56,6 +44,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final settingsMap = await _localStorageService.loadSettings();
     if (settingsMap.isNotEmpty) {
       final settings = AppSettings.fromJson(settingsMap);
+      // Load the saved language string and update the global language provider.
+      final savedLang = settingsMap['selectedLanguage'] as String? ?? 'Hrvatski';
+      final locale =
+          savedLang == 'English'
+              ? const Locale('en')
+              : savedLang == 'Deutsch'
+              ? const Locale('de')
+              : const Locale('hr');
+      ref.read(languageProvider.notifier).state = locale;
       setState(() {
         _goalScore = settings.goalScore;
         _stigljaValue = settings.stigljaValue;
@@ -66,6 +63,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Future<void> _saveLanguageSetting(Locale locale, String languageString) async {
+    await _localStorageService.saveSettings({
+      'goalScore': _goalScore,
+      'stigljaValue': _stigljaValue,
+      'teamOneName': _teamOneName,
+      'teamTwoName': _teamTwoName,
+      'selectedLanguage': languageString,
+    });
+  }
+
   Future<void> _launchURL(String url) async {
     final uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
@@ -74,9 +81,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _showGoalOptionsDialog(BuildContext context, AppLocalizations loc) async {
-    // Store the original goal in case the dialog is dismissed.
     final int originalGoal = _goalScore;
-    // Ensure the selected option is one of the predefined values.
     int selectedOption = (_goalScore == 501 || _goalScore == 701 || _goalScore == 1001) ? _goalScore : 1001;
 
     final result = await showDialog<int>(
@@ -86,7 +91,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return StatefulBuilder(
           builder: (context, setStateSB) {
             return AlertDialog(
-              // No title.
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -154,6 +158,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     _localStorageService.saveSettings({
                       'goalScore': _goalScore,
                       'stigljaValue': _stigljaValue,
+                      'teamOneName': _teamOneName,
+                      'teamTwoName': _teamTwoName,
+                      'selectedLanguage':
+                          ref.read(languageProvider).languageCode == 'en'
+                              ? 'English'
+                              : ref.read(languageProvider).languageCode == 'de'
+                              ? 'Deutsch'
+                              : 'Hrvatski',
                     });
                     Navigator.of(context).pop(_goalScore);
                   },
@@ -182,7 +194,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         teamOneName: _teamOneName,
         teamTwoName: _teamTwoName,
       );
-      await _localStorageService.saveSettings({'goalScore': _goalScore, 'stigljaValue': _stigljaValue});
+      await _localStorageService.saveSettings({
+        'goalScore': _goalScore,
+        'stigljaValue': _stigljaValue,
+        'teamOneName': _teamOneName,
+        'teamTwoName': _teamTwoName,
+        'selectedLanguage':
+            ref.read(languageProvider).languageCode == 'en'
+                ? 'English'
+                : ref.read(languageProvider).languageCode == 'de'
+                ? 'Deutsch'
+                : 'Hrvatski',
+      });
     } else {
       setState(() {
         _goalScore = originalGoal;
@@ -257,6 +280,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     _localStorageService.saveSettings({
                       'goalScore': _goalScore,
                       'stigljaValue': _stigljaValue,
+                      'teamOneName': _teamOneName,
+                      'teamTwoName': _teamTwoName,
+                      'selectedLanguage':
+                          ref.read(languageProvider).languageCode == 'en'
+                              ? 'English'
+                              : ref.read(languageProvider).languageCode == 'de'
+                              ? 'Deutsch'
+                              : 'Hrvatski',
                     });
                     Navigator.of(context).pop(_stigljaValue);
                   },
@@ -285,7 +316,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         teamOneName: _teamOneName,
         teamTwoName: _teamTwoName,
       );
-      await _localStorageService.saveSettings({'goalScore': _goalScore, 'stigljaValue': _stigljaValue});
+      await _localStorageService.saveSettings({
+        'goalScore': _goalScore,
+        'stigljaValue': _stigljaValue,
+        'teamOneName': _teamOneName,
+        'teamTwoName': _teamTwoName,
+        'selectedLanguage':
+            ref.read(languageProvider).languageCode == 'en'
+                ? 'English'
+                : ref.read(languageProvider).languageCode == 'de'
+                ? 'Deutsch'
+                : 'Hrvatski',
+      });
     } else {
       setState(() {
         _stigljaValue = originalStiglja;
@@ -294,7 +336,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _showLanguageOptionsDialog(BuildContext context, AppLocalizations loc) async {
-    String selected = _selectedLanguage;
+    final currentLocale = ref.read(languageProvider);
+    String selected;
+    if (currentLocale.languageCode == 'en') {
+      selected = 'English';
+    } else if (currentLocale.languageCode == 'de') {
+      selected = 'Deutsch';
+    } else {
+      selected = 'Hrvatski';
+    }
+
     final result = await showDialog<String>(
       context: context,
       barrierDismissible: true,
@@ -374,9 +425,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       },
     );
     if (result != null) {
-      setState(() {
-        _selectedLanguage = result;
-      });
+      Locale newLocale;
+      if (result == 'English') {
+        newLocale = const Locale('en');
+      } else if (result == 'Deutsch') {
+        newLocale = const Locale('de');
+      } else {
+        newLocale = const Locale('hr');
+      }
+      ref.read(languageProvider.notifier).state = newLocale;
+      await _saveLanguageSetting(newLocale, result);
     }
   }
 
@@ -494,6 +552,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         'stigljaValue': _stigljaValue,
         'teamOneName': _teamOneName,
         'teamTwoName': _teamTwoName,
+        'selectedLanguage':
+            ref.read(languageProvider).languageCode == 'en'
+                ? 'English'
+                : ref.read(languageProvider).languageCode == 'de'
+                ? 'Deutsch'
+                : 'Hrvatski',
       });
     }
   }
@@ -549,7 +613,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations(_currentLocale);
+    final loc = AppLocalizations(ref.watch(languageProvider));
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Theme.of(context).colorScheme.surface,
@@ -611,10 +675,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   loc.translate('language'),
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
-                trailing: Text(_selectedLanguage, style: const TextStyle(fontSize: 14, fontFamily: 'Nunito')),
+                trailing: Text(
+                  ref.watch(languageProvider).languageCode == 'en'
+                      ? 'English'
+                      : ref.watch(languageProvider).languageCode == 'de'
+                      ? 'Deutsch'
+                      : 'Hrvatski',
+                  style: const TextStyle(fontSize: 14, fontFamily: 'Nunito'),
+                ),
                 onTap: () async {
                   await _showLanguageOptionsDialog(context, loc);
-                  // Force rebuild to have changes reflected.
                   setState(() {});
                 },
               ),

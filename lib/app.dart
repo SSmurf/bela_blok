@@ -1,5 +1,6 @@
 import 'package:bela_blok/models/theme_settings.dart';
 import 'package:bela_blok/providers/theme_provider.dart';
+import 'package:bela_blok/providers/language_provider.dart';
 import 'package:bela_blok/screens/home_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/utils/app_localizations.dart';
@@ -16,12 +17,12 @@ class BelaBlokApp extends ConsumerStatefulWidget {
 }
 
 class _BelaBlokAppState extends ConsumerState<BelaBlokApp> {
-  late Future<void> _themeLoadFuture;
+  late Future<void> _loadSettingsFuture;
 
   @override
   void initState() {
     super.initState();
-    _themeLoadFuture = _loadThemeSettings();
+    _loadSettingsFuture = Future.wait([_loadThemeSettings(), _loadLanguageSetting()]);
   }
 
   Future<void> _loadThemeSettings() async {
@@ -33,16 +34,34 @@ class _BelaBlokAppState extends ConsumerState<BelaBlokApp> {
     }
   }
 
+  Future<void> _loadLanguageSetting() async {
+    final localStorage = LocalStorageService();
+    final settingsMap = await localStorage.loadSettings();
+    if (settingsMap.isNotEmpty && settingsMap.containsKey('selectedLanguage')) {
+      final savedLang = settingsMap['selectedLanguage'] as String;
+      Locale newLocale;
+      if (savedLang == 'English') {
+        newLocale = const Locale('en');
+      } else if (savedLang == 'Deutsch') {
+        newLocale = const Locale('de');
+      } else {
+        newLocale = const Locale('hr');
+      }
+      ref.read(languageProvider.notifier).state = newLocale;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
-      future: _themeLoadFuture,
+      future: _loadSettingsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const MaterialApp(home: Scaffold(body: Center(child: CircularProgressIndicator())));
         }
 
         final themeSettings = ref.watch(themeSettingsProvider);
+        final language = ref.watch(languageProvider);
         return MaterialApp(
           title: 'Bela Blok',
           debugShowCheckedModeBanner: false,
@@ -65,6 +84,7 @@ class _BelaBlokAppState extends ConsumerState<BelaBlokApp> {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: const [Locale('hr'), Locale('en'), Locale('de')],
+          locale: language,
           home: const HomeScreen(),
         );
       },

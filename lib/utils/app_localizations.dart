@@ -70,7 +70,7 @@ class AppLocalizations {
       'pointsTab': 'Bodovi',
       'declarationsTab': 'Zvanja',
       'allTricks': "Štiglja",
-      'saveRound': 'Spremi rundux',
+      'saveRound': 'Spremi rundu',
     },
     'en': {
       'settings': 'Settings',
