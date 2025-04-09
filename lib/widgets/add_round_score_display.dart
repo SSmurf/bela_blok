@@ -86,16 +86,19 @@ class AddRoundScoreDisplay extends StatelessWidget {
         decoration: decoration,
         child: Column(
           children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Nunito',
-                color: selected ? color : theme.colorScheme.onSurface,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Nunito',
+                  color: selected ? color : theme.colorScheme.onSurface,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
             scoreWidget,
