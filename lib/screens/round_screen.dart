@@ -368,12 +368,12 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                   labelStyle: TextStyle(
                     fontFamily: 'Nunito',
                     fontWeight: FontWeight.w500,
-                    fontSize: isSmallScreen ? 20 : 24,
+                    fontSize: isSmallScreen ? 18 : 22,
                   ),
                   unselectedLabelStyle: TextStyle(
                     fontFamily: 'Nunito',
                     fontWeight: FontWeight.w500,
-                    fontSize: isSmallScreen ? 20 : 24,
+                    fontSize: isSmallScreen ? 18 : 22,
                   ),
                   unselectedLabelColor: theme.colorScheme.onSurface,
                   tabs: [Tab(text: loc.translate('pointsTab')), Tab(text: loc.translate('declarationsTab'))],

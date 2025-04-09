@@ -30,7 +30,11 @@ class DeclarationButton extends StatelessWidget {
             side: BorderSide(color: Colors.transparent),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
-          child: Text(text, style: TextStyle(fontSize: fontSize, fontWeight: fontWeight)),
+          child: Text(
+            text,
+            style: TextStyle(fontSize: fontSize, fontWeight: fontWeight),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
