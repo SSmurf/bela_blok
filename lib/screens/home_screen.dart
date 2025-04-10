@@ -138,6 +138,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  int _calculateTotalPoints(List<Round> rounds, {required bool teamOne}) {
+    return rounds.fold(0, (sum, round) {
+      if (teamOne) {
+        return sum + round.scoreTeamOne;
+      } else {
+        return sum + round.scoreTeamTwo;
+      }
+    });
+  }
+
   // Calculate total declaration points (excluding stiglja)
   int _calculateTotalDeclarations(List<Round> rounds, {required bool teamOne}) {
     return rounds.fold(0, (sum, round) {
@@ -402,6 +412,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ),
                                 child: Column(
                                   children: [
+                                    _buildStatRow(
+                                      context: context,
+                                      label: loc.translate('points'),
+                                      teamOneValue: _calculateTotalPoints(rounds, teamOne: true),
+                                      teamTwoValue: _calculateTotalPoints(rounds, teamOne: false),
+                                      teamOneName: settings.teamOneName,
+                                      teamTwoName: settings.teamTwoName,
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Divider(
+                                      height: 1,
+                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                                    ),
+                                    const SizedBox(height: 12),
                                     _buildStatRow(
                                       context: context,
                                       label: loc.translate('totalDeclarations'),

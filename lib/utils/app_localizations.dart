@@ -71,6 +71,7 @@ class AppLocalizations {
       'declarationsTab': 'Zvanja',
       'allTricks': "Štiglja",
       'saveRound': 'Spremi rundu',
+      'points': 'Bodovi',
     },
     'en': {
       'settings': 'Settings',
@@ -132,6 +133,7 @@ class AppLocalizations {
       'declarationsTab': 'Declarations',
       'allTricks': "All tricks",
       'saveRound': 'Save round',
+      'points': 'Points',
     },
     'de': {
       'settings': 'Einstellungen',
@@ -194,6 +196,7 @@ class AppLocalizations {
       'declarationsTab': 'Declarations',
       'allTricks': 'All tricks',
       'saveRound': 'Spiele Runde',
+      'points': 'Punkte',
     },
   };
 
