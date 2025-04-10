@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../providers/theme_provider.dart';
+import '../widgets/game_transfer_bottom_sheet.dart';
 import '../widgets/theme_picker_bottom_sheet.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -872,6 +873,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _showThemeOptions(context),
+              ),
+              ListTile(
+                leading: const Icon(HugeIcons.strokeRoundedQrCode),
+                title: Text(
+                  loc.translate('transferGame'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
+                trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                    ),
+                    builder: (context) => const GameTransferBottomSheet(),
+                  );
+                },
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedBookOpen01),
