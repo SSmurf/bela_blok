@@ -106,6 +106,7 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
                   QrService.importGame(ref, gameTransfer);
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
                 child: Text(loc.translate('import')),
               ),
@@ -124,7 +125,7 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
     final isSmallScreen = screenWidth <= 360;
 
     return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
+      height: MediaQuery.of(context).size.height * 0.7,
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
@@ -165,16 +166,20 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
                 // Share Game Tab
                 Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        loc.translate('scanQrToImport'),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Nunito',
+                      SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          loc.translate('scanQrToImport'),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Nunito',
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 24),
                       Container(
@@ -182,21 +187,22 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Theme.of(context).colorScheme.primary, width: 3),
                         ),
                         child: QrImageView(
                           data: qrData,
                           version: QrVersions.auto,
                           size: 280,
-                          backgroundColor: Colors.white,
+                          errorCorrectionLevel: QrErrorCorrectLevel.M, // Medium error correction
+                          eyeStyle: const QrEyeStyle(eyeShape: QrEyeShape.square, color: Colors.black),
+                          dataModuleStyle: const QrDataModuleStyle(
+                            dataModuleShape: QrDataModuleShape.square,
+                            color: Colors.black,
+                          ),
+                          gapless: false,
                         ),
                       ),
                       const SizedBox(height: 24),
-                      Text(
-                        '${loc.translate('teams')}: ${gameTransfer.teamOneName} vs ${gameTransfer.teamTwoName}\n'
-                        '${loc.translate('rounds')}: ${gameTransfer.rounds.length}',
-                        style: const TextStyle(fontSize: 16, fontFamily: 'Nunito'),
-                        textAlign: TextAlign.center,
-                      ),
                     ],
                   ),
                 ),
@@ -204,42 +210,55 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
                 // Scan Game Tab
                 Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        loc.translate('scanQrToImport'),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Nunito',
+                      SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          loc.translate('scanQrToImport'),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Nunito',
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 16),
-                      Container(
+                      const SizedBox(height: 24),
+                      SizedBox(
                         height: 300,
                         width: 300,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Theme.of(context).colorScheme.primary),
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child:
+                                  _isScanning
+                                      ? MobileScanner(
+                                        controller: _scannerController,
+                                        onDetect: (capture) {
+                                          final List<Barcode> barcodes = capture.barcodes;
+                                          for (final barcode in barcodes) {
+                                            if (barcode.rawValue != null) {
+                                              _handleScannedData(barcode.rawValue!);
+                                              return;
+                                            }
+                                          }
+                                        },
+                                      )
+                                      : const Center(child: CircularProgressIndicator()),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: Theme.of(context).colorScheme.primary, width: 3),
+                              ),
+                            ),
+                          ],
                         ),
-                        clipBehavior: Clip.hardEdge,
-                        child:
-                            _isScanning
-                                ? MobileScanner(
-                                  controller: _scannerController,
-                                  onDetect: (capture) {
-                                    final List<Barcode> barcodes = capture.barcodes;
-                                    for (final barcode in barcodes) {
-                                      if (barcode.rawValue != null) {
-                                        _handleScannedData(barcode.rawValue!);
-                                        return;
-                                      }
-                                    }
-                                  },
-                                )
-                                : const Center(child: CircularProgressIndicator()),
                       ),
+
                       const SizedBox(height: 16),
                       ElevatedButton.icon(
                         onPressed: () {
