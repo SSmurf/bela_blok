@@ -728,24 +728,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       return '$formattedTeamOne, $formattedTeamTwo';
     }
 
-    final combined = '$teamOne, $teamTwo';
-    const halfLimit = 12;
+    const normalScreenLimit = 8;
+    const totalLimit = 18;
 
-    if (combined.length <= 24) {
+    final combined = '$teamOne, $teamTwo';
+
+    if (combined.length <= totalLimit) {
       return combined;
     }
 
-    if (teamOne.length <= halfLimit) {
-      final remainingSpace = 24 - teamOne.length - 2;
+    if (teamOne.length <= normalScreenLimit) {
+      final remainingSpace = totalLimit - teamOne.length - 2;
       return '$teamOne, ${teamTwo.substring(0, remainingSpace.clamp(0, teamTwo.length))}...';
     }
 
-    if (teamTwo.length <= halfLimit) {
-      final remainingSpace = 24 - teamTwo.length - 2;
+    if (teamTwo.length <= normalScreenLimit) {
+      final remainingSpace = totalLimit - teamTwo.length - 2;
       return '${teamOne.substring(0, remainingSpace.clamp(0, teamOne.length))}..., $teamTwo';
     }
 
-    return '${teamOne.substring(0, halfLimit)}..., ${teamTwo.substring(0, halfLimit)}...';
+    return '${teamOne.substring(0, normalScreenLimit)}..., ${teamTwo.substring(0, normalScreenLimit)}...';
   }
 
   Future<void> _showThemeOptions(BuildContext context) async {
