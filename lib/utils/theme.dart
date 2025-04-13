@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 enum ThemeType { light, dark }
 
 // Color palettes
-enum ColorPalette { green, blue, red, purple, gold }
+enum ColorPalette { green, blue, red, purple, orange }
 
 // Palette colors for light mode
 const Map<ColorPalette, Map<String, Color>> lightPaletteColors = {
@@ -28,7 +28,7 @@ const Map<ColorPalette, Map<String, Color>> lightPaletteColors = {
     'secondary': Color(0xFF5fc9f8),
     'tertiary': Color(0xFFffcc00),
   },
-  ColorPalette.gold: {
+  ColorPalette.orange: {
     'primary': Color(0xFFffb347),
     'secondary': Color(0xFF5ac8fa),
     'tertiary': Color(0xFF85ca5d),
@@ -57,7 +57,7 @@ const Map<ColorPalette, Map<String, Color>> darkPaletteColors = {
     'secondary': Color(0xFF0080bf),
     'tertiary': Color(0xFFd9a600),
   },
-  ColorPalette.gold: {
+  ColorPalette.orange: {
     'primary': Color(0xFFd99237),
     'secondary': Color(0xFF0080bf),
     'tertiary': Color(0xFF67a340),

@@ -37,7 +37,7 @@ class AppLocalizations {
       'colorBlue': 'Plava',
       'colorRed': 'Crvena',
       'colorPurple': 'Ljubičasta',
-      'colorGold': 'Zlatna',
+      'colorOrange': 'Narančasta',
       'general': 'Općenito',
       'aboutDesc1':
           'Bela Blok je aplikacija namijenjena ljubiteljima igre bele. Aplikacija omogućuje jednostavno vođenje rezultata, pregled povijesti partija te prilagodbu izgleda prema vašem ukusu. Sve je osmišljeno s lakoćom korištenja, a dizajn koristi moderne principe kako bi vam pružio ugodno iskustvo.',
@@ -112,7 +112,7 @@ class AppLocalizations {
       'colorBlue': 'Blue',
       'colorRed': 'Red',
       'colorPurple': 'Purple',
-      'colorGold': 'Gold',
+      'colorOrange': 'Orange',
       'general': 'General',
       'aboutDesc1':
           'Bela Blok is an app for lovers of belote. It makes score keeping, reviewing game history, and customizing the appearance very easy. The design is based on modern principles to provide you a pleasant experience.',
@@ -185,7 +185,7 @@ class AppLocalizations {
       'colorBlue': 'Blau',
       'colorRed': 'Rot',
       'colorPurple': 'Lila',
-      'colorGold': 'Gold',
+      'colorOrange': 'Orange',
       'general': 'Allgemein',
       'aboutDesc1':
           'Bela Blok ist eine App für Liebhaber von Belote. Sie ermöglicht die einfache Punkteverwaltung, die Überprüfung der Spielhistorie und die Anpassung des Designs entsprechend Ihrem Geschmack. Alles ist so gestaltet, dass es leicht zu bedienen ist, und das Design folgt modernen Prinzipien, um Ihnen ein angenehmes Erlebnis zu bieten.',
