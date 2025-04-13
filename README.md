@@ -2,8 +2,8 @@
 Bela Blok is a modern, intuitive score tracking application for the popular card game Bela (also known as Belot). Built as a personal project to simplify score tracking and to deepen my knowledge of Flutter development.
 
 ## Features
-
 Core Functionality
+
     - Easy Score Tracking: Quickly add rounds with points for both teams
     - Declaration Support: Track all types of declarations (20, 50, 100, 150, 200, and All tricks)
     - Game History: View and analyze past games
@@ -41,12 +41,14 @@ Core Functionality
 
 ## Development Journey
 This app was built as a personal project with two main goals:
+
 	- Make Bela score tracking easier: Traditional pen-and-paper scoring can be cumbersome and error-prone. Bela Blok simplifies this process while adding useful features like declaration tracking and game history.
     - Improve Flutter skills: This project served as a practical way to deepen my knowledge of Flutter development.
 
 ## Getting Started
 The app is available for both Android and iOS devices.
 To run the project locally:
+
 	1.	Ensure you have Flutter installed on your machine
     2.	Clone the repository
     3.	Run ⁠flutter pub get to install dependencies
