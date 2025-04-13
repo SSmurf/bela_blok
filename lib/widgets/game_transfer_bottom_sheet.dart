@@ -172,7 +172,7 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
-                          loc.translate('scanQrToImport'),
+                          loc.translate('scanQrToExport'),
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
