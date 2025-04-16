@@ -122,7 +122,7 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
     final qrData = gameTransfer.toQrData();
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final isSmallScreen = screenWidth <= 360;
+    final isSmallScreen = screenWidth <= 375;
 
     final sheetHeight = isSmallScreen ? screenHeight * 0.8 : screenHeight * 0.7;
     final qrSize = isSmallScreen ? 280.0 : 280.0;
