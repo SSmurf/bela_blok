@@ -211,6 +211,11 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     required VoidCallback onTeamOneUndo,
     required VoidCallback onTeamTwoUndo,
   }) {
+    double adjustedFontSize = fontSize;
+    if (label.length > 8) {
+      adjustedFontSize = fontSize * 0.8;
+    }
+
     const double fixedWidth = 48;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -236,7 +241,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
         ),
         DeclarationButton(
           text: label,
-          fontSize: fontSize,
+          fontSize: adjustedFontSize,
           onPressed: () {
             if (isTeamOneSelected) {
               onTeamOneIncrement();
@@ -398,183 +403,185 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                       ),
                     ),
                     isSmallScreen
-                        ? SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _buildDeclarationRow(
-                                label: '20',
-                                fontSize: declarationFontSize,
-                                teamOneCount: decl20TeamOne,
-                                teamTwoCount: decl20TeamTwo,
-                                onTeamOneIncrement: () {
-                                  setState(() {
-                                    if (decl20TeamOne < max20) decl20TeamOne++;
-                                  });
-                                },
-                                onTeamTwoIncrement: () {
-                                  setState(() {
-                                    if (decl20TeamTwo < max20) decl20TeamTwo++;
-                                  });
-                                },
-                                onTeamOneUndo: () {
-                                  setState(() {
-                                    if (decl20TeamOne > 0) decl20TeamOne--;
-                                  });
-                                },
-                                onTeamTwoUndo: () {
-                                  setState(() {
-                                    if (decl20TeamTwo > 0) decl20TeamTwo--;
-                                  });
-                                },
-                              ),
-                              _buildDeclarationRow(
-                                label: '50',
-                                fontSize: declarationFontSize,
-                                teamOneCount: decl50TeamOne,
-                                teamTwoCount: decl50TeamTwo,
-                                onTeamOneIncrement: () {
-                                  setState(() {
-                                    if (decl50TeamOne < max50) decl50TeamOne++;
-                                  });
-                                },
-                                onTeamTwoIncrement: () {
-                                  setState(() {
-                                    if (decl50TeamTwo < max50) decl50TeamTwo++;
-                                  });
-                                },
-                                onTeamOneUndo: () {
-                                  setState(() {
-                                    if (decl50TeamOne > 0) decl50TeamOne--;
-                                  });
-                                },
-                                onTeamTwoUndo: () {
-                                  setState(() {
-                                    if (decl50TeamTwo > 0) decl50TeamTwo--;
-                                  });
-                                },
-                              ),
-                              _buildDeclarationRow(
-                                label: '100',
-                                fontSize: declarationFontSize,
-                                teamOneCount: decl100TeamOne,
-                                teamTwoCount: decl100TeamTwo,
-                                onTeamOneIncrement: () {
-                                  setState(() {
-                                    if (decl100TeamOne < max100) decl100TeamOne++;
-                                  });
-                                },
-                                onTeamTwoIncrement: () {
-                                  setState(() {
-                                    if (decl100TeamTwo < max100) decl100TeamTwo++;
-                                  });
-                                },
-                                onTeamOneUndo: () {
-                                  setState(() {
-                                    if (decl100TeamOne > 0) decl100TeamOne--;
-                                  });
-                                },
-                                onTeamTwoUndo: () {
-                                  setState(() {
-                                    if (decl100TeamTwo > 0) decl100TeamTwo--;
-                                  });
-                                },
-                              ),
-                              _buildDeclarationRow(
-                                label: '150',
-                                fontSize: declarationFontSize,
-                                teamOneCount: decl150TeamOne,
-                                teamTwoCount: decl150TeamTwo,
-                                onTeamOneIncrement: () {
-                                  setState(() {
-                                    if (decl150TeamOne < max150) decl150TeamOne++;
-                                  });
-                                },
-                                onTeamTwoIncrement: () {
-                                  setState(() {
-                                    if (decl150TeamTwo < max150) decl150TeamTwo++;
-                                  });
-                                },
-                                onTeamOneUndo: () {
-                                  setState(() {
-                                    if (decl150TeamOne > 0) decl150TeamOne--;
-                                  });
-                                },
-                                onTeamTwoUndo: () {
-                                  setState(() {
-                                    if (decl150TeamTwo > 0) decl150TeamTwo--;
-                                  });
-                                },
-                              ),
-                              _buildDeclarationRow(
-                                label: '200',
-                                fontSize: declarationFontSize,
-                                teamOneCount: decl200TeamOne,
-                                teamTwoCount: decl200TeamTwo,
-                                onTeamOneIncrement: () {
-                                  setState(() {
-                                    if (decl200TeamOne < max200) decl200TeamOne++;
-                                  });
-                                },
-                                onTeamTwoIncrement: () {
-                                  setState(() {
-                                    if (decl200TeamTwo < max200) decl200TeamTwo++;
-                                  });
-                                },
-                                onTeamOneUndo: () {
-                                  setState(() {
-                                    if (decl200TeamOne > 0) decl200TeamOne--;
-                                  });
-                                },
-                                onTeamTwoUndo: () {
-                                  setState(() {
-                                    if (decl200TeamTwo > 0) decl200TeamTwo--;
-                                  });
-                                },
-                              ),
-                              _buildDeclarationRow(
-                                label: 'Štiglja',
-                                fontSize: stigljaFontSize,
-                                teamOneCount: declStigljaTeamOne,
-                                teamTwoCount: declStigljaTeamTwo,
-                                onTeamOneIncrement: () {
-                                  setState(() {
-                                    if (declStigljaTeamOne < maxStiglja && declStigljaTeamTwo == 0) {
-                                      declStigljaTeamOne = 1;
-                                      // Force score: team one gets full points, team two 0.
-                                      activeScore = totalPoints.toString();
-                                      hasStartedInput = true;
-                                    }
-                                  });
-                                },
-                                onTeamTwoIncrement: () {
-                                  setState(() {
-                                    if (declStigljaTeamTwo < maxStiglja && declStigljaTeamOne == 0) {
-                                      declStigljaTeamTwo = 1;
-                                      // Force score: team two gets full points, team one 0.
-                                      activeScore = '0';
-                                      hasStartedInput = true;
-                                    }
-                                  });
-                                },
-                                onTeamOneUndo: () {
-                                  setState(() {
-                                    if (declStigljaTeamOne > 0) {
-                                      declStigljaTeamOne = 0;
-                                      _clearScore();
-                                    }
-                                  });
-                                },
-                                onTeamTwoUndo: () {
-                                  setState(() {
-                                    if (declStigljaTeamTwo > 0) {
-                                      declStigljaTeamTwo = 0;
-                                      _clearScore();
-                                    }
-                                  });
-                                },
-                              ),
-                            ],
+                        ? Scrollbar(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _buildDeclarationRow(
+                                  label: '20',
+                                  fontSize: declarationFontSize,
+                                  teamOneCount: decl20TeamOne,
+                                  teamTwoCount: decl20TeamTwo,
+                                  onTeamOneIncrement: () {
+                                    setState(() {
+                                      if (decl20TeamOne < max20) decl20TeamOne++;
+                                    });
+                                  },
+                                  onTeamTwoIncrement: () {
+                                    setState(() {
+                                      if (decl20TeamTwo < max20) decl20TeamTwo++;
+                                    });
+                                  },
+                                  onTeamOneUndo: () {
+                                    setState(() {
+                                      if (decl20TeamOne > 0) decl20TeamOne--;
+                                    });
+                                  },
+                                  onTeamTwoUndo: () {
+                                    setState(() {
+                                      if (decl20TeamTwo > 0) decl20TeamTwo--;
+                                    });
+                                  },
+                                ),
+                                _buildDeclarationRow(
+                                  label: '50',
+                                  fontSize: declarationFontSize,
+                                  teamOneCount: decl50TeamOne,
+                                  teamTwoCount: decl50TeamTwo,
+                                  onTeamOneIncrement: () {
+                                    setState(() {
+                                      if (decl50TeamOne < max50) decl50TeamOne++;
+                                    });
+                                  },
+                                  onTeamTwoIncrement: () {
+                                    setState(() {
+                                      if (decl50TeamTwo < max50) decl50TeamTwo++;
+                                    });
+                                  },
+                                  onTeamOneUndo: () {
+                                    setState(() {
+                                      if (decl50TeamOne > 0) decl50TeamOne--;
+                                    });
+                                  },
+                                  onTeamTwoUndo: () {
+                                    setState(() {
+                                      if (decl50TeamTwo > 0) decl50TeamTwo--;
+                                    });
+                                  },
+                                ),
+                                _buildDeclarationRow(
+                                  label: '100',
+                                  fontSize: declarationFontSize,
+                                  teamOneCount: decl100TeamOne,
+                                  teamTwoCount: decl100TeamTwo,
+                                  onTeamOneIncrement: () {
+                                    setState(() {
+                                      if (decl100TeamOne < max100) decl100TeamOne++;
+                                    });
+                                  },
+                                  onTeamTwoIncrement: () {
+                                    setState(() {
+                                      if (decl100TeamTwo < max100) decl100TeamTwo++;
+                                    });
+                                  },
+                                  onTeamOneUndo: () {
+                                    setState(() {
+                                      if (decl100TeamOne > 0) decl100TeamOne--;
+                                    });
+                                  },
+                                  onTeamTwoUndo: () {
+                                    setState(() {
+                                      if (decl100TeamTwo > 0) decl100TeamTwo--;
+                                    });
+                                  },
+                                ),
+                                _buildDeclarationRow(
+                                  label: '150',
+                                  fontSize: declarationFontSize,
+                                  teamOneCount: decl150TeamOne,
+                                  teamTwoCount: decl150TeamTwo,
+                                  onTeamOneIncrement: () {
+                                    setState(() {
+                                      if (decl150TeamOne < max150) decl150TeamOne++;
+                                    });
+                                  },
+                                  onTeamTwoIncrement: () {
+                                    setState(() {
+                                      if (decl150TeamTwo < max150) decl150TeamTwo++;
+                                    });
+                                  },
+                                  onTeamOneUndo: () {
+                                    setState(() {
+                                      if (decl150TeamOne > 0) decl150TeamOne--;
+                                    });
+                                  },
+                                  onTeamTwoUndo: () {
+                                    setState(() {
+                                      if (decl150TeamTwo > 0) decl150TeamTwo--;
+                                    });
+                                  },
+                                ),
+                                _buildDeclarationRow(
+                                  label: '200',
+                                  fontSize: declarationFontSize,
+                                  teamOneCount: decl200TeamOne,
+                                  teamTwoCount: decl200TeamTwo,
+                                  onTeamOneIncrement: () {
+                                    setState(() {
+                                      if (decl200TeamOne < max200) decl200TeamOne++;
+                                    });
+                                  },
+                                  onTeamTwoIncrement: () {
+                                    setState(() {
+                                      if (decl200TeamTwo < max200) decl200TeamTwo++;
+                                    });
+                                  },
+                                  onTeamOneUndo: () {
+                                    setState(() {
+                                      if (decl200TeamOne > 0) decl200TeamOne--;
+                                    });
+                                  },
+                                  onTeamTwoUndo: () {
+                                    setState(() {
+                                      if (decl200TeamTwo > 0) decl200TeamTwo--;
+                                    });
+                                  },
+                                ),
+                                _buildDeclarationRow(
+                                  label: loc.translate('allTricks'),
+                                  fontSize: stigljaFontSize,
+                                  teamOneCount: declStigljaTeamOne,
+                                  teamTwoCount: declStigljaTeamTwo,
+                                  onTeamOneIncrement: () {
+                                    setState(() {
+                                      if (declStigljaTeamOne < maxStiglja && declStigljaTeamTwo == 0) {
+                                        declStigljaTeamOne = 1;
+                                        // Force score: team one gets full points, team two 0.
+                                        activeScore = totalPoints.toString();
+                                        hasStartedInput = true;
+                                      }
+                                    });
+                                  },
+                                  onTeamTwoIncrement: () {
+                                    setState(() {
+                                      if (declStigljaTeamTwo < maxStiglja && declStigljaTeamOne == 0) {
+                                        declStigljaTeamTwo = 1;
+                                        // Force score: team two gets full points, team one 0.
+                                        activeScore = '0';
+                                        hasStartedInput = true;
+                                      }
+                                    });
+                                  },
+                                  onTeamOneUndo: () {
+                                    setState(() {
+                                      if (declStigljaTeamOne > 0) {
+                                        declStigljaTeamOne = 0;
+                                        _clearScore();
+                                      }
+                                    });
+                                  },
+                                  onTeamTwoUndo: () {
+                                    setState(() {
+                                      if (declStigljaTeamTwo > 0) {
+                                        declStigljaTeamTwo = 0;
+                                        _clearScore();
+                                      }
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         )
                         : Column(
