@@ -277,7 +277,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
-    final bool isSmallScreen = screenWidth <= 360;
+    final bool isSmallScreen = screenWidth <= 375;
     final horizontalPadding = isSmallScreen ? 16.0 : 32.0;
     final verticalSpacing = isSmallScreen ? 10.0 : 24.0;
 

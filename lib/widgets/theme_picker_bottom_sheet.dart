@@ -57,7 +57,7 @@ class _ThemePickerBottomSheetState extends ConsumerState<ThemePickerBottomSheet>
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context)!;
     final screenSize = MediaQuery.of(context).size;
-    final isSmallScreen = screenSize.width <= 360 || screenSize.height <= 600;
+    final isSmallScreen = screenSize.width <= 375 || screenSize.height <= 600;
     final gridItemHeight = isSmallScreen ? 70.0 : 80.0;
     final gridSpacing = 12.0;
 

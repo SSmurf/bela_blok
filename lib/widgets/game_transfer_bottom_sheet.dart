@@ -1,4 +1,3 @@
-// lib/widgets/game_transfer_bottom_sheet.dart
 import 'package:bela_blok/models/game_transfer.dart';
 import 'package:bela_blok/services/qr_service.dart';
 import 'package:bela_blok/utils/app_localizations.dart';
@@ -122,10 +121,15 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
     final gameTransfer = QrService.createGameTransfer(ref);
     final qrData = gameTransfer.toQrData();
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     final isSmallScreen = screenWidth <= 360;
 
+    final sheetHeight = isSmallScreen ? screenHeight * 0.8 : screenHeight * 0.7;
+    final qrSize = isSmallScreen ? 280.0 : 280.0;
+    final scannerSize = isSmallScreen ? 280.0 : 300.0;
+
     return Container(
-      height: MediaQuery.of(context).size.height * 0.7,
+      height: sheetHeight,
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
@@ -173,15 +177,15 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
                           loc.translate('scanQrToExport'),
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: isSmallScreen ? 16 : 18,
                             fontWeight: FontWeight.w500,
                             fontFamily: 'Nunito',
                           ),
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: isSmallScreen ? 16 : 24),
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -192,8 +196,8 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
                         child: QrImageView(
                           data: qrData,
                           version: QrVersions.auto,
-                          size: 280,
-                          errorCorrectionLevel: QrErrorCorrectLevel.M, // Medium error correction
+                          size: qrSize,
+                          errorCorrectionLevel: QrErrorCorrectLevel.M,
                           eyeStyle: const QrEyeStyle(eyeShape: QrEyeShape.square, color: Colors.black),
                           dataModuleStyle: const QrDataModuleStyle(
                             dataModuleShape: QrDataModuleShape.square,
@@ -202,7 +206,7 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
                           gapless: false,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: isSmallScreen ? 16 : 24),
                     ],
                   ),
                 ),
@@ -217,18 +221,18 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
                           loc.translate('scanQrToImport'),
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: isSmallScreen ? 16 : 18,
                             fontWeight: FontWeight.w500,
                             fontFamily: 'Nunito',
                           ),
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: isSmallScreen ? 16 : 24),
                       SizedBox(
-                        height: 300,
-                        width: 300,
+                        height: scannerSize,
+                        width: scannerSize,
                         child: Stack(
                           children: [
                             ClipRRect(

@@ -83,7 +83,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   EdgeInsets _getDialogPadding(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth <= 360;
+    final isSmallScreen = screenWidth <= 375;
 
     return isSmallScreen
         ? const EdgeInsets.symmetric(horizontal: 8, vertical: 8)
@@ -101,7 +101,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return StatefulBuilder(
           builder: (context, setStateSB) {
             final screenWidth = MediaQuery.of(context).size.width;
-            final isSmallScreen = screenWidth <= 360;
+            final isSmallScreen = screenWidth <= 375;
             final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
 
             return AlertDialog(
@@ -259,7 +259,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return StatefulBuilder(
           builder: (context, setStateSB) {
             final screenWidth = MediaQuery.of(context).size.width;
-            final isSmallScreen = screenWidth <= 360;
+            final isSmallScreen = screenWidth <= 375;
             final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
 
             return AlertDialog(
@@ -414,7 +414,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return StatefulBuilder(
           builder: (context, setStateSB) {
             final screenWidth = MediaQuery.of(context).size.width;
-            final isSmallScreen = screenWidth <= 360;
+            final isSmallScreen = screenWidth <= 375;
             final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
 
             return AlertDialog(
@@ -563,7 +563,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final teamTwoController = TextEditingController(text: _teamTwoName);
     final formKey = GlobalKey<FormState>();
     final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth <= 360;
+    final isSmallScreen = screenWidth <= 375;
 
     final result = await showDialog<Map<String, String>>(
       context: context,
@@ -714,7 +714,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   String _formatTeamNames(String teamOne, String teamTwo) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth <= 360;
+    final isSmallScreen = screenWidth <= 375;
 
     if (isSmallScreen) {
       const smallScreenLimit = 5;

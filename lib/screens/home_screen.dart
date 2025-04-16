@@ -28,7 +28,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   EdgeInsets _getDialogPadding(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth <= 360;
+    final isSmallScreen = screenWidth <= 375;
 
     return isSmallScreen
         ? const EdgeInsets.symmetric(horizontal: 8, vertical: 8)
@@ -38,7 +38,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _confirmClearGame(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth <= 360;
+    final isSmallScreen = screenWidth <= 375;
     final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
 
     showDialog(
@@ -507,7 +507,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   direction: DismissDirection.endToStart,
                                   confirmDismiss: (_) async {
                                     final screenWidth = MediaQuery.of(context).size.width;
-                                    final isSmallScreen = screenWidth <= 360;
+                                    final isSmallScreen = screenWidth <= 375;
                                     final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
 
                                     return await showDialog<bool>(
