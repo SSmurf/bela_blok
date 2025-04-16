@@ -24,6 +24,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _gameSaved = false;
+  bool _preventAutoSave = false;
   final LocalStorageService _localStorageService = LocalStorageService();
 
   EdgeInsets _getDialogPadding(BuildContext context) {
@@ -244,7 +245,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     }
 
-    if (gameEnded && !_gameSaved) {
+    if (gameEnded) {
+      if (teamOneTotal > teamTwoTotal) {
+        winningTeam = settings.teamOneName;
+      } else if (teamTwoTotal > teamOneTotal) {
+        winningTeam = settings.teamTwoName;
+      } else {
+        winningTeam = 'Remi';
+      }
+    }
+
+    if (gameEnded && !_gameSaved && !_preventAutoSave) {
       _localStorageService.saveGame(
         rounds,
         goalScore: currentGoal,
@@ -456,19 +467,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 if (rounds.isNotEmpty)
                                   ElevatedButton.icon(
                                     onPressed: () {
+                                      if (gameEnded && _gameSaved) {
+                                        _localStorageService.deleteLatestGame().then((success) {
+                                          if (success) {
+                                            setState(() {
+                                              _gameSaved = false;
+                                              _preventAutoSave = true;
+                                            });
+                                          }
+                                        });
+                                      }
+
                                       final int lastIndex = rounds.length - 1;
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => RoundScreen(
-                                                roundToEdit: rounds[lastIndex],
-                                                roundIndex: lastIndex,
-                                                isTeamOneSelected: true,
-                                                teamOneName: settings.teamOneName,
-                                                teamTwoName: settings.teamTwoName,
-                                              ),
-                                        ),
-                                      );
+                                      Navigator.of(context)
+                                          .push(
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) => RoundScreen(
+                                                    roundToEdit: rounds[lastIndex],
+                                                    roundIndex: lastIndex,
+                                                    isTeamOneSelected: true,
+                                                    teamOneName: settings.teamOneName,
+                                                    teamTwoName: settings.teamTwoName,
+                                                  ),
+                                            ),
+                                          )
+                                          .then((_) {
+                                            if (_preventAutoSave) {
+                                              setState(() {
+                                                _preventAutoSave = false;
+                                              });
+                                            }
+                                          });
                                     },
                                     icon: const Icon(HugeIcons.strokeRoundedUndo),
                                     label: Text(
@@ -634,6 +664,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ref.read(currentGameProvider.notifier).clearRounds();
                         setState(() {
                           _gameSaved = false;
+                          _preventAutoSave = false;
                         });
                       } else {
                         _addNewRound(

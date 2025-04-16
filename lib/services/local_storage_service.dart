@@ -21,6 +21,7 @@ class LocalStorageService {
     final gameJson = json.encode(game.toJson());
     final key = 'saved_game_${DateTime.now().millisecondsSinceEpoch}';
     await prefs.setString(key, gameJson);
+    await prefs.setString('latest_game_key', key);
     print('Game saved under key: $key');
   }
 
@@ -42,6 +43,21 @@ class LocalStorageService {
     }
     games.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return games;
+  }
+
+  Future<bool> deleteLatestGame() async {
+    final prefs = await SharedPreferences.getInstance();
+    final latestKey = prefs.getString('latest_game_key');
+
+    if (latestKey != null) {
+      final result = await prefs.remove(latestKey);
+      if (result) {
+        print('Deleted latest game with key: $latestKey');
+        await prefs.remove('latest_game_key');
+        return true;
+      }
+    }
+    return false;
   }
 
   Future<void> saveSettings(Map<String, dynamic> settings) async {
