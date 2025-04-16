@@ -1,18 +1,21 @@
 import 'package:bela_blok/models/game.dart';
+import 'package:bela_blok/providers/settings_provider.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
+import 'package:bela_blok/services/score_calculator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
 import '../widgets/finished_game_display.dart';
 import '../utils/app_localizations.dart';
 
-class HistoryScreen extends StatefulWidget {
+class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
 
   @override
-  HistoryScreenState createState() => HistoryScreenState();
+  ConsumerState createState() => HistoryScreenState();
 }
 
-class HistoryScreenState extends State<HistoryScreen> {
+class HistoryScreenState extends ConsumerState<HistoryScreen> {
   late Future<List<Game>> _gamesFuture;
   final LocalStorageService _localStorageService = LocalStorageService();
 
@@ -25,6 +28,8 @@ class HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final settings = ref.watch(settingsProvider);
+    final int stigljaValue = settings.stigljaValue;
 
     return Scaffold(
       appBar: AppBar(
@@ -80,15 +85,32 @@ class HistoryScreenState extends State<HistoryScreen> {
                   ),
               itemBuilder: (context, index) {
                 final game = games[index];
+
+                final int teamOneTotal = ScoreCalculator(
+                  stigljaValue: stigljaValue,
+                ).computeTeamOneTotal(game.rounds);
+                final int teamTwoTotal = ScoreCalculator(
+                  stigljaValue: stigljaValue,
+                ).computeTeamTwoTotal(game.rounds);
+
+                String winningTeam = '';
+                if (teamOneTotal > teamTwoTotal) {
+                  winningTeam = game.teamOneName;
+                } else if (teamTwoTotal > teamOneTotal) {
+                  winningTeam = game.teamTwoName;
+                } else if (teamOneTotal == teamTwoTotal && teamOneTotal > 0) {
+                  winningTeam = 'Remi';
+                }
+
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6.0),
                   child: FinishedGameDisplay(
                     teamOneName: game.teamOneName,
-                    teamOneTotal: game.teamOneTotalScore,
-                    teamTwoTotal: game.teamTwoTotalScore,
+                    teamOneTotal: teamOneTotal,
+                    teamTwoTotal: teamTwoTotal,
                     teamTwoName: game.teamTwoName,
                     gameDate: game.createdAt,
-                    winningTeam: game.winningTeam.isNotEmpty ? game.winningTeam : null,
+                    winningTeam: winningTeam.isNotEmpty ? winningTeam : null,
                   ),
                 );
               },
