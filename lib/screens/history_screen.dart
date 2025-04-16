@@ -30,6 +30,8 @@ class HistoryScreenState extends ConsumerState<HistoryScreen> {
     final loc = AppLocalizations.of(context)!;
     final settings = ref.watch(settingsProvider);
     final int stigljaValue = settings.stigljaValue;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isSmallScreen = screenWidth <= 375;
 
     return Scaffold(
       appBar: AppBar(
@@ -44,7 +46,7 @@ class HistoryScreenState extends ConsumerState<HistoryScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 0.0 : 16.0),
         child: FutureBuilder<List<Game>>(
           future: _gamesFuture,
           builder: (context, snapshot) {
