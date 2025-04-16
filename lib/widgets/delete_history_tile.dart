@@ -58,9 +58,6 @@ class DeleteHistoryTile extends StatelessWidget {
       for (final key in keys) {
         await prefs.remove(key);
       }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Povijest igara je izbrisana.')));
     }
   }
 
