@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bela_blok/services/review_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/game.dart';
 import '../models/round.dart';
@@ -23,6 +24,8 @@ class LocalStorageService {
     await prefs.setString(key, gameJson);
     await prefs.setString('latest_game_key', key);
     print('Game saved under key: $key');
+
+    await ReviewService.incrementCompletedGames();
   }
 
   Future<List<Game>> loadGames() async {
