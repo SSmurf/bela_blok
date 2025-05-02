@@ -493,12 +493,12 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                                   teamTwoCount: decl150TeamTwo,
                                   onTeamOneIncrement: () {
                                     setState(() {
-                                      if (decl150TeamOne < max150) decl150TeamOne++;
+                                      if (decl150TeamOne < max150 && decl150TeamTwo == 0) decl150TeamOne++;
                                     });
                                   },
                                   onTeamTwoIncrement: () {
                                     setState(() {
-                                      if (decl150TeamTwo < max150) decl150TeamTwo++;
+                                      if (decl150TeamTwo < max150 && decl150TeamOne == 0) decl150TeamTwo++;
                                     });
                                   },
                                   onTeamOneUndo: () {
@@ -519,12 +519,12 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                                   teamTwoCount: decl200TeamTwo,
                                   onTeamOneIncrement: () {
                                     setState(() {
-                                      if (decl200TeamOne < max200) decl200TeamOne++;
+                                      if (decl200TeamOne < max200 && decl200TeamTwo == 0) decl200TeamOne++;
                                     });
                                   },
                                   onTeamTwoIncrement: () {
                                     setState(() {
-                                      if (decl200TeamTwo < max200) decl200TeamTwo++;
+                                      if (decl200TeamTwo < max200 && decl200TeamOne == 0) decl200TeamTwo++;
                                     });
                                   },
                                   onTeamOneUndo: () {
@@ -672,12 +672,12 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                               teamTwoCount: decl150TeamTwo,
                               onTeamOneIncrement: () {
                                 setState(() {
-                                  if (decl150TeamOne < max150) decl150TeamOne++;
+                                  if (decl150TeamOne < max150 && decl150TeamTwo == 0) decl150TeamOne++;
                                 });
                               },
                               onTeamTwoIncrement: () {
                                 setState(() {
-                                  if (decl150TeamTwo < max150) decl150TeamTwo++;
+                                  if (decl150TeamTwo < max150 && decl150TeamOne == 0) decl150TeamTwo++;
                                 });
                               },
                               onTeamOneUndo: () {
@@ -698,12 +698,12 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                               teamTwoCount: decl200TeamTwo,
                               onTeamOneIncrement: () {
                                 setState(() {
-                                  if (decl200TeamOne < max200) decl200TeamOne++;
+                                  if (decl200TeamOne < max200 && decl200TeamTwo == 0) decl200TeamOne++;
                                 });
                               },
                               onTeamTwoIncrement: () {
                                 setState(() {
-                                  if (decl200TeamTwo < max200) decl200TeamTwo++;
+                                  if (decl200TeamTwo < max200 && decl200TeamOne == 0) decl200TeamTwo++;
                                 });
                               },
                               onTeamOneUndo: () {
