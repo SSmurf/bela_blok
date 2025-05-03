@@ -152,7 +152,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   // Calculate total declaration points (excluding stiglja)
   int _calculateTotalDeclarations(List<Round> rounds, {required bool teamOne}) {
     return rounds.fold(0, (sum, round) {
-      if (teamOne) {
+      // If Team One has stiglja, they get all declarations from both teams
+      if (round.declStigljaTeamOne > 0 && teamOne) {
+        return sum +
+            round.decl20TeamOne * 20 +
+            round.decl50TeamOne * 50 +
+            round.decl100TeamOne * 100 +
+            round.decl150TeamOne * 150 +
+            round.decl200TeamOne * 200 +
+            round.decl20TeamTwo * 20 +
+            round.decl50TeamTwo * 50 +
+            round.decl100TeamTwo * 100 +
+            round.decl150TeamTwo * 150 +
+            round.decl200TeamTwo * 200;
+      }
+      // If Team Two has stiglja, they get all declarations from both teams
+      else if (round.declStigljaTeamTwo > 0 && !teamOne) {
+        return sum +
+            round.decl20TeamOne * 20 +
+            round.decl50TeamOne * 50 +
+            round.decl100TeamOne * 100 +
+            round.decl150TeamOne * 150 +
+            round.decl200TeamOne * 200 +
+            round.decl20TeamTwo * 20 +
+            round.decl50TeamTwo * 50 +
+            round.decl100TeamTwo * 100 +
+            round.decl150TeamTwo * 150 +
+            round.decl200TeamTwo * 200;
+      }
+      // If Team One has stiglja but we're calculating Team Two's declarations, return 0 for this round
+      else if (round.declStigljaTeamOne > 0 && !teamOne) {
+        return sum;
+      }
+      // If Team Two has stiglja but we're calculating Team One's declarations, return 0 for this round
+      else if (round.declStigljaTeamTwo > 0 && teamOne) {
+        return sum;
+      }
+      // Normal case (no stiglja)
+      else if (teamOne) {
         return sum +
             round.decl20TeamOne * 20 +
             round.decl50TeamOne * 50 +
