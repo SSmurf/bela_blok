@@ -130,11 +130,11 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
       ),
     ),
     iconButtonTheme: IconButtonThemeData(style: ButtonStyle(splashFactory: NoSplash.splashFactory)),
-    tabBarTheme: TabBarTheme(
+    tabBarTheme: TabBarThemeData(
       labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'Nunito'),
       unselectedLabelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Nunito'),
     ),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       titleTextStyle: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
@@ -151,5 +151,3 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
     ),
   );
 }
-
-//todo card theme
