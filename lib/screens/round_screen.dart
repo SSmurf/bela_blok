@@ -73,9 +73,8 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
       } else {
         activeScore = widget.roundToEdit!.scoreTeamTwo.toString();
       }
-      if (activeScore != '0') {
-        hasStartedInput = true;
-      }
+      // Consider the round as already started so the saved scores are displayed.
+      hasStartedInput = true;
       // Load declaration counters.
       decl20TeamOne = widget.roundToEdit!.decl20TeamOne;
       decl20TeamTwo = widget.roundToEdit!.decl20TeamTwo;

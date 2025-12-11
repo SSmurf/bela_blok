@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bela_blok/models/round.dart';
 import 'package:bela_blok/providers/game_provider.dart';
 import 'package:bela_blok/providers/settings_provider.dart';
@@ -17,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:vibration/vibration.dart';
-import 'package:confetti/confetti.dart';
 
 import '../utils/app_localizations.dart';
 
@@ -33,30 +30,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final LocalStorageService _localStorageService = LocalStorageService();
   bool _celebrationTriggered = false;
 
-  // Confetti controller
-  late ConfettiController _confettiController;
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize confetti controller with duration of 5 seconds
-    _confettiController = ConfettiController(duration: const Duration(seconds: 1));
-  }
-
-  @override
-  void dispose() {
-    _confettiController.dispose();
-    super.dispose();
-  }
-
   Future<void> _startCelebration() async {
     if (!_celebrationTriggered) {
       if (await Vibration.hasVibrator()) {
         Vibration.vibrate(duration: 300);
       }
-
-      // Play confetti animation
-      _confettiController.play();
 
       setState(() {
         _celebrationTriggered = true;
@@ -761,30 +739,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ],
                   ),
                   const SizedBox(height: 24),
-                ],
-              ),
-            ),
-            // Add confetti widget with bottom to top direction
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ConfettiWidget(
-                confettiController: _confettiController,
-                blastDirection: -pi / 2, // -pi/2 is straight up (bottom to top)
-                emissionFrequency: 0.01, // How often to emit particles
-                numberOfParticles: 40, // Number of particles per emission
-                maxBlastForce: 50, // Maximum force to push particles
-                minBlastForce: 20, // Minimum force to push particles
-                gravity: 0.2, // Lower gravity for slower falling
-                particleDrag: 0.02, // Lower drag for more spread
-                blastDirectionality: BlastDirectionality.directional,
-                shouldLoop: false,
-                colors: const [
-                  Colors.red,
-                  Colors.blue,
-                  Colors.green,
-                  Colors.yellow,
-                  Colors.purple,
-                  Colors.orange,
                 ],
               ),
             ),
