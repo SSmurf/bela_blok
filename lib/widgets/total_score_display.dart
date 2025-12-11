@@ -18,54 +18,43 @@ class TotalScoreDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    Widget teamWidget({required String label, required int score}) {
-      final BoxDecoration decoration = BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
-      );
-
-      final Widget content = Container(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        decoration: decoration,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Nunito',
-                  color: theme.colorScheme.onSurface,
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              score.toString(),
-              style: TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurface,
-                fontFamily: 'Nunito',
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+    Widget _nameCell(String label) {
+      return Expanded(
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Nunito',
+            color: theme.colorScheme.onSurface,
+          ),
+          textAlign: TextAlign.center,
+          softWrap: true,
         ),
       );
-      return content;
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+    Widget _scoreCell(int score) {
+      return Expanded(
+        child: Text(
+          score.toString(),
+          style: TextStyle(
+            fontSize: 48,
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.onSurface,
+            fontFamily: 'Nunito',
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Expanded(child: teamWidget(label: teamOneName, score: scoreTeamOne)),
-        Expanded(child: teamWidget(label: teamTwoName, score: scoreTeamTwo)),
+        Row(children: [_nameCell(teamOneName), _nameCell(teamTwoName)]),
+        const SizedBox(height: 6),
+        Row(children: [_scoreCell(scoreTeamOne), _scoreCell(scoreTeamTwo)]),
       ],
     );
   }
