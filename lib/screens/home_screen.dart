@@ -123,12 +123,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  _addNewRound(BuildContext context, {required String teamOneName, required String teamTwoName}) {
+  void _addNewRound(
+    BuildContext context, {
+    required bool isTeamOneSelected,
+    required String teamOneName,
+    required String teamTwoName,
+  }) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder:
-            (context) =>
-                RoundScreen(isTeamOneSelected: true, teamOneName: teamOneName, teamTwoName: teamTwoName),
+            (context) => RoundScreen(
+              isTeamOneSelected: isTeamOneSelected,
+              teamOneName: teamOneName,
+              teamTwoName: teamTwoName,
+            ),
       ),
     );
   }
@@ -311,6 +319,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       setState(() {
         _gameSaved = true;
       });
+    }
+
+    void _handleTeamButtonPress(bool isTeamOneSelected) {
+      if (gameEnded) {
+        ref.read(currentGameProvider.notifier).clearRounds();
+        setState(() {
+          _gameSaved = false;
+          _preventAutoSave = false;
+          _celebrationTriggered = false;
+        });
+      }
+
+      _addNewRound(
+        context,
+        isTeamOneSelected: isTeamOneSelected,
+        teamOneName: settings.teamOneName,
+        teamTwoName: settings.teamTwoName,
+      );
     }
 
     if (orientation == Orientation.landscape) {
@@ -702,39 +728,49 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                   const SizedBox(height: 24),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      AddRoundButton(
-                        text: gameEnded ? loc.translate('newGame') : loc.translate('newRound'),
-                        color: Theme.of(context).colorScheme.primary,
-                        onPressed: () {
-                          if (gameEnded) {
-                            ref.read(currentGameProvider.notifier).clearRounds();
-                            setState(() {
-                              _gameSaved = false;
-                              _preventAutoSave = false;
-                              _celebrationTriggered = false;
-                            });
-                          } else {
-                            _addNewRound(
-                              context,
-                              teamOneName: settings.teamOneName,
-                              teamTwoName: settings.teamTwoName,
+                      Expanded(
+                        child: AddRoundButton(
+                          fullWidth: true,
+                          text: settings.teamOneName,
+                          color: Theme.of(context).colorScheme.primary,
+                          onPressed: () => _handleTeamButtonPress(true),
+                          onLongPress: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => RoundScreen(
+                                      teamOneName: settings.teamOneName,
+                                      teamTwoName: settings.teamTwoName,
+                                      isTeamOneSelected: true,
+                                      initialTabIndex: 1,
+                                    ),
+                              ),
                             );
-                          }
-                        },
-                        onLongPress: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => RoundScreen(
-                                    teamOneName: settings.teamOneName,
-                                    teamTwoName: settings.teamTwoName,
-                                    initialTabIndex: 1,
-                                  ),
-                            ),
-                          );
-                        },
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: AddRoundButton(
+                          fullWidth: true,
+                          text: settings.teamTwoName,
+                          color: Theme.of(context).colorScheme.secondary,
+                          onPressed: () => _handleTeamButtonPress(false),
+                          onLongPress: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => RoundScreen(
+                                      teamOneName: settings.teamOneName,
+                                      teamTwoName: settings.teamTwoName,
+                                      isTeamOneSelected: false,
+                                      initialTabIndex: 1,
+                                    ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
