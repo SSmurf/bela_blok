@@ -9,6 +9,7 @@ import 'package:bela_blok/screens/settings_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/services/score_calculator.dart';
 import 'package:bela_blok/widgets/add_round_button.dart';
+import 'package:bela_blok/widgets/decorative_divider.dart';
 import 'package:bela_blok/widgets/landscape_total_score_display.dart';
 import 'package:bela_blok/widgets/round_display.dart';
 import 'package:bela_blok/widgets/total_score_display.dart';
@@ -400,11 +401,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   //     Expanded(child: const Divider(height: 1, thickness: 1)),
                   //   ],
                   // ),
-                  Image.asset(
-                    'assets/images/divider_1.png',
-                    fit: BoxFit.fitWidth,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
+                  const DecorativeDivider(),
                   const SizedBox(height: 12),
                   Expanded(
                     child:
