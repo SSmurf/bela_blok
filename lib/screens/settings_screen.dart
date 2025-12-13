@@ -582,91 +582,143 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextFormField(
-                  controller: teamOneController,
-                  decoration: InputDecoration(
-                    labelText: loc.translate('firstTeam'),
-                    labelStyle: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                      fontFamily: 'Nunito',
-                      fontWeight: FontWeight.w500,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withOpacity(0.3)),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withOpacity(0.3)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).colorScheme.surface,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  ),
-                  style: const TextStyle(fontFamily: 'Nunito', fontSize: 16),
-                  textCapitalization: TextCapitalization.words,
-                  maxLength: 20,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return loc.translate('emptyTeamName');
-                    }
-                    return null;
+                ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: teamOneController,
+                  builder: (context, value, child) {
+                    final hasText = value.text.isNotEmpty;
+
+                    return TextFormField(
+                      controller: teamOneController,
+                      decoration: InputDecoration(
+                        labelText: loc.translate('firstTeam'),
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                          fontFamily: 'Nunito',
+                          fontWeight: FontWeight.w500,
+                        ),
+                        suffixIcon:
+                            hasText
+                                ? IconButton(
+                                  onPressed: () => teamOneController.clear(),
+                                  icon: Icon(
+                                    HugeIcons.strokeRoundedCancel01,
+                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                                    size: 20,
+                                  ),
+                                  splashRadius: 20,
+                                )
+                                : null,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Theme.of(context).colorScheme.surface,
+                        errorStyle: const TextStyle(fontSize: 0, height: 0),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      onChanged: (_) => formKey.currentState?.validate(),
+                      style: const TextStyle(fontFamily: 'Nunito', fontSize: 16),
+                      textCapitalization: TextCapitalization.words,
+                      maxLength: 20,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return loc.translate('emptyTeamName');
+                        }
+                        return null;
+                      },
+                    );
                   },
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: teamTwoController,
-                  decoration: InputDecoration(
-                    labelText: loc.translate('secondTeam'),
-                    labelStyle: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                      fontFamily: 'Nunito',
-                      fontWeight: FontWeight.w500,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withOpacity(0.3)),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withOpacity(0.3)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).colorScheme.surface,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  ),
-                  style: const TextStyle(fontFamily: 'Nunito', fontSize: 16),
-                  textCapitalization: TextCapitalization.words,
-                  maxLength: 20,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return loc.translate('emptyTeamName');
-                    }
-                    return null;
+                ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: teamTwoController,
+                  builder: (context, value, child) {
+                    final hasText = value.text.isNotEmpty;
+
+                    return TextFormField(
+                      controller: teamTwoController,
+                      decoration: InputDecoration(
+                        labelText: loc.translate('secondTeam'),
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                          fontFamily: 'Nunito',
+                          fontWeight: FontWeight.w500,
+                        ),
+                        suffixIcon:
+                            hasText
+                                ? IconButton(
+                                  onPressed: () => teamTwoController.clear(),
+                                  icon: Icon(
+                                    HugeIcons.strokeRoundedCancel01,
+                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                                    size: 20,
+                                  ),
+                                  splashRadius: 20,
+                                )
+                                : null,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Theme.of(context).colorScheme.surface,
+                        errorStyle: const TextStyle(fontSize: 0, height: 0),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      onChanged: (_) => formKey.currentState?.validate(),
+                      style: const TextStyle(fontFamily: 'Nunito', fontSize: 16),
+                      textCapitalization: TextCapitalization.words,
+                      maxLength: 20,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return loc.translate('emptyTeamName');
+                        }
+                        return null;
+                      },
+                    );
                   },
                 ),
                 const SizedBox(height: 16),
