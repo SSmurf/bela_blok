@@ -10,7 +10,6 @@ import 'package:hugeicons/hugeicons.dart';
 import '../models/round.dart';
 import '../providers/game_provider.dart';
 import '../utils/app_localizations.dart';
-import '../widgets/add_round_button.dart';
 
 const double declarationFontSize = 28.0;
 const double stigljaFontSize = 26.0;
