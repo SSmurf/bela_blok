@@ -69,6 +69,7 @@ const Color lightTextColor = Color(0xFF333333);
 const Color lightBackgroundColor = Color(0xFFebe8e6);
 const Color darkTextColor = Color(0xFFcccccc);
 const Color darkBackgroundColor = Color(0xFF13110f);
+const Color darkDialogSurfaceColor = Color(0xFF1F1C1A);
 
 ThemeData getTheme(ThemeType type, ColorPalette palette) {
   final isPaletteDark = type == ThemeType.dark;
@@ -82,11 +83,11 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
     colorScheme: ColorScheme(
       brightness: isPaletteDark ? Brightness.dark : Brightness.light,
       primary: colors['primary']!,
-      onPrimary: isPaletteDark ? darkBackgroundColor : lightTextColor,
+      onPrimary: isPaletteDark ? Colors.white : lightTextColor,
       secondary: colors['secondary']!,
-      onSecondary: isPaletteDark ? darkBackgroundColor : lightTextColor,
+      onSecondary: isPaletteDark ? Colors.white : lightTextColor,
       tertiary: colors['tertiary']!,
-      onTertiary: isPaletteDark ? darkBackgroundColor : lightTextColor,
+      onTertiary: isPaletteDark ? Colors.white : lightTextColor,
       surface: isPaletteDark ? darkBackgroundColor : lightBackgroundColor,
       onSurface: textColor,
       error: isPaletteDark ? const Color(0xffF2B8B5) : const Color(0xffB3261E),
@@ -148,6 +149,12 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
         color: textColor,
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      backgroundColor: isPaletteDark ? darkDialogSurfaceColor : lightBackgroundColor,
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: isPaletteDark ? darkDialogSurfaceColor : lightBackgroundColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      elevation: 0,
     ),
   );
 }

@@ -128,9 +128,14 @@ class _GameTransferBottomSheetState extends ConsumerState<GameTransferBottomShee
     final qrSize = isSmallScreen ? 280.0 : 280.0;
     final scannerSize = isSmallScreen ? 280.0 : 300.0;
 
+    final sheetBackground = theme.bottomSheetTheme.backgroundColor ?? theme.scaffoldBackgroundColor;
     return Container(
       height: sheetHeight,
       padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: sheetBackground,
+        borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+      ),
       child: Column(
         children: [
           Container(

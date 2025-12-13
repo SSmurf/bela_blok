@@ -86,8 +86,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final isSmallScreen = screenWidth <= 375;
 
     return isSmallScreen
-        ? const EdgeInsets.symmetric(horizontal: 8, vertical: 8)
-        : const EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+        ? const EdgeInsets.symmetric(horizontal: 8, vertical: 16)
+        : const EdgeInsets.symmetric(horizontal: 16, vertical: 16);
   }
 
   Future<void> _showGoalOptionsDialog(BuildContext context, AppLocalizations loc) async {
@@ -156,23 +156,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).pop(null);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.secondary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        elevation: 0,
-                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
-                        padding:
-                            isSmallScreen
-                                ? const EdgeInsets.symmetric(horizontal: 8)
-                                : const EdgeInsets.symmetric(horizontal: 16),
-                      ),
-                      child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
                         setState(() {
                           _goalScore = selectedOption;
                         });
@@ -208,6 +191,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 : const EdgeInsets.symmetric(horizontal: 16),
                       ),
                       child: Text(loc.translate('save'), style: TextStyle(fontSize: buttonFontSize)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(null);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                        padding:
+                            isSmallScreen
+                                ? const EdgeInsets.symmetric(horizontal: 8)
+                                : const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
                     ),
                   ],
                 ),
@@ -305,23 +305,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).pop(null);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.secondary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        elevation: 0,
-                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
-                        padding:
-                            isSmallScreen
-                                ? const EdgeInsets.symmetric(horizontal: 8)
-                                : const EdgeInsets.symmetric(horizontal: 16),
-                      ),
-                      child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
                         setState(() {
                           _stigljaValue = selectedOption;
                         });
@@ -357,6 +340,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 : const EdgeInsets.symmetric(horizontal: 16),
                       ),
                       child: Text(loc.translate('save'), style: TextStyle(fontSize: buttonFontSize)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(null);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                        padding:
+                            isSmallScreen
+                                ? const EdgeInsets.symmetric(horizontal: 8)
+                                : const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
                     ),
                   ],
                 ),
@@ -470,23 +470,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).pop(null);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.secondary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        elevation: 0,
-                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
-                        padding:
-                            isSmallScreen
-                                ? const EdgeInsets.symmetric(horizontal: 8)
-                                : const EdgeInsets.symmetric(horizontal: 16),
-                      ),
-                      child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
                         Navigator.of(context).pop(selected);
                       },
                       style: ElevatedButton.styleFrom(
@@ -501,6 +484,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 : const EdgeInsets.symmetric(horizontal: 16),
                       ),
                       child: Text(loc.translate('save'), style: TextStyle(fontSize: buttonFontSize)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(null);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                        padding:
+                            isSmallScreen
+                                ? const EdgeInsets.symmetric(horizontal: 8)
+                                : const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
                     ),
                   ],
                 ),
@@ -628,28 +628,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               spacing: isSmallScreen ? 8 : 16,
               children: [
                 ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
-                    minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
-                    padding:
-                        isSmallScreen
-                            ? const EdgeInsets.symmetric(horizontal: 8)
-                            : const EdgeInsets.symmetric(horizontal: 16),
-                  ),
-                  child: Text(
-                    loc.translate('cancel'),
-                    style: TextStyle(
-                      fontFamily: 'Nunito',
-                      fontWeight: FontWeight.w500,
-                      fontSize: isSmallScreen ? 16 : 18,
-                    ),
-                  ),
-                ),
-                ElevatedButton(
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
                       final teamOne = teamOneController.text.trim();
@@ -670,6 +648,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   child: Text(
                     loc.translate('save'),
+                    style: TextStyle(
+                      fontFamily: 'Nunito',
+                      fontWeight: FontWeight.w500,
+                      fontSize: isSmallScreen ? 16 : 18,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    elevation: 0,
+                    minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                    padding:
+                        isSmallScreen
+                            ? const EdgeInsets.symmetric(horizontal: 8)
+                            : const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  child: Text(
+                    loc.translate('cancel'),
                     style: TextStyle(
                       fontFamily: 'Nunito',
                       fontWeight: FontWeight.w500,

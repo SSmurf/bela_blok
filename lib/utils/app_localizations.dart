@@ -21,7 +21,7 @@ class AppLocalizations {
       'rules': 'Pravila bele',
       'unspokenRules': 'Nepisana pravila bele',
       'aboutApp': 'O aplikaciji',
-      'cancel': 'Odbaci',
+      'cancel': 'Odustani',
       'save': 'Spremi',
       'deleteHistoryTileTitle': 'Izbriši povijest igara',
       'deleteHistoryDialogTitle': 'Brisanje povijesti',

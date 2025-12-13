@@ -47,8 +47,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final isSmallScreen = screenWidth <= 375;
 
     return isSmallScreen
-        ? const EdgeInsets.symmetric(horizontal: 8, vertical: 8)
-        : const EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+        ? const EdgeInsets.symmetric(horizontal: 8, vertical: 16)
+        : const EdgeInsets.symmetric(horizontal: 16, vertical: 16);
   }
 
   void _confirmClearGame(BuildContext context) {

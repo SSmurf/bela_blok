@@ -2,6 +2,7 @@ import 'package:bela_blok/providers/settings_provider.dart';
 import 'package:bela_blok/widgets/add_round_score_display.dart';
 import 'package:bela_blok/widgets/declaration_button.dart';
 import 'package:bela_blok/widgets/numeric_keyboard.dart';
+import 'package:bela_blok/widgets/save_round_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -767,7 +768,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  AddRoundButton(
+                  SaveRoundButton(
                     text: loc.translate('saveRound'),
                     color: theme.colorScheme.primary,
                     isEnabled: isSaveEnabled,
