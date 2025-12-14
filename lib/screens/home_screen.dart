@@ -29,6 +29,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _preventAutoSave = false;
   final LocalStorageService _localStorageService = LocalStorageService();
   bool _celebrationTriggered = false;
+  int _teamOneWins = 0;
+  int _teamTwoWins = 0;
+  bool _victoryCounted = false;
 
   Future<void> _startCelebration() async {
     if (!_celebrationTriggered) {
@@ -98,9 +101,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ElevatedButton(
                     onPressed: () {
                       ref.read(currentGameProvider.notifier).clearRounds();
-                      setState(() {
-                        _gameSaved = false;
-                      });
+                      _resetGameState(clearWins: true);
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
@@ -139,6 +140,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
       ),
     );
+  }
+
+  void _resetGameState({bool clearWins = false}) {
+    setState(() {
+      _gameSaved = false;
+      _preventAutoSave = false;
+      _celebrationTriggered = false;
+      _victoryCounted = false;
+      if (clearWins) {
+        _teamOneWins = 0;
+        _teamTwoWins = 0;
+      }
+    });
   }
 
   _editRound(
@@ -289,6 +303,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final int teamOneTotal = ScoreCalculator(stigljaValue: settings.stigljaValue).computeTeamOneTotal(rounds);
     final int teamTwoTotal = ScoreCalculator(stigljaValue: settings.stigljaValue).computeTeamTwoTotal(rounds);
     final bool gameEnded = teamOneTotal >= currentGoal || teamTwoTotal >= currentGoal;
+    final bool hasGameScore = teamOneTotal != 0 || teamTwoTotal != 0;
     String winningTeam = '';
 
     final mediaPadding = MediaQuery.of(context).padding;
@@ -309,6 +324,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     }
 
+    if (gameEnded && !_victoryCounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        setState(() {
+          if (teamOneTotal > teamTwoTotal) {
+            _teamOneWins++;
+          } else if (teamTwoTotal > teamOneTotal) {
+            _teamTwoWins++;
+          }
+          _victoryCounted = true;
+        });
+      });
+    }
+
     if (gameEnded && !_gameSaved && !_preventAutoSave) {
       _localStorageService.saveGame(
         rounds,
@@ -324,11 +353,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     void _handleTeamButtonPress(bool isTeamOneSelected) {
       if (gameEnded) {
         ref.read(currentGameProvider.notifier).clearRounds();
-        setState(() {
-          _gameSaved = false;
-          _preventAutoSave = false;
-          _celebrationTriggered = false;
-        });
+        _resetGameState();
       }
 
       _addNewRound(
@@ -350,6 +375,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               scoreTeamTwo: teamTwoTotal,
               teamOneName: settings.teamOneName,
               teamTwoName: settings.teamTwoName,
+              teamOneWins: _teamOneWins,
+              teamTwoWins: _teamTwoWins,
             ),
           ),
         ),
@@ -373,7 +400,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             IconButton(
               icon: const Icon(HugeIcons.strokeRoundedCancel01),
               iconSize: 32,
-              onPressed: rounds.isNotEmpty && !gameEnded ? () => _confirmClearGame(context) : null,
+              // onPressed: hasGameScore && !gameEnded ? () => _confirmClearGame(context) : null,
+              onPressed: hasGameScore ? () => _confirmClearGame(context) : null,
             ),
             IconButton(
               icon: const Icon(HugeIcons.strokeRoundedClock02),
@@ -395,6 +423,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     scoreTeamTwo: teamTwoTotal,
                     teamOneName: settings.teamOneName,
                     teamTwoName: settings.teamTwoName,
+                    teamOneWins: _teamOneWins,
+                    teamTwoWins: _teamTwoWins,
                   ),
                   const SizedBox(height: 6),
 

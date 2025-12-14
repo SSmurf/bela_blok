@@ -5,6 +5,8 @@ class TotalScoreDisplay extends StatelessWidget {
   final int scoreTeamTwo;
   final String teamOneName;
   final String teamTwoName;
+  final int teamOneWins;
+  final int teamTwoWins;
 
   const TotalScoreDisplay({
     super.key,
@@ -12,24 +14,42 @@ class TotalScoreDisplay extends StatelessWidget {
     required this.scoreTeamTwo,
     this.teamOneName = 'Mi',
     this.teamTwoName = 'Vi',
+    this.teamOneWins = 0,
+    this.teamTwoWins = 0,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    Widget _nameCell(String label) {
+    Widget _nameCell(String label, int wins) {
       return Expanded(
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
-            fontFamily: 'Nunito',
-            color: theme.colorScheme.onSurface,
-          ),
-          textAlign: TextAlign.center,
-          softWrap: true,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              wins.toString(),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Nunito',
+                color: theme.colorScheme.onSurface.withOpacity(0.7),
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Nunito',
+                color: theme.colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
+              softWrap: true,
+            ),
+          ],
         ),
       );
     }
@@ -52,7 +72,7 @@ class TotalScoreDisplay extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(children: [_nameCell(teamOneName), _nameCell(teamTwoName)]),
+        Row(children: [_nameCell(teamOneName, teamOneWins), _nameCell(teamTwoName, teamTwoWins)]),
         const SizedBox(height: 6),
         Row(children: [_scoreCell(scoreTeamOne), _scoreCell(scoreTeamTwo)]),
       ],
