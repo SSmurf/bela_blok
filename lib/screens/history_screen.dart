@@ -1,5 +1,6 @@
 import 'package:bela_blok/models/game.dart';
 import 'package:bela_blok/providers/settings_provider.dart';
+import 'package:bela_blok/screens/finished_game_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/services/score_calculator.dart';
 import 'package:flutter/material.dart';
@@ -104,15 +105,22 @@ class HistoryScreenState extends ConsumerState<HistoryScreen> {
                   winningTeam = 'Remi';
                 }
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                  child: FinishedGameDisplay(
-                    teamOneName: game.teamOneName,
-                    teamOneTotal: teamOneTotal,
-                    teamTwoTotal: teamTwoTotal,
-                    teamTwoName: game.teamTwoName,
-                    gameDate: game.createdAt,
-                    winningTeam: winningTeam.isNotEmpty ? winningTeam : null,
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(
+                      context,
+                    ).push(MaterialPageRoute(builder: (context) => FinishedGameScreen(game: game)));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6.0),
+                    child: FinishedGameDisplay(
+                      teamOneName: game.teamOneName,
+                      teamOneTotal: teamOneTotal,
+                      teamTwoTotal: teamTwoTotal,
+                      teamTwoName: game.teamTwoName,
+                      gameDate: game.createdAt,
+                      winningTeam: winningTeam.isNotEmpty ? winningTeam : null,
+                    ),
                   ),
                 );
               },
