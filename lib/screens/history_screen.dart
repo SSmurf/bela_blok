@@ -31,8 +31,6 @@ class HistoryScreenState extends ConsumerState<HistoryScreen> {
     final loc = AppLocalizations.of(context)!;
     final settings = ref.watch(settingsProvider);
     final int stigljaValue = settings.stigljaValue;
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isSmallScreen = screenWidth <= 375;
 
     return Scaffold(
       appBar: AppBar(
@@ -46,88 +44,82 @@ class HistoryScreenState extends ConsumerState<HistoryScreen> {
           icon: Icon(HugeIcons.strokeRoundedArrowLeft01, size: 30),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 0.0 : 16.0),
-        child: FutureBuilder<List<Game>>(
-          future: _gamesFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                  loc.translate('historyError'),
-                  style: const TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
-                  textAlign: TextAlign.center,
+      body: FutureBuilder<List<Game>>(
+        future: _gamesFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                loc.translate('historyError'),
+                style: const TextStyle(
+                  fontFamily: 'Nunito',
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
                 ),
-              );
-            }
-            final List<Game> games = snapshot.data ?? [];
-            if (games.isEmpty) {
-              return Center(
-                child: Text(
-                  loc.translate('noSavedGames'),
-                  style: const TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
-                  textAlign: TextAlign.center,
-                ),
-              );
-            }
-            return ListView.separated(
-              itemCount: games.length,
-              separatorBuilder:
-                  (context, index) => Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: const Divider(height: 1, thickness: 1),
-                        ),
-                      ),
-                    ],
-                  ),
-              itemBuilder: (context, index) {
-                final game = games[index];
-
-                final int teamOneTotal = ScoreCalculator(
-                  stigljaValue: stigljaValue,
-                ).computeTeamOneTotal(game.rounds);
-                final int teamTwoTotal = ScoreCalculator(
-                  stigljaValue: stigljaValue,
-                ).computeTeamTwoTotal(game.rounds);
-
-                String winningTeam = '';
-                if (teamOneTotal > teamTwoTotal) {
-                  winningTeam = game.teamOneName;
-                } else if (teamTwoTotal > teamOneTotal) {
-                  winningTeam = game.teamTwoName;
-                } else if (teamOneTotal == teamTwoTotal && teamOneTotal > 0) {
-                  winningTeam = 'Remi';
-                }
-
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(
-                      context,
-                    ).push(MaterialPageRoute(builder: (context) => FinishedGameScreen(game: game)));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6.0),
-                    child: FinishedGameDisplay(
-                      teamOneName: game.teamOneName,
-                      teamOneTotal: teamOneTotal,
-                      teamTwoTotal: teamTwoTotal,
-                      teamTwoName: game.teamTwoName,
-                      gameDate: game.createdAt,
-                      winningTeam: winningTeam.isNotEmpty ? winningTeam : null,
-                    ),
-                  ),
-                );
-              },
+                textAlign: TextAlign.center,
+              ),
             );
-          },
-        ),
+          }
+          final List<Game> games = snapshot.data ?? [];
+          if (games.isEmpty) {
+            return Center(
+              child: Text(
+                loc.translate('noSavedGames'),
+                style: const TextStyle(
+                  fontFamily: 'Nunito',
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+          return ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: games.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final game = games[index];
+
+              final int teamOneTotal = ScoreCalculator(
+                stigljaValue: stigljaValue,
+              ).computeTeamOneTotal(game.rounds);
+              final int teamTwoTotal = ScoreCalculator(
+                stigljaValue: stigljaValue,
+              ).computeTeamTwoTotal(game.rounds);
+
+              String winningTeam = '';
+              if (teamOneTotal > teamTwoTotal) {
+                winningTeam = game.teamOneName;
+              } else if (teamTwoTotal > teamOneTotal) {
+                winningTeam = game.teamTwoName;
+              } else if (teamOneTotal == teamTwoTotal && teamOneTotal > 0) {
+                winningTeam = 'Remi';
+              }
+
+              return FinishedGameDisplay(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => FinishedGameScreen(game: game),
+                    ),
+                  );
+                },
+                teamOneName: game.teamOneName,
+                teamOneTotal: teamOneTotal,
+                teamTwoTotal: teamTwoTotal,
+                teamTwoName: game.teamTwoName,
+                gameDate: game.createdAt,
+                winningTeam: winningTeam.isNotEmpty ? winningTeam : null,
+              );
+            },
+          );
+        },
       ),
     );
   }
 }
+
