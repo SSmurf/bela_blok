@@ -161,6 +161,16 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
     return declStigljaTeamOne > 0 || declStigljaTeamTwo > 0;
   }
 
+  bool get _canTeamOneDeclare200 => decl200TeamOne < max200 && decl200TeamTwo == 0 && declStigljaTeamTwo == 0;
+
+  bool get _canTeamTwoDeclare200 => decl200TeamTwo < max200 && decl200TeamOne == 0 && declStigljaTeamOne == 0;
+
+  bool get _canTeamOneDeclareStiglja =>
+      declStigljaTeamOne < maxStiglja && declStigljaTeamTwo == 0 && decl200TeamTwo == 0;
+
+  bool get _canTeamTwoDeclareStiglja =>
+      declStigljaTeamTwo < maxStiglja && declStigljaTeamOne == 0 && decl200TeamOne == 0;
+
   void _saveRound() {
     final round = Round(
       scoreTeamOne: teamOneScore,
@@ -518,12 +528,12 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                                   teamTwoCount: decl200TeamTwo,
                                   onTeamOneIncrement: () {
                                     setState(() {
-                                      if (decl200TeamOne < max200 && decl200TeamTwo == 0) decl200TeamOne++;
+                                      if (_canTeamOneDeclare200) decl200TeamOne++;
                                     });
                                   },
                                   onTeamTwoIncrement: () {
                                     setState(() {
-                                      if (decl200TeamTwo < max200 && decl200TeamOne == 0) decl200TeamTwo++;
+                                      if (_canTeamTwoDeclare200) decl200TeamTwo++;
                                     });
                                   },
                                   onTeamOneUndo: () {
@@ -544,7 +554,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                                   teamTwoCount: declStigljaTeamTwo,
                                   onTeamOneIncrement: () {
                                     setState(() {
-                                      if (declStigljaTeamOne < maxStiglja && declStigljaTeamTwo == 0) {
+                                      if (_canTeamOneDeclareStiglja) {
                                         declStigljaTeamOne = 1;
                                         // Force score: team one gets full points, team two 0.
                                         activeScore = totalPoints.toString();
@@ -554,7 +564,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                                   },
                                   onTeamTwoIncrement: () {
                                     setState(() {
-                                      if (declStigljaTeamTwo < maxStiglja && declStigljaTeamOne == 0) {
+                                      if (_canTeamTwoDeclareStiglja) {
                                         declStigljaTeamTwo = 1;
                                         // Force score: team two gets full points, team one 0.
                                         activeScore = '0';
@@ -697,12 +707,12 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                               teamTwoCount: decl200TeamTwo,
                               onTeamOneIncrement: () {
                                 setState(() {
-                                  if (decl200TeamOne < max200 && decl200TeamTwo == 0) decl200TeamOne++;
+                                  if (_canTeamOneDeclare200) decl200TeamOne++;
                                 });
                               },
                               onTeamTwoIncrement: () {
                                 setState(() {
-                                  if (decl200TeamTwo < max200 && decl200TeamOne == 0) decl200TeamTwo++;
+                                  if (_canTeamTwoDeclare200) decl200TeamTwo++;
                                 });
                               },
                               onTeamOneUndo: () {
@@ -723,7 +733,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                               teamTwoCount: declStigljaTeamTwo,
                               onTeamOneIncrement: () {
                                 setState(() {
-                                  if (declStigljaTeamOne < maxStiglja && declStigljaTeamTwo == 0) {
+                                  if (_canTeamOneDeclareStiglja) {
                                     declStigljaTeamOne = 1;
                                     // Force score: team one gets full points, team two 0.
                                     activeScore = totalPoints.toString();
@@ -733,7 +743,7 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                               },
                               onTeamTwoIncrement: () {
                                 setState(() {
-                                  if (declStigljaTeamTwo < maxStiglja && declStigljaTeamOne == 0) {
+                                  if (_canTeamTwoDeclareStiglja) {
                                     declStigljaTeamTwo = 1;
                                     // Force score: team two gets full points, team one 0.
                                     activeScore = '0';

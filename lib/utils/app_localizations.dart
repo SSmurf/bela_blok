@@ -47,7 +47,7 @@ class AppLocalizations {
       'otherAppsDesc':
           'Isprobaj i ostale aplikacije za praćenje rezultata u beli. One su bile inspiracija ovoj aplikaciji.',
       'developer': 'Developer',
-      'historyTitle': 'Povijest igara',
+      'historyTitle': 'Povijest',
       'historyError': 'Došlo je do greške pri učitavanju igara.',
       'noSavedGames': 'Nema spremljenih igara.',
       'ferStudent': 'Student FER-a',
