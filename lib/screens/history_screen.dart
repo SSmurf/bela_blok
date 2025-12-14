@@ -1,6 +1,7 @@
 import 'package:bela_blok/models/game.dart';
 import 'package:bela_blok/providers/settings_provider.dart';
 import 'package:bela_blok/screens/finished_game_screen.dart';
+import 'package:bela_blok/screens/global_statistics_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/services/score_calculator.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,21 @@ class HistoryScreenState extends ConsumerState<HistoryScreen> {
           onPressed: Navigator.of(context).pop,
           icon: Icon(HugeIcons.strokeRoundedArrowLeft01, size: 30),
         ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              final games = await _gamesFuture;
+              if (context.mounted) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => GlobalStatisticsScreen(games: games),
+                  ),
+                );
+              }
+            },
+            icon: const Icon(HugeIcons.strokeRoundedAnalytics01),
+          ),
+        ],
       ),
       body: FutureBuilder<List<Game>>(
         future: _gamesFuture,

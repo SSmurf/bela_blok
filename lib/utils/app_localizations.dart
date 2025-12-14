@@ -96,6 +96,15 @@ class AppLocalizations {
       'statisticsTab': 'Statistika',
       'comingSoon': 'Uskoro dolazi',
       'sum': 'Ukupno',
+      'globalStatisticsTitle': 'Globalna statistika',
+      'gamesPlayed': 'Odigranih igara',
+      'avgTeamPoints': 'Prosjek bodova tima po igri',
+      'avgTotalPoints': 'Prosjek ukupnih bodova po igri',
+      'avgPointsNoDecl': 'Prosjek bodova bez zvanja po igri',
+      'avgDeclValue': 'Prosječna vrijednost zvanja po igri',
+      'avgStiglja': 'Prosječan broj štiglji po igri',
+      'declPercentage': 'Udio zvanja u ukupnom rezultatu',
+      // 'totalDeclarations' already exists
     },
     'en': {
       'settings': 'Settings',
@@ -182,6 +191,15 @@ class AppLocalizations {
       'statisticsTab': 'Statistics',
       'comingSoon': 'Coming soon',
       'sum': 'Total',
+      'globalStatisticsTitle': 'Global Statistics',
+      'gamesPlayed': 'Games played',
+      'avgTeamPoints': 'Avg team points / game',
+      'avgTotalPoints': 'Avg total points / game',
+      'avgPointsNoDecl': 'Avg points (no decl) / game',
+      'avgDeclValue': 'Avg declaration value / game',
+      'avgStiglja': 'Avg all tricks / game',
+      'declPercentage': 'Declarations % of total score',
+      // 'totalDeclarations' already exists
     },
     'de': {
       'settings': 'Einstellungen',
@@ -269,6 +287,15 @@ class AppLocalizations {
       'statisticsTab': 'Statistik',
       'comingSoon': 'Demnächst verfügbar',
       'sum': 'Gesamt',
+      'globalStatisticsTitle': 'Globale Statistik',
+      'gamesPlayed': 'Gespielte Spiele',
+      'avgTeamPoints': 'Durchschn. Teampunkte / Spiel',
+      'avgTotalPoints': 'Durchschn. Gesamtpunkte / Spiel',
+      'avgPointsNoDecl': 'Durchschn. Punkte (ohne Ansagen) / Spiel',
+      'avgDeclValue': 'Durchschn. Ansagewert / Spiel',
+      'avgStiglja': 'Durchschn. Durchmarsch / Spiel',
+      'declPercentage': 'Ansagen % der Gesamtpunktzahl',
+      // 'totalDeclarations' already exists
     },
   };
 
