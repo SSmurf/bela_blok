@@ -95,6 +95,7 @@ class AppLocalizations {
       'roundsTab': 'Runde',
       'statisticsTab': 'Statistika',
       'comingSoon': 'Uskoro dolazi',
+      'sum': 'Ukupno',
     },
     'en': {
       'settings': 'Settings',
@@ -180,6 +181,7 @@ class AppLocalizations {
       'roundsTab': 'Rounds',
       'statisticsTab': 'Statistics',
       'comingSoon': 'Coming soon',
+      'sum': 'Total',
     },
     'de': {
       'settings': 'Einstellungen',
@@ -266,6 +268,7 @@ class AppLocalizations {
       'roundsTab': 'Runden',
       'statisticsTab': 'Statistik',
       'comingSoon': 'Demnächst verfügbar',
+      'sum': 'Gesamt',
     },
   };
 

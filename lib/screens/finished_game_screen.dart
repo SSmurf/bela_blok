@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:bela_blok/models/game.dart';
 import 'package:bela_blok/models/round.dart';
 import 'package:bela_blok/providers/settings_provider.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../utils/app_localizations.dart';
 
 class FinishedGameScreen extends ConsumerStatefulWidget {
@@ -25,7 +27,7 @@ class _FinishedGameScreenState extends ConsumerState<FinishedGameScreen> with Si
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -270,11 +272,7 @@ class _FinishedGameScreenState extends ConsumerState<FinishedGameScreen> with Si
                   fontSize: isSmallScreen ? 14 : 16,
                 ),
                 unselectedLabelColor: theme.colorScheme.onSurface,
-                tabs: [
-                  Tab(text: loc.translate('summaryTab')),
-                  Tab(text: loc.translate('roundsTab')),
-                  Tab(text: loc.translate('statisticsTab')),
-                ],
+                tabs: [Tab(text: loc.translate('statisticsTab')), Tab(text: loc.translate('roundsTab'))],
               ),
             ),
             const SizedBox(height: 16),
@@ -282,17 +280,12 @@ class _FinishedGameScreenState extends ConsumerState<FinishedGameScreen> with Si
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: GameSummaryWidget(
-                      teamOneName: widget.game.teamOneName,
-                      teamTwoName: widget.game.teamTwoName,
-                      winningTeam: winningTeam.isNotEmpty ? winningTeam : 'Remi',
-                      rounds: widget.game.rounds,
-                    ),
+                  _StatisticsTab(
+                    game: widget.game,
+                    stigljaValue: stigljaValue,
+                    winningTeam: winningTeam.isNotEmpty ? winningTeam : 'Remi',
                   ),
                   _RoundsTab(rounds: widget.game.rounds, stigljaValue: stigljaValue),
-                  const _StatisticsTab(),
                 ],
               ),
             ),
@@ -498,22 +491,327 @@ class _RoundsTab extends StatelessWidget {
 }
 
 class _StatisticsTab extends StatelessWidget {
-  const _StatisticsTab();
+  final Game game;
+  final int stigljaValue;
+  final String winningTeam;
+
+  const _StatisticsTab({required this.game, required this.stigljaValue, required this.winningTeam});
+
+  int _sumDeclarations(bool teamOne, int Function(Round) selector) {
+    return game.rounds.fold(0, (sum, round) => sum + selector(round));
+  }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final calculator = ScoreCalculator(stigljaValue: stigljaValue);
 
-    return Center(
-      child: Text(
-        loc.translate('comingSoon'),
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Nunito',
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-        ),
+    // Declaration counts
+    final decl20T1 = _sumDeclarations(true, (r) => r.decl20TeamOne);
+    final decl20T2 = _sumDeclarations(false, (r) => r.decl20TeamTwo);
+    final decl50T1 = _sumDeclarations(true, (r) => r.decl50TeamOne);
+    final decl50T2 = _sumDeclarations(false, (r) => r.decl50TeamTwo);
+    final decl100T1 = _sumDeclarations(true, (r) => r.decl100TeamOne);
+    final decl100T2 = _sumDeclarations(false, (r) => r.decl100TeamTwo);
+    final decl150T1 = _sumDeclarations(true, (r) => r.decl150TeamOne);
+    final decl150T2 = _sumDeclarations(false, (r) => r.decl150TeamTwo);
+    final decl200T1 = _sumDeclarations(true, (r) => r.decl200TeamOne);
+    final decl200T2 = _sumDeclarations(false, (r) => r.decl200TeamTwo);
+    final declStigljaT1 = _sumDeclarations(true, (r) => r.declStigljaTeamOne);
+    final declStigljaT2 = _sumDeclarations(false, (r) => r.declStigljaTeamTwo);
+
+    // Graph data
+    final List<FlSpot> spotsT1 = [];
+    final List<FlSpot> spotsT2 = [];
+    int cumT1 = 0;
+    int cumT2 = 0;
+
+    spotsT1.add(const FlSpot(0, 0));
+    spotsT2.add(const FlSpot(0, 0));
+
+    for (int i = 0; i < game.rounds.length; i++) {
+      final round = game.rounds[i];
+      cumT1 += calculator.computeTeamOneRoundTotal(round);
+      cumT2 += calculator.computeTeamTwoRoundTotal(round);
+      spotsT1.add(FlSpot((i + 1).toDouble(), cumT1.toDouble()));
+      spotsT2.add(FlSpot((i + 1).toDouble(), cumT2.toDouble()));
+    }
+
+    final currentMaxScore = max(cumT1, cumT2);
+    final graphMaxY = currentMaxScore.toDouble();
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          GameSummaryWidget(
+            teamOneName: game.teamOneName,
+            teamTwoName: game.teamTwoName,
+            winningTeam: winningTeam,
+            rounds: game.rounds,
+          ),
+          const SizedBox(height: 32),
+          // Declarations Table
+          Container(
+            padding: const EdgeInsets.all(16),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: theme.colorScheme.onSurface.withOpacity(0.5)),
+            ),
+            child: Table(
+              columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(1), 2: FlexColumnWidth(1)},
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: [
+                TableRow(
+                  decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: theme.colorScheme.outline.withOpacity(0.2))),
+                  ),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(
+                        loc.translate('declarationsTab'),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(
+                        game.teamOneName,
+                        style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(
+                        game.teamTwoName,
+                        style: TextStyle(fontWeight: FontWeight.bold, color: theme.colorScheme.secondary),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                _buildDeclRow('20', decl20T1, decl20T2, theme),
+                _buildDeclRow('50', decl50T1, decl50T2, theme),
+                _buildDeclRow('100', decl100T1, decl100T2, theme),
+                _buildDeclRow('150', decl150T1, decl150T2, theme),
+                _buildDeclRow('200', decl200T1, decl200T2, theme),
+                _buildDeclRow(loc.translate('allTricks'), declStigljaT1, declStigljaT2, theme, isLast: true),
+              ],
+            ),
+          ),
+          const SizedBox(height: 32),
+          // Graph
+          if (game.rounds.isNotEmpty)
+            Container(
+              height: 300,
+              padding: const EdgeInsets.only(right: 16),
+              child: LineChart(
+                LineChartData(
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: true,
+                    getDrawingHorizontalLine:
+                        (value) => FlLine(
+                          color: theme.colorScheme.outline.withOpacity(0.1),
+                          strokeWidth: 1,
+                          dashArray: [5, 5],
+                        ),
+                    getDrawingVerticalLine:
+                        (value) => FlLine(
+                          color: theme.colorScheme.outline.withOpacity(0.1),
+                          strokeWidth: 1,
+                          dashArray: [5, 5],
+                        ),
+                  ),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 30,
+                        interval: 1,
+                        getTitlesWidget: (value, meta) {
+                          if (value % 1 != 0) return Container();
+                          // Don't show every round if there are too many
+                          if (game.rounds.length > 10 && value % 2 != 0) {
+                            return Container();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              value.toInt().toString(),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 40,
+                        getTitlesWidget: (value, meta) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: Text(
+                              value.toInt().toString(),
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  borderData: FlBorderData(show: false),
+                  minX: 0,
+                  maxX: game.rounds.length.toDouble(),
+                  minY: 0,
+                  maxY: graphMaxY * 1.1,
+                  lineTouchData: LineTouchData(
+                    touchTooltipData: LineTouchTooltipData(
+                      getTooltipColor: (touchedSpot) {
+                        return theme.colorScheme.surfaceContainerHighest;
+                      },
+                      getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                        return touchedBarSpots.map((barSpot) {
+                          final flSpot = barSpot;
+                          return LineTooltipItem(
+                            '${flSpot.y.toInt()}',
+                            TextStyle(
+                              color: barSpot.bar.color ?? theme.colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        }).toList();
+                      },
+                    ),
+                  ),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: spotsT1,
+                      isCurved: false,
+                      color: theme.colorScheme.primary,
+                      barWidth: 3,
+                      isStrokeCapRound: true,
+                      dotData: const FlDotData(show: false),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: theme.colorScheme.primary.withOpacity(0.1),
+                      ),
+                    ),
+                    LineChartBarData(
+                      spots: spotsT2,
+                      isCurved: false,
+                      color: theme.colorScheme.secondary,
+                      barWidth: 3,
+                      isStrokeCapRound: true,
+                      dotData: const FlDotData(show: false),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: theme.colorScheme.secondary.withOpacity(0.1),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          const SizedBox(height: 16),
+          // Legend
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(color: theme.colorScheme.primary, shape: BoxShape.circle),
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    game.teamOneName,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                ),
+                const SizedBox(width: 24),
+                Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(color: theme.colorScheme.secondary, shape: BoxShape.circle),
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    game.teamTwoName,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+        ],
       ),
+    );
+  }
+
+  TableRow _buildDeclRow(String label, int val1, int val2, ThemeData theme, {bool isLast = false}) {
+    return TableRow(
+      decoration: BoxDecoration(
+        border: isLast ? null : Border(bottom: BorderSide(color: theme.colorScheme.outline.withOpacity(0.1))),
+      ),
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 12, bottom: isLast ? 0 : 12),
+          child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 12, bottom: isLast ? 0 : 12),
+          child: Text(
+            val1.toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: val1 > 0 ? FontWeight.bold : FontWeight.normal,
+              color: val1 > 0 ? theme.colorScheme.onSurface : theme.colorScheme.onSurface.withOpacity(0.5),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 12, bottom: isLast ? 0 : 12),
+          child: Text(
+            val2.toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: val2 > 0 ? FontWeight.bold : FontWeight.normal,
+              color: val2 > 0 ? theme.colorScheme.onSurface : theme.colorScheme.onSurface.withOpacity(0.5),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
