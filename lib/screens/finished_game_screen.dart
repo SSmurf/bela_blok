@@ -211,7 +211,7 @@ class _FinishedGameScreenState extends ConsumerState<FinishedGameScreen> with Si
           Builder(
             builder: (buttonContext) {
               return IconButton(
-                icon: const Icon(Icons.share),
+                icon: const Icon(HugeIcons.strokeRoundedShare05),
                 tooltip: loc.translate('shareGame'),
                 onPressed: () {
                   final renderBox = buttonContext.findRenderObject() as RenderBox?;

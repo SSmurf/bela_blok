@@ -8,6 +8,7 @@ import 'package:bela_blok/widgets/delete_history_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -25,6 +26,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final String rulesUrl = 'https://hr.wikipedia.org/wiki/Belot#Pravila';
   final String unspokenRulesUrl =
       'https://nepisanapravilabele.blogspot.com/2025/04/nepisana-pravila-bele.html';
+
+  final GlobalKey _shareTileKey = GlobalKey();
 
   bool _keepScreenOn = true;
   int _goalScore = 1001;
@@ -881,6 +884,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
+  Future<void> _shareApp() async {
+    const String appStoreUrl = 'https://apps.apple.com/app/bela-blok/id1234567890';
+    const String playStoreUrl = 'https://play.google.com/store/apps/details?id=com.belablok.app';
+
+    const String shareMessage =
+        'Check out Bela Blok - the perfect app for belote score tracking! 🎴\n\n'
+        'Download now:\n'
+        '📱 iOS: $appStoreUrl\n'
+        '🤖 Android: $playStoreUrl';
+
+    // Get the render box to calculate share position origin for iOS
+    final RenderBox? box = _shareTileKey.currentContext?.findRenderObject() as RenderBox?;
+    Rect? rect;
+    if (box != null && box.hasSize) {
+      rect = box.localToGlobal(Offset.zero) & box.size;
+    }
+
+    await Share.share(shareMessage, sharePositionOrigin: rect);
+  }
+
   void _toggleWakelock(bool value) async {
     setState(() {
       _keepScreenOn = value;
@@ -1027,6 +1050,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onTap: () => _launchURL(unspokenRulesUrl),
               ),
               const DeleteHistoryTile(),
+              ListTile(
+                key: _shareTileKey,
+                leading: const Icon(HugeIcons.strokeRoundedShare01),
+                title: Text(
+                  loc.translate('shareApp'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
+                trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
+                onTap: () => _shareApp(),
+              ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedInformationSquare),
                 title: Text(
