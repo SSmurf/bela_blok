@@ -396,6 +396,13 @@ class _ThreePlayerHomeScreenState extends ConsumerState<ThreePlayerHomeScreen> {
   }) {
     return Row(
       children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+          ),
+        ),
         Expanded(
           child: Text(
             playerOneValue.toString(),
@@ -408,13 +415,6 @@ class _ThreePlayerHomeScreenState extends ConsumerState<ThreePlayerHomeScreen> {
             playerTwoValue.toString(),
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Nunito'),
             textAlign: TextAlign.center,
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
           ),
         ),
         Expanded(

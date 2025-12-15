@@ -269,6 +269,7 @@ class _FinishedGameScreenState extends ConsumerState<FinishedGameScreen> with Si
           teamOneName: widget.game.teamOneName,
           teamTwoName: widget.game.teamTwoName,
           goalScore: widget.game.goalScore,
+          isThreePlayerMode: false,
           // stigljaValue isn't in Game model, so we keep current stiglja value
         );
     // Also save settings to local storage so they persist
