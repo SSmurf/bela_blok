@@ -84,6 +84,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Future<void> _reportProblem() async {
+    final emailUri = Uri(
+      scheme: 'mailto',
+      path: 'bela.podrska@gmail.com',
+      query: 'subject=Bela Blok - Problem',
+    );
+
+    if (!await launchUrl(emailUri, mode: LaunchMode.platformDefault)) {
+      throw 'Could not launch the email client';
+    }
+  }
+
   EdgeInsets _getDialogPadding(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth <= 375;
@@ -1059,6 +1071,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _shareApp(),
+              ),
+              ListTile(
+                leading: const Icon(HugeIcons.strokeRoundedBug02),
+                title: Text(
+                  loc.translate('reportProblem'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
+                trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
+                onTap: () => _reportProblem(),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedInformationSquare),
