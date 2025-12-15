@@ -6,10 +6,12 @@ import 'package:bela_blok/providers/settings_provider.dart';
 import 'package:bela_blok/screens/history_screen.dart';
 import 'package:bela_blok/screens/round_screen.dart';
 import 'package:bela_blok/screens/settings_screen.dart';
+import 'package:bela_blok/screens/three_player_home_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/services/score_calculator.dart';
 import 'package:bela_blok/widgets/add_round_button.dart';
 import 'package:bela_blok/widgets/decorative_divider.dart';
+import 'package:bela_blok/widgets/fading_edge_scroll_view.dart';
 import 'package:bela_blok/widgets/landscape_total_score_display.dart';
 import 'package:bela_blok/widgets/round_display.dart';
 import 'package:bela_blok/widgets/total_score_display.dart';
@@ -20,13 +22,28 @@ import 'package:vibration/vibration.dart';
 
 import '../utils/app_localizations.dart';
 
-class HomeScreen extends ConsumerStatefulWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
+
   @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+
+    if (settings.isThreePlayerMode) {
+      return const ThreePlayerHomeScreen();
+    }
+
+    return const TwoPlayerHomeScreen();
+  }
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class TwoPlayerHomeScreen extends ConsumerStatefulWidget {
+  const TwoPlayerHomeScreen({super.key});
+  @override
+  ConsumerState<TwoPlayerHomeScreen> createState() => _TwoPlayerHomeScreenState();
+}
+
+class _TwoPlayerHomeScreenState extends ConsumerState<TwoPlayerHomeScreen> {
   bool _gameSaved = false;
   bool _preventAutoSave = false;
   final LocalStorageService _localStorageService = LocalStorageService();
@@ -893,29 +910,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class FadingEdgeScrollView extends StatelessWidget {
-  final Widget child;
-  final double fadeHeight;
-
-  const FadingEdgeScrollView({super.key, required this.child, this.fadeHeight = 20.0});
-
-  @override
-  Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback: (Rect rect) {
-        return LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.transparent, Colors.white, Colors.white, Colors.transparent],
-          stops: [0.0, fadeHeight / rect.height, 1.0 - (fadeHeight / rect.height), 1.0],
-        ).createShader(rect);
-      },
-      blendMode: BlendMode.dstIn,
-      child: child,
     );
   }
 }

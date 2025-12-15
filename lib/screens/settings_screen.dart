@@ -34,6 +34,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   int _stigljaValue = 90;
   String _teamOneName = 'Mi';
   String _teamTwoName = 'Vi';
+  bool _isThreePlayerMode = false;
+  String _playerOneName = 'Osoba 1';
+  String _playerTwoName = 'Osoba 2';
+  String _playerThreeName = 'Osoba 3';
 
   final LocalStorageService _localStorageService = LocalStorageService();
 
@@ -62,19 +66,40 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         _stigljaValue = settings.stigljaValue;
         _teamOneName = settings.teamOneName;
         _teamTwoName = settings.teamTwoName;
+        _isThreePlayerMode = settings.isThreePlayerMode;
+        _playerOneName = settings.playerOneName;
+        _playerTwoName = settings.playerTwoName;
+        _playerThreeName = settings.playerThreeName;
       });
       ref.read(settingsProvider.notifier).state = settings;
     }
   }
 
-  Future<void> _saveLanguageSetting(Locale locale, String languageString) async {
-    await _localStorageService.saveSettings({
+  Map<String, dynamic> _buildSettingsMap(String languageString) {
+    return {
       'goalScore': _goalScore,
       'stigljaValue': _stigljaValue,
       'teamOneName': _teamOneName,
       'teamTwoName': _teamTwoName,
       'selectedLanguage': languageString,
-    });
+      'isThreePlayerMode': _isThreePlayerMode,
+      'playerOneName': _playerOneName,
+      'playerTwoName': _playerTwoName,
+      'playerThreeName': _playerThreeName,
+    };
+  }
+
+  String _getCurrentLanguageString() {
+    final langCode = ref.read(languageProvider).languageCode;
+    return langCode == 'en'
+        ? 'English'
+        : langCode == 'de'
+        ? 'Deutsch'
+        : 'Hrvatski';
+  }
+
+  Future<void> _saveLanguageSetting(Locale locale, String languageString) async {
+    await _localStorageService.saveSettings(_buildSettingsMap(languageString));
   }
 
   Future<void> _launchURL(String url) async {
@@ -179,19 +204,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           stigljaValue: _stigljaValue,
                           teamOneName: _teamOneName,
                           teamTwoName: _teamTwoName,
+                          isThreePlayerMode: _isThreePlayerMode,
+                          playerOneName: _playerOneName,
+                          playerTwoName: _playerTwoName,
+                          playerThreeName: _playerThreeName,
                         );
-                        _localStorageService.saveSettings({
-                          'goalScore': _goalScore,
-                          'stigljaValue': _stigljaValue,
-                          'teamOneName': _teamOneName,
-                          'teamTwoName': _teamTwoName,
-                          'selectedLanguage':
-                              ref.read(languageProvider).languageCode == 'en'
-                                  ? 'English'
-                                  : ref.read(languageProvider).languageCode == 'de'
-                                  ? 'Deutsch'
-                                  : 'Hrvatski',
-                        });
+                        _localStorageService.saveSettings(_buildSettingsMap(_getCurrentLanguageString()));
                         Navigator.of(context).pop(_goalScore);
                       },
                       style: ElevatedButton.styleFrom(
@@ -243,19 +261,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         stigljaValue: _stigljaValue,
         teamOneName: _teamOneName,
         teamTwoName: _teamTwoName,
+        isThreePlayerMode: _isThreePlayerMode,
+        playerOneName: _playerOneName,
+        playerTwoName: _playerTwoName,
+        playerThreeName: _playerThreeName,
       );
-      await _localStorageService.saveSettings({
-        'goalScore': _goalScore,
-        'stigljaValue': _stigljaValue,
-        'teamOneName': _teamOneName,
-        'teamTwoName': _teamTwoName,
-        'selectedLanguage':
-            ref.read(languageProvider).languageCode == 'en'
-                ? 'English'
-                : ref.read(languageProvider).languageCode == 'de'
-                ? 'Deutsch'
-                : 'Hrvatski',
-      });
+      await _localStorageService.saveSettings(_buildSettingsMap(_getCurrentLanguageString()));
     } else {
       setState(() {
         _goalScore = originalGoal;
@@ -328,19 +339,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           stigljaValue: _stigljaValue,
                           teamOneName: _teamOneName,
                           teamTwoName: _teamTwoName,
+                          isThreePlayerMode: _isThreePlayerMode,
+                          playerOneName: _playerOneName,
+                          playerTwoName: _playerTwoName,
+                          playerThreeName: _playerThreeName,
                         );
-                        _localStorageService.saveSettings({
-                          'goalScore': _goalScore,
-                          'stigljaValue': _stigljaValue,
-                          'teamOneName': _teamOneName,
-                          'teamTwoName': _teamTwoName,
-                          'selectedLanguage':
-                              ref.read(languageProvider).languageCode == 'en'
-                                  ? 'English'
-                                  : ref.read(languageProvider).languageCode == 'de'
-                                  ? 'Deutsch'
-                                  : 'Hrvatski',
-                        });
+                        _localStorageService.saveSettings(_buildSettingsMap(_getCurrentLanguageString()));
                         Navigator.of(context).pop(_stigljaValue);
                       },
                       style: ElevatedButton.styleFrom(
@@ -391,19 +395,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         stigljaValue: _stigljaValue,
         teamOneName: _teamOneName,
         teamTwoName: _teamTwoName,
+        isThreePlayerMode: _isThreePlayerMode,
+        playerOneName: _playerOneName,
+        playerTwoName: _playerTwoName,
+        playerThreeName: _playerThreeName,
       );
-      await _localStorageService.saveSettings({
-        'goalScore': _goalScore,
-        'stigljaValue': _stigljaValue,
-        'teamOneName': _teamOneName,
-        'teamTwoName': _teamTwoName,
-        'selectedLanguage':
-            ref.read(languageProvider).languageCode == 'en'
-                ? 'English'
-                : ref.read(languageProvider).languageCode == 'de'
-                ? 'Deutsch'
-                : 'Hrvatski',
-      });
+      await _localStorageService.saveSettings(_buildSettingsMap(_getCurrentLanguageString()));
     } else {
       setState(() {
         _stigljaValue = originalStiglja;
@@ -561,15 +558,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         stigljaValue: _stigljaValue,
         teamOneName: _teamOneName,
         teamTwoName: _teamTwoName,
+        isThreePlayerMode: _isThreePlayerMode,
+        playerOneName: _playerOneName,
+        playerTwoName: _playerTwoName,
+        playerThreeName: _playerThreeName,
       );
 
-      await _localStorageService.saveSettings({
-        'goalScore': _goalScore,
-        'stigljaValue': _stigljaValue,
-        'teamOneName': _teamOneName,
-        'teamTwoName': _teamTwoName,
-        'selectedLanguage': result,
-      });
+      await _localStorageService.saveSettings(_buildSettingsMap(result));
     }
   }
 
@@ -824,21 +819,239 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         stigljaValue: _stigljaValue,
         teamOneName: _teamOneName,
         teamTwoName: _teamTwoName,
+        isThreePlayerMode: _isThreePlayerMode,
+        playerOneName: _playerOneName,
+        playerTwoName: _playerTwoName,
+        playerThreeName: _playerThreeName,
       );
 
-      await _localStorageService.saveSettings({
-        'goalScore': _goalScore,
-        'stigljaValue': _stigljaValue,
-        'teamOneName': _teamOneName,
-        'teamTwoName': _teamTwoName,
-        'selectedLanguage':
-            ref.read(languageProvider).languageCode == 'en'
-                ? 'English'
-                : ref.read(languageProvider).languageCode == 'de'
-                ? 'Deutsch'
-                : 'Hrvatski',
-      });
+      await _localStorageService.saveSettings(_buildSettingsMap(_getCurrentLanguageString()));
     }
+  }
+
+  Future<void> _showPlayerNamesDialog(BuildContext context, AppLocalizations loc) async {
+    final playerOneController = TextEditingController(text: _playerOneName);
+    final playerTwoController = TextEditingController(text: _playerTwoName);
+    final playerThreeController = TextEditingController(text: _playerThreeName);
+    final formKey = GlobalKey<FormState>();
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth <= 375;
+
+    final result = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            loc.translate('playerNames'),
+            style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
+          ),
+          contentPadding:
+              isSmallScreen
+                  ? const EdgeInsets.fromLTRB(16, 16, 16, 0)
+                  : const EdgeInsets.fromLTRB(24, 20, 24, 0),
+          content: Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildPlayerNameField(playerOneController, loc.translate('playerOne'), formKey, loc),
+                  const SizedBox(height: 16),
+                  _buildPlayerNameField(playerTwoController, loc.translate('playerTwo'), formKey, loc),
+                  const SizedBox(height: 16),
+                  _buildPlayerNameField(playerThreeController, loc.translate('playerThree'), formKey, loc),
+                  const SizedBox(height: 16),
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      playerOneController.text = loc.translate('person1');
+                      playerTwoController.text = loc.translate('person2');
+                      playerThreeController.text = loc.translate('person3');
+                    },
+                    icon: const Icon(HugeIcons.strokeRoundedUndo),
+                    label: Text(loc.translate('resetPlayerNames')),
+                    style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(40)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.spaceEvenly,
+          actionsPadding: _getDialogPadding(context),
+          actions: [
+            OverflowBar(
+              alignment: MainAxisAlignment.spaceEvenly,
+              spacing: isSmallScreen ? 8 : 16,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      Navigator.of(context).pop({
+                        'playerOne': playerOneController.text.trim(),
+                        'playerTwo': playerTwoController.text.trim(),
+                        'playerThree': playerThreeController.text.trim(),
+                      });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    elevation: 0,
+                    minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                    padding:
+                        isSmallScreen
+                            ? const EdgeInsets.symmetric(horizontal: 8)
+                            : const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  child: Text(
+                    loc.translate('save'),
+                    style: TextStyle(
+                      fontFamily: 'Nunito',
+                      fontWeight: FontWeight.w500,
+                      fontSize: isSmallScreen ? 16 : 18,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    elevation: 0,
+                    minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                    padding:
+                        isSmallScreen
+                            ? const EdgeInsets.symmetric(horizontal: 8)
+                            : const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  child: Text(
+                    loc.translate('cancel'),
+                    style: TextStyle(
+                      fontFamily: 'Nunito',
+                      fontWeight: FontWeight.w500,
+                      fontSize: isSmallScreen ? 16 : 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != null) {
+      setState(() {
+        _playerOneName = result['playerOne']!;
+        _playerTwoName = result['playerTwo']!;
+        _playerThreeName = result['playerThree']!;
+      });
+
+      ref.read(settingsProvider.notifier).state = AppSettings(
+        goalScore: _goalScore,
+        stigljaValue: _stigljaValue,
+        teamOneName: _teamOneName,
+        teamTwoName: _teamTwoName,
+        isThreePlayerMode: _isThreePlayerMode,
+        playerOneName: _playerOneName,
+        playerTwoName: _playerTwoName,
+        playerThreeName: _playerThreeName,
+      );
+
+      await _localStorageService.saveSettings(_buildSettingsMap(_getCurrentLanguageString()));
+    }
+  }
+
+  Widget _buildPlayerNameField(
+    TextEditingController controller,
+    String label,
+    GlobalKey<FormState> formKey,
+    AppLocalizations loc,
+  ) {
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: controller,
+      builder: (context, value, child) {
+        final hasText = value.text.isNotEmpty;
+        return TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+              fontFamily: 'Nunito',
+              fontWeight: FontWeight.w500,
+            ),
+            suffixIcon:
+                hasText
+                    ? IconButton(
+                      onPressed: () => controller.clear(),
+                      icon: Icon(
+                        HugeIcons.strokeRoundedCancel01,
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                        size: 20,
+                      ),
+                      splashRadius: 20,
+                    )
+                    : null,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withOpacity(0.3)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.outline.withOpacity(0.3)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
+            ),
+            filled: true,
+            fillColor: Theme.of(context).colorScheme.surface,
+            errorStyle: const TextStyle(fontSize: 0, height: 0),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          ),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          onChanged: (_) => formKey.currentState?.validate(),
+          style: const TextStyle(fontFamily: 'Nunito', fontSize: 16),
+          textCapitalization: TextCapitalization.words,
+          maxLength: 20,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return loc.translate('emptyPlayerName');
+            }
+            return null;
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _toggleThreePlayerMode(bool value) async {
+    setState(() {
+      _isThreePlayerMode = value;
+    });
+
+    ref.read(settingsProvider.notifier).state = AppSettings(
+      goalScore: _goalScore,
+      stigljaValue: _stigljaValue,
+      teamOneName: _teamOneName,
+      teamTwoName: _teamTwoName,
+      isThreePlayerMode: _isThreePlayerMode,
+      playerOneName: _playerOneName,
+      playerTwoName: _playerTwoName,
+      playerThreeName: _playerThreeName,
+    );
+
+    await _localStorageService.saveSettings(_buildSettingsMap(_getCurrentLanguageString()));
   }
 
   Widget _buildSectionHeader(BuildContext context, String title) {
@@ -892,6 +1105,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
 
     return '${teamOne.substring(0, normalScreenLimit)}..., ${teamTwo.substring(0, normalScreenLimit)}...';
+  }
+
+  String _formatPlayerNames(String p1, String p2, String p3) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth <= 375;
+    final limit = isSmallScreen ? 4 : 6;
+
+    String format(String name) {
+      return name.length <= limit ? name : '${name.substring(0, limit)}...';
+    }
+
+    return '${format(p1)}, ${format(p2)}, ${format(p3)}';
   }
 
   Future<void> _showThemeOptions(BuildContext context) async {
@@ -1000,6 +1225,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 onTap: () => _showTeamNamesDialog(context, loc),
               ),
+              ListTile(
+                leading: const Icon(HugeIcons.strokeRoundedUserMultiple),
+                title: Text(
+                  loc.translate('threePlayerMode'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
+                trailing: Transform.scale(
+                  scale: 0.9,
+                  child: Switch(value: _isThreePlayerMode, onChanged: _toggleThreePlayerMode),
+                ),
+                onTap: () => _toggleThreePlayerMode(!_isThreePlayerMode),
+              ),
+              if (_isThreePlayerMode)
+                ListTile(
+                  leading: const Icon(HugeIcons.strokeRoundedUserEdit01),
+                  title: Text(
+                    loc.translate('playerNames'),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                  ),
+                  trailing: Text(
+                    _formatPlayerNames(_playerOneName, _playerTwoName, _playerThreeName),
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 14, fontFamily: 'Nunito'),
+                  ),
+                  onTap: () => _showPlayerNamesDialog(context, loc),
+                ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedLanguageSkill),
                 title: Text(
