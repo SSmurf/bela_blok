@@ -108,6 +108,8 @@ class HistoryScreenState extends ConsumerState<HistoryScreen> with SingleTickerP
     final settings = ref.watch(settingsProvider);
     final int stigljaValue = settings.stigljaValue;
     final theme = Theme.of(context);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final bool isSmallScreen = screenWidth <= 375;
 
     return Scaffold(
       appBar: AppBar(
@@ -133,20 +135,6 @@ class HistoryScreenState extends ConsumerState<HistoryScreen> with SingleTickerP
             icon: const Icon(HugeIcons.strokeRoundedAnalytics01),
           ),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          labelStyle: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.bold, fontSize: 16),
-          unselectedLabelStyle: const TextStyle(
-            fontFamily: 'Nunito',
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-          ),
-          indicatorColor: theme.colorScheme.primary,
-          tabs: [
-            Tab(text: loc.translate('finishedGamesTab')),
-            Tab(text: loc.translate('unfinishedGamesTab')),
-          ],
-        ),
       ),
       body: FutureBuilder<List<Game>>(
         future: _gamesFuture,
@@ -167,11 +155,53 @@ class HistoryScreenState extends ConsumerState<HistoryScreen> with SingleTickerP
           final finishedGames = games.where((game) => !game.isCanceled).toList();
           final unfinishedGames = games.where((game) => game.isCanceled).toList();
 
-          return TabBarView(
-            controller: _tabController,
+          return Column(
             children: [
-              _buildGameList(finishedGames, loc, stigljaValue),
-              _buildGameList(unfinishedGames, loc, stigljaValue),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: theme.colorScheme.outline.withOpacity(0.5)),
+                  ),
+                  child: TabBar(
+                    controller: _tabController,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    dividerColor: Colors.transparent,
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: theme.colorScheme.primary,
+                    ),
+                    labelColor: theme.colorScheme.onPrimary,
+                    labelStyle: TextStyle(
+                      fontFamily: 'Nunito',
+                      fontWeight: FontWeight.w500,
+                      fontSize: isSmallScreen ? 14 : 16,
+                    ),
+                    unselectedLabelStyle: TextStyle(
+                      fontFamily: 'Nunito',
+                      fontWeight: FontWeight.w500,
+                      fontSize: isSmallScreen ? 14 : 16,
+                    ),
+                    unselectedLabelColor: theme.colorScheme.onSurface,
+                    tabs: [
+                      Tab(text: loc.translate('finishedGamesTab')),
+                      Tab(text: loc.translate('unfinishedGamesTab')),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _buildGameList(finishedGames, loc, stigljaValue),
+                    _buildGameList(unfinishedGames, loc, stigljaValue),
+                  ],
+                ),
+              ),
             ],
           );
         },

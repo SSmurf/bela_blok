@@ -841,6 +841,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 4.0),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Nunito',
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+        ),
+      ),
+    );
+  }
+
   String _formatTeamNames(String teamOne, String teamTwo) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth <= 375;
@@ -1025,6 +1040,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _showThemeOptions(context),
               ),
+              const DeleteHistoryTile(),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                child: Divider(color: Colors.grey.withOpacity(0.8)),
+              ),
+
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedQrCode),
                 title: Text(
@@ -1061,7 +1083,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _launchURL(unspokenRulesUrl),
               ),
-              const DeleteHistoryTile(),
               ListTile(
                 key: _shareTileKey,
                 leading: const Icon(HugeIcons.strokeRoundedShare01),

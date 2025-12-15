@@ -12,6 +12,8 @@ class AppLocalizations {
   static const Map<String, Map<String, String>> _localizedValues = {
     'hr': {
       'settings': 'Postavke',
+      'settingsSection': 'Postavke',
+      'infoSection': 'Info',
       'gameTo': 'Igra se do',
       'stigljaValue': 'Vrijednost štiglje',
       'teamNames': 'Imena timova',
@@ -120,6 +122,8 @@ class AppLocalizations {
     },
     'en': {
       'settings': 'Settings',
+      'settingsSection': 'Settings',
+      'infoSection': 'Info',
       'gameTo': 'Game goal',
       'stigljaValue': 'All tricks value',
       'teamNames': 'Team names',
@@ -227,6 +231,8 @@ class AppLocalizations {
     },
     'de': {
       'settings': 'Einstellungen',
+      'settingsSection': 'Einstellungen',
+      'infoSection': 'Info',
       'gameTo': 'Spiel bis',
       'stigljaValue': 'Vollerstich-Wert',
       'teamNames': 'Teamnamen',
