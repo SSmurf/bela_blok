@@ -104,6 +104,9 @@ class AppLocalizations {
       'avgDeclValue': 'Prosječna vrijednost zvanja po igri',
       'avgStiglja': 'Prosječan broj štiglji po igri',
       'declPercentage': 'Udio zvanja u ukupnom rezultatu',
+      'winningTeamStats': 'Statistika pobjednika',
+      'losingTeamStats': 'Statistika gubitnika',
+      'combinedStats': 'Kombinirana statistika',
       // 'totalDeclarations' already exists
     },
     'en': {
@@ -199,6 +202,9 @@ class AppLocalizations {
       'avgDeclValue': 'Avg declaration value / game',
       'avgStiglja': 'Avg all tricks / game',
       'declPercentage': 'Declarations % of total score',
+      'winningTeamStats': 'Winning Team Statistics',
+      'losingTeamStats': 'Losing Team Statistics',
+      'combinedStats': 'Combined Statistics',
       // 'totalDeclarations' already exists
     },
     'de': {
@@ -295,6 +301,9 @@ class AppLocalizations {
       'avgDeclValue': 'Durchschn. Ansagewert / Spiel',
       'avgStiglja': 'Durchschn. Durchmarsch / Spiel',
       'declPercentage': 'Ansagen % der Gesamtpunktzahl',
+      'winningTeamStats': 'Gewinnerstatistik',
+      'losingTeamStats': 'Verliererstatistik',
+      'combinedStats': 'Kombinierte Statistik',
       // 'totalDeclarations' already exists
     },
   };
