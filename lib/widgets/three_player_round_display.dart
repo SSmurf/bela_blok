@@ -41,10 +41,7 @@ class ThreePlayerRoundDisplay extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          const Text(
-            '-',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.w400, fontFamily: 'Nunito'),
-          ),
+          const Text('-', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w400, fontFamily: 'Nunito')),
           // Player Two total score
           Expanded(
             child: Text(
@@ -53,10 +50,7 @@ class ThreePlayerRoundDisplay extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          const Text(
-            '-',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.w400, fontFamily: 'Nunito'),
-          ),
+          const Text('-', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w400, fontFamily: 'Nunito')),
           // Player Three total score
           Expanded(
             child: Text(
@@ -70,5 +64,4 @@ class ThreePlayerRoundDisplay extends ConsumerWidget {
       ),
     );
   }
-
 }

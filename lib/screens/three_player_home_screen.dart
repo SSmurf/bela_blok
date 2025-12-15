@@ -753,7 +753,7 @@ class _ThreePlayerHomeScreenState extends ConsumerState<ThreePlayerHomeScreen> {
                         )
                         : FadingEdgeScrollView(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            padding: const EdgeInsets.only(left: 8, right: 24),
                             child: ListView.builder(
                               itemCount: rounds.length,
                               itemBuilder: (context, index) {
