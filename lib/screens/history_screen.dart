@@ -3,6 +3,7 @@ import 'package:bela_blok/models/three_player_game.dart';
 import 'package:bela_blok/providers/settings_provider.dart';
 import 'package:bela_blok/screens/finished_game_screen.dart';
 import 'package:bela_blok/screens/global_statistics_screen.dart';
+import 'package:bela_blok/screens/three_player_finished_game_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/services/score_calculator.dart';
 import 'package:bela_blok/widgets/finished_game_display.dart';
@@ -161,11 +162,14 @@ class HistoryScreenState extends ConsumerState<HistoryScreen>
 
     return ThreePlayerFinishedGameDisplay(
       onTap: () async {
-        // TODO: Navigate to ThreePlayerFinishedGameScreen
-        // For now, just show a snackbar
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(loc.translate('threePlayerGameDetails'))),
+        final result = await Navigator.of(context).push<bool>(
+          MaterialPageRoute(
+            builder: (context) => ThreePlayerFinishedGameScreen(game: game),
+          ),
         );
+        if (result == true) {
+          _refreshGames();
+        }
       },
       playerOneName: game.playerOneName,
       playerTwoName: game.playerTwoName,

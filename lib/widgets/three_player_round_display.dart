@@ -1,7 +1,9 @@
 import 'package:bela_blok/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../models/three_player_round.dart';
+import '../utils/three_player_score_utils.dart';
 
 class ThreePlayerRoundDisplay extends ConsumerWidget {
   final ThreePlayerRound round;
@@ -14,9 +16,9 @@ class ThreePlayerRoundDisplay extends ConsumerWidget {
     int stigljaValue = ref.watch(settingsProvider).stigljaValue;
 
     // Calculate totals for each player including declarations
-    int playerOneTotal = _computePlayerTotal(round, 0, stigljaValue);
-    int playerTwoTotal = _computePlayerTotal(round, 1, stigljaValue);
-    int playerThreeTotal = _computePlayerTotal(round, 2, stigljaValue);
+    int playerOneTotal = computeThreePlayerRoundTotal(round, 0, stigljaValue);
+    int playerTwoTotal = computeThreePlayerRoundTotal(round, 1, stigljaValue);
+    int playerThreeTotal = computeThreePlayerRoundTotal(round, 2, stigljaValue);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -69,68 +71,4 @@ class ThreePlayerRoundDisplay extends ConsumerWidget {
     );
   }
 
-  int _computePlayerTotal(ThreePlayerRound round, int playerIndex, int stigljaValue) {
-    int baseScore;
-    int declarations;
-
-    if (playerIndex == 0) {
-      baseScore = round.scorePlayerOne;
-      if (round.declStigljaPlayerOne > 0) {
-        // Player one has stiglja - gets all declarations
-        declarations = (round.decl20PlayerOne + round.decl20PlayerTwo + round.decl20PlayerThree) * 20 +
-            (round.decl50PlayerOne + round.decl50PlayerTwo + round.decl50PlayerThree) * 50 +
-            (round.decl100PlayerOne + round.decl100PlayerTwo + round.decl100PlayerThree) * 100 +
-            (round.decl150PlayerOne + round.decl150PlayerTwo + round.decl150PlayerThree) * 150 +
-            (round.decl200PlayerOne + round.decl200PlayerTwo + round.decl200PlayerThree) * 200 +
-            (round.declStigljaPlayerOne * stigljaValue);
-      } else if (round.declStigljaPlayerTwo > 0 || round.declStigljaPlayerThree > 0) {
-        // Another player has stiglja - player one gets no declarations
-        declarations = 0;
-      } else {
-        declarations = round.decl20PlayerOne * 20 +
-            round.decl50PlayerOne * 50 +
-            round.decl100PlayerOne * 100 +
-            round.decl150PlayerOne * 150 +
-            round.decl200PlayerOne * 200;
-      }
-    } else if (playerIndex == 1) {
-      baseScore = round.scorePlayerTwo;
-      if (round.declStigljaPlayerTwo > 0) {
-        declarations = (round.decl20PlayerOne + round.decl20PlayerTwo + round.decl20PlayerThree) * 20 +
-            (round.decl50PlayerOne + round.decl50PlayerTwo + round.decl50PlayerThree) * 50 +
-            (round.decl100PlayerOne + round.decl100PlayerTwo + round.decl100PlayerThree) * 100 +
-            (round.decl150PlayerOne + round.decl150PlayerTwo + round.decl150PlayerThree) * 150 +
-            (round.decl200PlayerOne + round.decl200PlayerTwo + round.decl200PlayerThree) * 200 +
-            (round.declStigljaPlayerTwo * stigljaValue);
-      } else if (round.declStigljaPlayerOne > 0 || round.declStigljaPlayerThree > 0) {
-        declarations = 0;
-      } else {
-        declarations = round.decl20PlayerTwo * 20 +
-            round.decl50PlayerTwo * 50 +
-            round.decl100PlayerTwo * 100 +
-            round.decl150PlayerTwo * 150 +
-            round.decl200PlayerTwo * 200;
-      }
-    } else {
-      baseScore = round.scorePlayerThree;
-      if (round.declStigljaPlayerThree > 0) {
-        declarations = (round.decl20PlayerOne + round.decl20PlayerTwo + round.decl20PlayerThree) * 20 +
-            (round.decl50PlayerOne + round.decl50PlayerTwo + round.decl50PlayerThree) * 50 +
-            (round.decl100PlayerOne + round.decl100PlayerTwo + round.decl100PlayerThree) * 100 +
-            (round.decl150PlayerOne + round.decl150PlayerTwo + round.decl150PlayerThree) * 150 +
-            (round.decl200PlayerOne + round.decl200PlayerTwo + round.decl200PlayerThree) * 200 +
-            (round.declStigljaPlayerThree * stigljaValue);
-      } else if (round.declStigljaPlayerOne > 0 || round.declStigljaPlayerTwo > 0) {
-        declarations = 0;
-      } else {
-        declarations = round.decl20PlayerThree * 20 +
-            round.decl50PlayerThree * 50 +
-            round.decl100PlayerThree * 100 +
-            round.decl150PlayerThree * 150 +
-            round.decl200PlayerThree * 200;
-      }
-    }
-
-    return baseScore + declarations;
-  }
 }
