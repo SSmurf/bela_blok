@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:bela_blok/providers/settings_provider.dart';
 import 'package:bela_blok/widgets/add_round_score_display.dart';
 import 'package:bela_blok/widgets/declaration_button.dart';
@@ -13,6 +15,7 @@ import '../utils/app_localizations.dart';
 
 const double declarationFontSize = 28.0;
 const double stigljaFontSize = 26.0;
+const double _threePlayerButtonHorizontalPadding = 32.0;
 
 class RoundScreen extends ConsumerStatefulWidget {
   final bool isTeamOneSelected;
@@ -774,16 +777,31 @@ class _RoundScreenState extends ConsumerState<RoundScreen> with SingleTickerProv
                 ),
               ),
               SizedBox(height: verticalSpacing / 2),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SaveRoundButton(
-                    text: loc.translate('saveRound'),
-                    color: theme.colorScheme.primary,
-                    isEnabled: isSaveEnabled,
-                    onPressed: isSaveEnabled ? _saveRound : () {},
-                  ),
-                ],
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final screenWidth = MediaQuery.of(context).size.width;
+                  final double sizeBasedWidth = math.max(
+                    0,
+                    screenWidth - (_threePlayerButtonHorizontalPadding * 2),
+                  );
+                  final double buttonWidth =
+                      sizeBasedWidth > 0
+                          ? math.min(constraints.maxWidth, sizeBasedWidth)
+                          : constraints.maxWidth;
+                  return Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      width: buttonWidth,
+                      child: SaveRoundButton(
+                        text: loc.translate('saveRound'),
+                        color: theme.colorScheme.primary,
+                        isEnabled: isSaveEnabled,
+                        onPressed: isSaveEnabled ? _saveRound : () {},
+                        fullWidth: true,
+                      ),
+                    ),
+                  );
+                },
               ),
               SizedBox(height: verticalSpacing),
             ],

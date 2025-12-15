@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/player_name_utils.dart';
+
 class ThreePlayerTotalScoreDisplay extends StatelessWidget {
   final int scorePlayerOne;
   final int scorePlayerTwo;
@@ -31,20 +33,10 @@ class ThreePlayerTotalScoreDisplay extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: _buildPlayerScore(
-            context,
-            name: playerOneName,
-            score: scorePlayerOne,
-            wins: playerOneWins,
-          ),
+          child: _buildPlayerScore(context, name: playerOneName, score: scorePlayerOne, wins: playerOneWins),
         ),
         Expanded(
-          child: _buildPlayerScore(
-            context,
-            name: playerTwoName,
-            score: scorePlayerTwo,
-            wins: playerTwoWins,
-          ),
+          child: _buildPlayerScore(context, name: playerTwoName, score: scorePlayerTwo, wins: playerTwoWins),
         ),
         Expanded(
           child: _buildPlayerScore(
@@ -76,28 +68,29 @@ class ThreePlayerTotalScoreDisplay extends StatelessWidget {
         // Wins displayed ABOVE the name
         SizedBox(
           height: 24,
-          child: wins > 0
-              ? Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.onSurface.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    '$wins',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Nunito',
-                      color: theme.colorScheme.onSurface,
+          child:
+              wins > 0
+                  ? Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.onSurface.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ),
-                )
-              : null,
+                    child: Text(
+                      '$wins',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Nunito',
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                  )
+                  : null,
         ),
         const SizedBox(height: 4),
         Text(
-          name,
+          name.truncatedForThreePlayers,
           style: TextStyle(
             fontSize: nameFontSize,
             fontWeight: FontWeight.w600,

@@ -492,13 +492,15 @@ class _ThreePlayerRoundScreenState extends ConsumerState<ThreePlayerRoundScreen>
               ),
               SizedBox(height: verticalSpacing / 2),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  SaveRoundButton(
-                    text: loc.translate('saveRound'),
-                    color: theme.colorScheme.primary,
-                    isEnabled: isSaveEnabled,
-                    onPressed: isSaveEnabled ? _saveRound : () {},
+                  Expanded(
+                    child: SaveRoundButton(
+                      text: loc.translate('saveRound'),
+                      color: theme.colorScheme.primary,
+                      isEnabled: isSaveEnabled,
+                      onPressed: isSaveEnabled ? _saveRound : () {},
+                      fullWidth: true,
+                    ),
                   ),
                 ],
               ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
 
+import '../utils/player_name_utils.dart';
+
 class ThreePlayerFinishedGameDisplay extends StatelessWidget {
   final String playerOneName;
   final int playerOneTotal;
@@ -115,7 +117,7 @@ class ThreePlayerFinishedGameDisplay extends StatelessWidget {
         Expanded(
           flex: 3,
           child: Text(
-            playerOneName,
+            playerOneName.truncatedForThreePlayers,
             style: theme.textTheme.titleMedium?.copyWith(
               fontSize: nameFontSize,
               fontWeight: playerOneWins ? FontWeight.bold : FontWeight.w500,
@@ -187,7 +189,7 @@ class ThreePlayerFinishedGameDisplay extends StatelessWidget {
         Expanded(
           flex: 3,
           child: Text(
-            playerThreeName,
+            playerThreeName.truncatedForThreePlayers,
             style: theme.textTheme.titleMedium?.copyWith(
               fontSize: nameFontSize,
               fontWeight: playerThreeWins ? FontWeight.bold : FontWeight.w500,
@@ -211,11 +213,29 @@ class ThreePlayerFinishedGameDisplay extends StatelessWidget {
 
     return Column(
       children: [
-        _buildPlayerRow(context, name: playerOneName, score: playerOneTotal, isWinner: playerOneWins, theme: theme),
+        _buildPlayerRow(
+          context,
+          name: playerOneName,
+          score: playerOneTotal,
+          isWinner: playerOneWins,
+          theme: theme,
+        ),
         const SizedBox(height: 6),
-        _buildPlayerRow(context, name: playerTwoName, score: playerTwoTotal, isWinner: playerTwoWins, theme: theme),
+        _buildPlayerRow(
+          context,
+          name: playerTwoName,
+          score: playerTwoTotal,
+          isWinner: playerTwoWins,
+          theme: theme,
+        ),
         const SizedBox(height: 6),
-        _buildPlayerRow(context, name: playerThreeName, score: playerThreeTotal, isWinner: playerThreeWins, theme: theme),
+        _buildPlayerRow(
+          context,
+          name: playerThreeName,
+          score: playerThreeTotal,
+          isWinner: playerThreeWins,
+          theme: theme,
+        ),
       ],
     );
   }
@@ -232,7 +252,7 @@ class ThreePlayerFinishedGameDisplay extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            name,
+            name.truncatedForThreePlayers,
             style: theme.textTheme.titleMedium?.copyWith(
               fontSize: 18,
               fontWeight: isWinner ? FontWeight.bold : FontWeight.w500,

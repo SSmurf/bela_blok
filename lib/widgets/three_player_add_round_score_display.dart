@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/player_name_utils.dart';
+
 class ThreePlayerAddRoundScoreDisplay extends StatelessWidget {
   final int scorePlayerOne;
   final int scorePlayerTwo;
@@ -97,7 +99,7 @@ class ThreePlayerAddRoundScoreDisplay extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2.0),
               child: Text(
-                label,
+                label.truncatedForThreePlayers,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -157,4 +159,3 @@ class ThreePlayerAddRoundScoreDisplay extends StatelessWidget {
     );
   }
 }
-

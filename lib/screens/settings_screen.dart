@@ -6,6 +6,7 @@ import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/utils/app_localizations.dart';
 import 'package:bela_blok/widgets/delete_history_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:share_plus/share_plus.dart';
@@ -15,6 +16,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/game_transfer_bottom_sheet.dart';
 import '../widgets/theme_picker_bottom_sheet.dart';
+import '../utils/player_name_utils.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -52,6 +54,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final settingsMap = await _localStorageService.loadSettings();
     if (settingsMap.isNotEmpty) {
       final settings = AppSettings.fromJson(settingsMap);
+      final sanitizedSettings = settings.copyWith(
+        playerOneName: settings.playerOneName.truncatedForThreePlayers,
+        playerTwoName: settings.playerTwoName.truncatedForThreePlayers,
+        playerThreeName: settings.playerThreeName.truncatedForThreePlayers,
+      );
       // Load the saved language string and update the global language provider.
       final savedLang = settingsMap['selectedLanguage'] as String? ?? 'Hrvatski';
       final locale =
@@ -62,16 +69,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               : const Locale('hr');
       ref.read(languageProvider.notifier).state = locale;
       setState(() {
-        _goalScore = settings.goalScore;
-        _stigljaValue = settings.stigljaValue;
-        _teamOneName = settings.teamOneName;
-        _teamTwoName = settings.teamTwoName;
-        _isThreePlayerMode = settings.isThreePlayerMode;
-        _playerOneName = settings.playerOneName;
-        _playerTwoName = settings.playerTwoName;
-        _playerThreeName = settings.playerThreeName;
+        _goalScore = sanitizedSettings.goalScore;
+        _stigljaValue = sanitizedSettings.stigljaValue;
+        _teamOneName = sanitizedSettings.teamOneName;
+        _teamTwoName = sanitizedSettings.teamTwoName;
+        _isThreePlayerMode = sanitizedSettings.isThreePlayerMode;
+        _playerOneName = sanitizedSettings.playerOneName;
+        _playerTwoName = sanitizedSettings.playerTwoName;
+        _playerThreeName = sanitizedSettings.playerThreeName;
       });
-      ref.read(settingsProvider.notifier).state = settings;
+      ref.read(settingsProvider.notifier).state = sanitizedSettings;
     }
   }
 
@@ -830,9 +837,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _showPlayerNamesDialog(BuildContext context, AppLocalizations loc) async {
-    final playerOneController = TextEditingController(text: _playerOneName);
-    final playerTwoController = TextEditingController(text: _playerTwoName);
-    final playerThreeController = TextEditingController(text: _playerThreeName);
+    final playerOneController = TextEditingController(text: _playerOneName.truncatedForThreePlayers);
+    final playerTwoController = TextEditingController(text: _playerTwoName.truncatedForThreePlayers);
+    final playerThreeController = TextEditingController(text: _playerThreeName.truncatedForThreePlayers);
     final formKey = GlobalKey<FormState>();
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth <= 375;
@@ -855,17 +862,35 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildPlayerNameField(playerOneController, loc.translate('playerOne'), formKey, loc),
+                  _buildPlayerNameField(
+                    playerOneController,
+                    loc.translate('playerOne'),
+                    formKey,
+                    loc,
+                    maxLength: kThreePlayerNameMaxLength,
+                  ),
                   const SizedBox(height: 16),
-                  _buildPlayerNameField(playerTwoController, loc.translate('playerTwo'), formKey, loc),
+                  _buildPlayerNameField(
+                    playerTwoController,
+                    loc.translate('playerTwo'),
+                    formKey,
+                    loc,
+                    maxLength: kThreePlayerNameMaxLength,
+                  ),
                   const SizedBox(height: 16),
-                  _buildPlayerNameField(playerThreeController, loc.translate('playerThree'), formKey, loc),
+                  _buildPlayerNameField(
+                    playerThreeController,
+                    loc.translate('playerThree'),
+                    formKey,
+                    loc,
+                    maxLength: kThreePlayerNameMaxLength,
+                  ),
                   const SizedBox(height: 16),
                   OutlinedButton.icon(
                     onPressed: () {
-                      playerOneController.text = loc.translate('person1');
-                      playerTwoController.text = loc.translate('person2');
-                      playerThreeController.text = loc.translate('person3');
+                      playerOneController.text = loc.translate('person1').truncatedForThreePlayers;
+                      playerTwoController.text = loc.translate('person2').truncatedForThreePlayers;
+                      playerThreeController.text = loc.translate('person3').truncatedForThreePlayers;
                     },
                     icon: const Icon(HugeIcons.strokeRoundedUndo),
                     label: Text(loc.translate('resetPlayerNames')),
@@ -943,9 +968,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     if (result != null) {
       setState(() {
-        _playerOneName = result['playerOne']!;
-        _playerTwoName = result['playerTwo']!;
-        _playerThreeName = result['playerThree']!;
+        _playerOneName = result['playerOne']!.truncatedForThreePlayers;
+        _playerTwoName = result['playerTwo']!.truncatedForThreePlayers;
+        _playerThreeName = result['playerThree']!.truncatedForThreePlayers;
       });
 
       ref.read(settingsProvider.notifier).state = AppSettings(
@@ -967,8 +992,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     TextEditingController controller,
     String label,
     GlobalKey<FormState> formKey,
-    AppLocalizations loc,
-  ) {
+    AppLocalizations loc, {
+    int maxLength = kThreePlayerNameMaxLength,
+  }) {
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: controller,
       builder: (context, value, child) {
@@ -1023,7 +1049,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           onChanged: (_) => formKey.currentState?.validate(),
           style: const TextStyle(fontFamily: 'Nunito', fontSize: 16),
           textCapitalization: TextCapitalization.words,
-          maxLength: 20,
+          maxLength: maxLength,
+          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+          inputFormatters: [LengthLimitingTextInputFormatter(maxLength)],
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
               return loc.translate('emptyPlayerName');
@@ -1052,71 +1080,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
 
     await _localStorageService.saveSettings(_buildSettingsMap(_getCurrentLanguageString()));
-  }
-
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 4.0),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          fontFamily: 'Nunito',
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-        ),
-      ),
-    );
-  }
-
-  String _formatTeamNames(String teamOne, String teamTwo) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth <= 375;
-
-    if (isSmallScreen) {
-      const smallScreenLimit = 5;
-
-      String formattedTeamOne =
-          teamOne.length <= smallScreenLimit ? teamOne : '${teamOne.substring(0, smallScreenLimit)}...';
-
-      String formattedTeamTwo =
-          teamTwo.length <= smallScreenLimit ? teamTwo : '${teamTwo.substring(0, smallScreenLimit)}...';
-
-      return '$formattedTeamOne, $formattedTeamTwo';
-    }
-
-    const normalScreenLimit = 8;
-    const totalLimit = 18;
-
-    final combined = '$teamOne, $teamTwo';
-
-    if (combined.length <= totalLimit) {
-      return combined;
-    }
-
-    if (teamOne.length <= normalScreenLimit) {
-      final remainingSpace = totalLimit - teamOne.length - 2;
-      return '$teamOne, ${teamTwo.substring(0, remainingSpace.clamp(0, teamTwo.length))}...';
-    }
-
-    if (teamTwo.length <= normalScreenLimit) {
-      final remainingSpace = totalLimit - teamTwo.length - 2;
-      return '${teamOne.substring(0, remainingSpace.clamp(0, teamOne.length))}..., $teamTwo';
-    }
-
-    return '${teamOne.substring(0, normalScreenLimit)}..., ${teamTwo.substring(0, normalScreenLimit)}...';
-  }
-
-  String _formatPlayerNames(String p1, String p2, String p3) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth <= 375;
-    final limit = isSmallScreen ? 4 : 6;
-
-    String format(String name) {
-      return name.length <= limit ? name : '${name.substring(0, limit)}...';
-    }
-
-    return '${format(p1)}, ${format(p2)}, ${format(p3)}';
   }
 
   Future<void> _showThemeOptions(BuildContext context) async {
@@ -1215,15 +1178,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedUserEdit01),
                 title: Text(
-                  loc.translate('teamNames'),
+                  _isThreePlayerMode ? loc.translate('playerNames') : loc.translate('teamNames'),
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
                 ),
-                trailing: Text(
-                  _formatTeamNames(_teamOneName, _teamTwoName),
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 14, fontFamily: 'Nunito'),
-                ),
-                onTap: () => _showTeamNamesDialog(context, loc),
+                trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
+                onTap:
+                    () =>
+                        _isThreePlayerMode
+                            ? _showPlayerNamesDialog(context, loc)
+                            : _showTeamNamesDialog(context, loc),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedUserMultiple),
@@ -1236,39 +1199,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: Switch(value: _isThreePlayerMode, onChanged: _toggleThreePlayerMode),
                 ),
                 onTap: () => _toggleThreePlayerMode(!_isThreePlayerMode),
-              ),
-              if (_isThreePlayerMode)
-                ListTile(
-                  leading: const Icon(HugeIcons.strokeRoundedUserEdit01),
-                  title: Text(
-                    loc.translate('playerNames'),
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
-                  ),
-                  trailing: Text(
-                    _formatPlayerNames(_playerOneName, _playerTwoName, _playerThreeName),
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 14, fontFamily: 'Nunito'),
-                  ),
-                  onTap: () => _showPlayerNamesDialog(context, loc),
-                ),
-              ListTile(
-                leading: const Icon(HugeIcons.strokeRoundedLanguageSkill),
-                title: Text(
-                  loc.translate('language'),
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
-                ),
-                trailing: Text(
-                  ref.watch(languageProvider).languageCode == 'en'
-                      ? 'English'
-                      : ref.watch(languageProvider).languageCode == 'de'
-                      ? 'Deutsch'
-                      : 'Hrvatski',
-                  style: const TextStyle(fontSize: 14, fontFamily: 'Nunito'),
-                ),
-                onTap: () async {
-                  await _showLanguageOptionsDialog(context, loc);
-                  setState(() {});
-                },
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedIdea01),
@@ -1291,13 +1221,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _showThemeOptions(context),
               ),
+              ListTile(
+                leading: const Icon(HugeIcons.strokeRoundedLanguageSkill),
+                title: Text(
+                  loc.translate('language'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
+                trailing: Text(
+                  ref.watch(languageProvider).languageCode == 'en'
+                      ? 'English'
+                      : ref.watch(languageProvider).languageCode == 'de'
+                      ? 'Deutsch'
+                      : 'Hrvatski',
+                  style: const TextStyle(fontSize: 14, fontFamily: 'Nunito'),
+                ),
+                onTap: () async {
+                  await _showLanguageOptionsDialog(context, loc);
+                  setState(() {});
+                },
+              ),
               const DeleteHistoryTile(),
-
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 child: Divider(color: Colors.grey.withOpacity(0.8)),
               ),
-
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedQrCode),
                 title: Text(
@@ -1335,6 +1282,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onTap: () => _launchURL(unspokenRulesUrl),
               ),
               ListTile(
+                leading: const Icon(HugeIcons.strokeRoundedBug02),
+                title: Text(
+                  loc.translate('reportProblem'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+                ),
+                trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
+                onTap: () => _reportProblem(),
+              ),
+              ListTile(
                 key: _shareTileKey,
                 leading: const Icon(HugeIcons.strokeRoundedShare01),
                 title: Text(
@@ -1343,15 +1299,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
                 onTap: () => _shareApp(),
-              ),
-              ListTile(
-                leading: const Icon(HugeIcons.strokeRoundedBug02),
-                title: Text(
-                  loc.translate('reportProblem'),
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
-                ),
-                trailing: const Icon(HugeIcons.strokeRoundedArrowRight01),
-                onTap: () => _reportProblem(),
               ),
               ListTile(
                 leading: const Icon(HugeIcons.strokeRoundedInformationSquare),
