@@ -30,13 +30,26 @@ class ThreePlayerTotalScoreDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showWins = playerOneWins > 0 || playerTwoWins > 0 || playerThreeWins > 0;
     return Row(
       children: [
         Expanded(
-          child: _buildPlayerScore(context, name: playerOneName, score: scorePlayerOne, wins: playerOneWins),
+          child: _buildPlayerScore(
+            context,
+            name: playerOneName,
+            score: scorePlayerOne,
+            wins: playerOneWins,
+            showWins: showWins,
+          ),
         ),
         Expanded(
-          child: _buildPlayerScore(context, name: playerTwoName, score: scorePlayerTwo, wins: playerTwoWins),
+          child: _buildPlayerScore(
+            context,
+            name: playerTwoName,
+            score: scorePlayerTwo,
+            wins: playerTwoWins,
+            showWins: showWins,
+          ),
         ),
         Expanded(
           child: _buildPlayerScore(
@@ -44,6 +57,7 @@ class ThreePlayerTotalScoreDisplay extends StatelessWidget {
             name: playerThreeName,
             score: scorePlayerThree,
             wins: playerThreeWins,
+            showWins: showWins,
           ),
         ),
       ],
@@ -55,6 +69,7 @@ class ThreePlayerTotalScoreDisplay extends StatelessWidget {
     required String name,
     required int score,
     required int wins,
+    required bool showWins,
   }) {
     final theme = Theme.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
@@ -65,30 +80,21 @@ class ThreePlayerTotalScoreDisplay extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Wins displayed ABOVE the name
-        SizedBox(
-          height: 24,
-          child:
-              wins > 0
-                  ? Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.onSurface.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      '$wins',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Nunito',
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
-                  )
-                  : null,
-        ),
-        const SizedBox(height: 4),
+        if (showWins) ...[
+          SizedBox(
+            height: 24,
+            child: Text(
+              '$wins',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Nunito',
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
+        ],
         Text(
           name.truncatedForThreePlayers,
           style: TextStyle(

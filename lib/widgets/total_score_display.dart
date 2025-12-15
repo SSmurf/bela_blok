@@ -21,23 +21,26 @@ class TotalScoreDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final showWins = teamOneWins > 0 || teamTwoWins > 0;
 
-    Widget _nameCell(String label, int wins) {
+    Widget _nameCell(String label, int wins, bool showWinsRow) {
       return Expanded(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              wins.toString(),
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Nunito',
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+            if (showWinsRow) ...[
+              Text(
+                wins.toString(),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Nunito',
+                  color: theme.colorScheme.onSurface.withOpacity(0.7),
+                ),
               ),
-            ),
-            const SizedBox(height: 2),
+              const SizedBox(height: 2),
+            ],
             Text(
               label,
               style: TextStyle(
@@ -72,7 +75,12 @@ class TotalScoreDisplay extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(children: [_nameCell(teamOneName, teamOneWins), _nameCell(teamTwoName, teamTwoWins)]),
+        Row(
+          children: [
+            _nameCell(teamOneName, teamOneWins, showWins),
+            _nameCell(teamTwoName, teamTwoWins, showWins),
+          ],
+        ),
         const SizedBox(height: 6),
         Row(children: [_scoreCell(scoreTeamOne), _scoreCell(scoreTeamTwo)]),
       ],
