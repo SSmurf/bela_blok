@@ -236,7 +236,7 @@ class _DeclarationsSection extends StatelessWidget {
         columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(1)},
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: [
-          _buildDeclRow('20', totalDecl20, theme),
+          _buildDeclRow('20', totalDecl20, theme, isFirst: true),
           _buildDeclRow('50', totalDecl50, theme),
           _buildDeclRow('100', totalDecl100, theme),
           _buildDeclRow('150', totalDecl150, theme),
@@ -247,18 +247,24 @@ class _DeclarationsSection extends StatelessWidget {
     );
   }
 
-  TableRow _buildDeclRow(String label, int value, ThemeData theme, {bool isLast = false}) {
+  TableRow _buildDeclRow(
+    String label,
+    int value,
+    ThemeData theme, {
+    bool isFirst = false,
+    bool isLast = false,
+  }) {
     return TableRow(
       decoration: BoxDecoration(
         border: isLast ? null : Border(bottom: BorderSide(color: theme.colorScheme.outline.withOpacity(0.1))),
       ),
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 12, bottom: isLast ? 0 : 12),
+          padding: EdgeInsets.only(top: isFirst ? 0 : 12, bottom: isLast ? 0 : 12),
           child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito')),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 12, bottom: isLast ? 0 : 12),
+          padding: EdgeInsets.only(top: isFirst ? 0 : 12, bottom: isLast ? 0 : 12),
           child: Text(
             value.toString(),
             textAlign: TextAlign.center,
@@ -336,7 +342,12 @@ class _StatisticsSection extends StatelessWidget {
         columnWidths: const {0: FlexColumnWidth(3), 1: FlexColumnWidth(1)},
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: [
-          _buildStatRow(loc.translate('avgTotalPoints'), stats.avgTotalScore.toStringAsFixed(1), theme),
+          _buildStatRow(
+            loc.translate('avgTotalPoints'),
+            stats.avgTotalScore.toStringAsFixed(1),
+            theme,
+            isFirst: true,
+          ),
           _buildStatRow(loc.translate('avgPointsNoDecl'), stats.avgScoreNoDecl.toStringAsFixed(1), theme),
           _buildStatRow(loc.translate('avgDeclValue'), stats.avgDeclValue.toStringAsFixed(1), theme),
           _buildStatRow(loc.translate('avgStiglja'), stats.avgStiglja.toStringAsFixed(2), theme),
@@ -351,18 +362,24 @@ class _StatisticsSection extends StatelessWidget {
     );
   }
 
-  TableRow _buildStatRow(String label, String value, ThemeData theme, {bool isLast = false}) {
+  TableRow _buildStatRow(
+    String label,
+    String value,
+    ThemeData theme, {
+    bool isFirst = false,
+    bool isLast = false,
+  }) {
     return TableRow(
       decoration: BoxDecoration(
         border: isLast ? null : Border(bottom: BorderSide(color: theme.colorScheme.outline.withOpacity(0.1))),
       ),
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 12, bottom: isLast ? 0 : 12),
+          padding: EdgeInsets.only(top: isFirst ? 0 : 12, bottom: isLast ? 0 : 12),
           child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito')),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 12, bottom: isLast ? 0 : 12),
+          padding: EdgeInsets.only(top: isFirst ? 0 : 12, bottom: isLast ? 0 : 12),
           child: Text(
             value,
             textAlign: TextAlign.center,
@@ -400,25 +417,31 @@ class _GamesCountSection extends StatelessWidget {
         columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(1)},
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: [
-          _buildCountRow(loc.translate('finishedGames'), finishedCount, theme),
+          _buildCountRow(loc.translate('finishedGames'), finishedCount, theme, isFirst: true),
           _buildCountRow(loc.translate('unfinishedGames'), unfinishedCount, theme, isLast: true),
         ],
       ),
     );
   }
 
-  TableRow _buildCountRow(String label, int value, ThemeData theme, {bool isLast = false}) {
+  TableRow _buildCountRow(
+    String label,
+    int value,
+    ThemeData theme, {
+    bool isFirst = false,
+    bool isLast = false,
+  }) {
     return TableRow(
       decoration: BoxDecoration(
         border: isLast ? null : Border(bottom: BorderSide(color: theme.colorScheme.outline.withOpacity(0.1))),
       ),
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 12, bottom: isLast ? 0 : 12),
+          padding: EdgeInsets.only(top: isFirst ? 0 : 12, bottom: isLast ? 0 : 12),
           child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito')),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 12, bottom: isLast ? 0 : 12),
+          padding: EdgeInsets.only(top: isFirst ? 0 : 12, bottom: isLast ? 0 : 12),
           child: Text(
             value.toString(),
             textAlign: TextAlign.center,
