@@ -19,6 +19,10 @@ class CurrentGameNotifier extends StateNotifier<List<Round>> {
     state = [];
   }
 
+  void setRounds(List<Round> rounds) {
+    state = rounds;
+  }
+
   void updateRound(int index, Round round) {
     if (index < 0 || index >= state.length) return;
     final newList = List<Round>.from(state);

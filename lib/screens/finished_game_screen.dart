@@ -1,7 +1,10 @@
 import 'dart:math';
 import 'package:bela_blok/models/game.dart';
 import 'package:bela_blok/models/round.dart';
+import 'package:bela_blok/providers/game_provider.dart';
 import 'package:bela_blok/providers/settings_provider.dart';
+import 'package:bela_blok/screens/home_screen.dart';
+import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/services/score_calculator.dart';
 import 'package:bela_blok/widgets/game_summary_widget.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +26,7 @@ class FinishedGameScreen extends ConsumerStatefulWidget {
 
 class _FinishedGameScreenState extends ConsumerState<FinishedGameScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final LocalStorageService _localStorageService = LocalStorageService();
 
   @override
   void initState() {
@@ -175,6 +179,198 @@ class _FinishedGameScreenState extends ConsumerState<FinishedGameScreen> with Si
     await Share.share(buffer.toString(), sharePositionOrigin: shareOrigin);
   }
 
+  Future<void> _continueGame(BuildContext context) async {
+    final loc = AppLocalizations.of(context)!;
+
+    // Check if there's an active game
+    final currentRounds = ref.read(currentGameProvider);
+    final currentGame = await _localStorageService.loadCurrentGame();
+    final hasActiveGame =
+        currentRounds.isNotEmpty ||
+        (currentGame != null && !currentGame.isCanceled && currentGame.rounds.isNotEmpty);
+
+    if (hasActiveGame) {
+      // Show confirmation dialog
+      final screenWidth = MediaQuery.of(context).size.width;
+      final isSmallScreen = screenWidth <= 375;
+      final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
+
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: Text(
+                loc.translate('resumeGameTitle'),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+              ),
+              contentPadding:
+                  isSmallScreen
+                      ? const EdgeInsets.fromLTRB(16, 16, 16, 0)
+                      : const EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: Text(
+                loc.translate('resumeGameContent'),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+              ),
+              actionsAlignment: MainAxisAlignment.spaceEvenly,
+              actionsPadding:
+                  isSmallScreen
+                      ? const EdgeInsets.symmetric(horizontal: 8, vertical: 16)
+                      : const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              actions: [
+                OverflowBar(
+                  alignment: MainAxisAlignment.spaceEvenly,
+                  spacing: isSmallScreen ? 8 : 16,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                        padding:
+                            isSmallScreen
+                                ? const EdgeInsets.symmetric(horizontal: 8)
+                                : const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      child: Text(loc.translate('continue'), style: TextStyle(fontSize: buttonFontSize)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                        minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                        padding:
+                            isSmallScreen
+                                ? const EdgeInsets.symmetric(horizontal: 8)
+                                : const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+      );
+
+      if (confirmed != true || !context.mounted) {
+        return;
+      }
+    }
+
+    // 1. Update Settings Provider
+    ref.read(settingsProvider.notifier).state = ref
+        .read(settingsProvider)
+        .copyWith(
+          teamOneName: widget.game.teamOneName,
+          teamTwoName: widget.game.teamTwoName,
+          goalScore: widget.game.goalScore,
+          // stigljaValue isn't in Game model, so we keep current stiglja value
+        );
+    // Also save settings to local storage so they persist
+    await _localStorageService.saveSettings(ref.read(settingsProvider).toJson());
+
+    // 2. Update Current Game Provider (Rounds)
+    ref.read(currentGameProvider.notifier).setRounds(widget.game.rounds);
+
+    // 3. Save as current game in local storage
+    // We use the game object from history, which has the correct createdAt.
+    // We update it to NOT be canceled (since we are continuing it).
+    final gameToContinue = widget.game.copyWith(isCanceled: false);
+    await _localStorageService.saveCurrentGame(gameToContinue);
+
+    // 4. Delete from history (unfinished list)
+    await _localStorageService.deleteGame(widget.game);
+
+    if (context.mounted) {
+      // 5. Navigate to Home Screen
+      // clear stack and go to home
+      Navigator.of(
+        context,
+      ).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomeScreen()), (route) => false);
+    }
+  }
+
+  Future<void> _deleteGame(BuildContext context) async {
+    final loc = AppLocalizations.of(context)!;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth <= 375;
+    final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              loc.translate('clearGameTitle'),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+            ),
+            contentPadding:
+                isSmallScreen
+                    ? const EdgeInsets.fromLTRB(16, 16, 16, 0)
+                    : const EdgeInsets.fromLTRB(24, 20, 24, 0),
+            content: Text(
+              loc.translate('clearGameContent'),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceEvenly,
+            actionsPadding:
+                isSmallScreen
+                    ? const EdgeInsets.symmetric(horizontal: 8, vertical: 16)
+                    : const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            actions: [
+              OverflowBar(
+                alignment: MainAxisAlignment.spaceEvenly,
+                spacing: isSmallScreen ? 8 : 16,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 0,
+                      minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                      padding:
+                          isSmallScreen
+                              ? const EdgeInsets.symmetric(horizontal: 8)
+                              : const EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 0,
+                      minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                      padding:
+                          isSmallScreen
+                              ? const EdgeInsets.symmetric(horizontal: 8)
+                              : const EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    child: Text(loc.translate('delete'), style: TextStyle(fontSize: buttonFontSize)),
+                  ),
+                ],
+              ),
+            ],
+          ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      await _localStorageService.deleteGame(widget.game);
+      if (context.mounted) {
+        Navigator.of(context).pop(true); // Return to previous screen with deletion signal
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
@@ -191,13 +387,15 @@ class _FinishedGameScreenState extends ConsumerState<FinishedGameScreen> with Si
       stigljaValue: stigljaValue,
     ).computeTeamTwoTotal(widget.game.rounds);
 
-    String winningTeam = '';
-    if (teamOneTotal > teamTwoTotal) {
-      winningTeam = widget.game.teamOneName;
-    } else if (teamTwoTotal > teamOneTotal) {
-      winningTeam = widget.game.teamTwoName;
-    } else if (teamOneTotal == teamTwoTotal && teamOneTotal > 0) {
-      winningTeam = 'Remi';
+    String? winningTeam;
+    if (!widget.game.isCanceled) {
+      if (teamOneTotal > teamTwoTotal) {
+        winningTeam = widget.game.teamOneName;
+      } else if (teamTwoTotal > teamOneTotal) {
+        winningTeam = widget.game.teamTwoName;
+      } else if (teamOneTotal == teamTwoTotal && teamOneTotal > 0) {
+        winningTeam = 'Remi';
+      }
     }
 
     final formattedDateTime = _formatDateTime(widget.game.createdAt, loc.locale.languageCode);
@@ -210,10 +408,15 @@ class _FinishedGameScreenState extends ConsumerState<FinishedGameScreen> with Si
           icon: Icon(HugeIcons.strokeRoundedArrowLeft01, size: 30),
         ),
         actions: [
+          if (widget.game.isCanceled)
+            IconButton(
+              icon: const Icon(HugeIcons.strokeRoundedPlay, size: 30),
+              onPressed: () => _continueGame(context),
+            ),
           Builder(
             builder: (buttonContext) {
               return IconButton(
-                icon: const Icon(HugeIcons.strokeRoundedShare05),
+                icon: const Icon(HugeIcons.strokeRoundedShare05, size: 26),
                 tooltip: loc.translate('shareGame'),
                 onPressed: () {
                   final renderBox = buttonContext.findRenderObject() as RenderBox?;
@@ -222,7 +425,7 @@ class _FinishedGameScreenState extends ConsumerState<FinishedGameScreen> with Si
                   _shareGame(
                     teamOneTotal: teamOneTotal,
                     teamTwoTotal: teamTwoTotal,
-                    winningTeam: winningTeam.isNotEmpty ? winningTeam : 'Remi',
+                    winningTeam: winningTeam ?? 'Remi',
                     formattedDateTime: formattedDateTime,
                     stigljaValue: stigljaValue,
                     shareOrigin: shareOrigin,
@@ -231,6 +434,10 @@ class _FinishedGameScreenState extends ConsumerState<FinishedGameScreen> with Si
                 },
               );
             },
+          ),
+          IconButton(
+            icon: const Icon(HugeIcons.strokeRoundedDelete02, size: 28),
+            onPressed: () => _deleteGame(context),
           ),
         ],
       ),
@@ -280,11 +487,7 @@ class _FinishedGameScreenState extends ConsumerState<FinishedGameScreen> with Si
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  _StatisticsTab(
-                    game: widget.game,
-                    stigljaValue: stigljaValue,
-                    winningTeam: winningTeam.isNotEmpty ? winningTeam : 'Remi',
-                  ),
+                  _StatisticsTab(game: widget.game, stigljaValue: stigljaValue, winningTeam: winningTeam),
                   _RoundsTab(rounds: widget.game.rounds, stigljaValue: stigljaValue),
                 ],
               ),
@@ -493,9 +696,9 @@ class _RoundsTab extends StatelessWidget {
 class _StatisticsTab extends StatelessWidget {
   final Game game;
   final int stigljaValue;
-  final String winningTeam;
+  final String? winningTeam;
 
-  const _StatisticsTab({required this.game, required this.stigljaValue, required this.winningTeam});
+  const _StatisticsTab({required this.game, required this.stigljaValue, this.winningTeam});
 
   int _sumDeclarations(bool teamOne, int Function(Round) selector) {
     return game.rounds.fold(0, (sum, round) => sum + selector(round));

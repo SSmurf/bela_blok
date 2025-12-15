@@ -1,3 +1,5 @@
+import 'package:bela_blok/models/app_settings.dart';
+import 'package:bela_blok/models/game.dart';
 import 'package:bela_blok/models/round.dart';
 import 'package:bela_blok/providers/game_provider.dart';
 import 'package:bela_blok/providers/settings_provider.dart';
@@ -32,6 +34,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _teamOneWins = 0;
   int _teamTwoWins = 0;
   bool _victoryCounted = false;
+  DateTime? _currentGameCreatedAt;
+
+  @override
+  void initState() {
+    super.initState();
+    _restoreCurrentGame();
+  }
 
   Future<void> _startCelebration() async {
     if (!_celebrationTriggered) {
@@ -56,6 +65,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   void _confirmClearGame(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final AppSettings settings = ref.read(settingsProvider);
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth <= 375;
     final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
@@ -99,8 +109,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: Text(loc.translate('cancel'), style: TextStyle(fontSize: buttonFontSize)),
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      final rounds = ref.read(currentGameProvider);
+                      await _saveCanceledGame(rounds, settings);
                       ref.read(currentGameProvider.notifier).clearRounds();
+                      await _localStorageService.clearCurrentGame();
                       _resetGameState(clearWins: true);
                       Navigator.of(context).pop();
                     },
@@ -148,11 +161,71 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       _preventAutoSave = false;
       _celebrationTriggered = false;
       _victoryCounted = false;
+      _currentGameCreatedAt = null;
       if (clearWins) {
         _teamOneWins = 0;
         _teamTwoWins = 0;
       }
     });
+  }
+
+  void _persistCurrentGame(List<Round> rounds) {
+    _persistCurrentGameAsync(rounds);
+  }
+
+  Future<void> _persistCurrentGameAsync(List<Round> rounds) async {
+    if (rounds.isEmpty) {
+      await _localStorageService.clearCurrentGame();
+      if (!mounted) return;
+      if (_currentGameCreatedAt != null) {
+        setState(() {
+          _currentGameCreatedAt = null;
+        });
+      }
+      return;
+    }
+
+    final settings = ref.read(settingsProvider);
+    final DateTime createdAt = _currentGameCreatedAt ?? DateTime.now();
+    final game = Game(
+      teamOneName: settings.teamOneName,
+      teamTwoName: settings.teamTwoName,
+      rounds: rounds,
+      goalScore: settings.goalScore,
+      createdAt: createdAt,
+    );
+
+    final savedGame = await _localStorageService.saveCurrentGame(game);
+    if (!mounted) return;
+    if (_currentGameCreatedAt != savedGame.createdAt) {
+      setState(() {
+        _currentGameCreatedAt = savedGame.createdAt;
+      });
+    }
+  }
+
+  Future<void> _restoreCurrentGame() async {
+    final savedGame = await _localStorageService.loadCurrentGame();
+    if (!mounted || savedGame == null || savedGame.isCanceled || savedGame.rounds.isEmpty) return;
+
+    ref.read(currentGameProvider.notifier).setRounds(savedGame.rounds);
+    if (!mounted) return;
+    setState(() {
+      _currentGameCreatedAt = savedGame.createdAt;
+    });
+  }
+
+  Future<void> _saveCanceledGame(List<Round> rounds, AppSettings settings) async {
+    if (rounds.isEmpty) return;
+
+    await _localStorageService.saveGame(
+      rounds,
+      teamOneName: settings.teamOneName,
+      teamTwoName: settings.teamTwoName,
+      goalScore: settings.goalScore,
+      createdAt: _currentGameCreatedAt,
+      isCanceled: true,
+    );
   }
 
   _editRound(
@@ -297,6 +370,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    ref.listen<List<Round>>(currentGameProvider, (previous, rounds) {
+      if (_preventAutoSave) return;
+      _persistCurrentGame(rounds);
+    });
     final rounds = ref.watch(currentGameProvider);
     final settings = ref.watch(settingsProvider);
     final int currentGoal = settings.goalScore;
@@ -339,14 +416,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     if (gameEnded && !_gameSaved && !_preventAutoSave) {
-      _localStorageService.saveGame(
-        rounds,
-        goalScore: currentGoal,
-        teamOneName: settings.teamOneName,
-        teamTwoName: settings.teamTwoName,
-      );
+      _localStorageService
+          .saveGame(
+            rounds,
+            goalScore: currentGoal,
+            teamOneName: settings.teamOneName,
+            teamTwoName: settings.teamTwoName,
+            createdAt: _currentGameCreatedAt,
+          )
+          .then((_) => _localStorageService.clearCurrentGame());
       setState(() {
         _gameSaved = true;
+        _preventAutoSave = true;
+        _currentGameCreatedAt = null;
       });
     }
 

@@ -6,14 +6,14 @@ import 'package:hugeicons/hugeicons.dart';
 class GameSummaryWidget extends StatelessWidget {
   final String teamOneName;
   final String teamTwoName;
-  final String winningTeam;
+  final String? winningTeam;
   final List<Round> rounds;
 
   const GameSummaryWidget({
     super.key,
     required this.teamOneName,
     required this.teamTwoName,
-    required this.winningTeam,
+    this.winningTeam,
     required this.rounds,
   });
 
@@ -118,63 +118,76 @@ class GameSummaryWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 24),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final double fontSize = winningTeam.length <= 4
-                ? 56
-                : winningTeam.length <= 8
-                    ? 44
-                    : winningTeam.length <= 12
-                        ? 36
-                        : 28;
-            final double iconSize = fontSize + 8;
+        if (winningTeam != null && winningTeam!.isNotEmpty) ...[
+          const SizedBox(height: 24),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final double fontSize =
+                  winningTeam!.length <= 4
+                      ? 56
+                      : winningTeam!.length <= 8
+                      ? 44
+                      : winningTeam!.length <= 12
+                      ? 36
+                      : 28;
+              final double iconSize = fontSize + 8;
 
-            if (winningTeam == 'Remi') {
+              if (winningTeam == 'Remi') {
+                return SizedBox(
+                  width: constraints.maxWidth * 0.9,
+                  child: Text(
+                    winningTeam!,
+                    style: TextStyle(
+                      fontSize: fontSize,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Nunito',
+                      height: 1.1,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              }
+
               return SizedBox(
                 width: constraints.maxWidth * 0.9,
-                child: Text(
-                  winningTeam,
-                  style: TextStyle(
-                    fontSize: fontSize,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Nunito',
-                    height: 1.1,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      HugeIcons.strokeRoundedLaurelWreathLeft02,
+                      size: iconSize,
+                      color: theme.colorScheme.tertiary,
+                    ),
+                    Flexible(
+                      child: Text(
+                        winningTeam!,
+                        style: TextStyle(
+                          fontSize: fontSize,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Nunito',
+                          height: 1.1,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Icon(
+                      HugeIcons.strokeRoundedLaurelWreathRight02,
+                      size: iconSize,
+                      color: theme.colorScheme.tertiary,
+                    ),
+                  ],
                 ),
               );
-            }
-
-            return SizedBox(
-              width: constraints.maxWidth * 0.9,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(HugeIcons.strokeRoundedLaurelWreathLeft02, size: iconSize, color: theme.colorScheme.tertiary),
-                  Flexible(
-                    child: Text(
-                      winningTeam,
-                      style: TextStyle(
-                        fontSize: fontSize,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Nunito',
-                        height: 1.1,
-                      ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Icon(HugeIcons.strokeRoundedLaurelWreathRight02, size: iconSize, color: theme.colorScheme.tertiary),
-                ],
-              ),
-            );
-          },
-        ),
-        const SizedBox(height: 32),
+            },
+          ),
+          const SizedBox(height: 32),
+        ] else ...[
+          const SizedBox(height: 24),
+        ],
         Container(
           padding: const EdgeInsets.all(16),
           width: double.infinity,
@@ -215,4 +228,3 @@ class GameSummaryWidget extends StatelessWidget {
     );
   }
 }
-

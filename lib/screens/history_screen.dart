@@ -17,14 +17,89 @@ class HistoryScreen extends ConsumerStatefulWidget {
   ConsumerState createState() => HistoryScreenState();
 }
 
-class HistoryScreenState extends ConsumerState<HistoryScreen> {
+class HistoryScreenState extends ConsumerState<HistoryScreen> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late Future<List<Game>> _gamesFuture;
+  late TabController _tabController;
   final LocalStorageService _localStorageService = LocalStorageService();
 
   @override
   void initState() {
     super.initState();
     _gamesFuture = _localStorageService.loadGames();
+    _tabController = TabController(length: 2, vsync: this);
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshGames();
+    }
+  }
+
+  void _refreshGames() {
+    setState(() {
+      _gamesFuture = _localStorageService.loadGames();
+    });
+  }
+
+  Widget _buildGameList(List<Game> games, AppLocalizations loc, int stigljaValue) {
+    if (games.isEmpty) {
+      return Center(
+        child: Text(
+          loc.translate('noSavedGames'),
+          style: const TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+    return ListView.separated(
+      padding: const EdgeInsets.all(16),
+      itemCount: games.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        final game = games[index];
+
+        final int teamOneTotal = ScoreCalculator(stigljaValue: stigljaValue).computeTeamOneTotal(game.rounds);
+        final int teamTwoTotal = ScoreCalculator(stigljaValue: stigljaValue).computeTeamTwoTotal(game.rounds);
+
+        String winningTeam = '';
+        if (!game.isCanceled) {
+          if (teamOneTotal > teamTwoTotal) {
+            winningTeam = game.teamOneName;
+          } else if (teamTwoTotal > teamOneTotal) {
+            winningTeam = game.teamTwoName;
+          } else if (teamOneTotal == teamTwoTotal && teamOneTotal > 0) {
+            winningTeam = 'Remi';
+          }
+        }
+
+        return FinishedGameDisplay(
+          onTap: () async {
+            final result = await Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (context) => FinishedGameScreen(game: game)));
+
+            if (result == true) {
+              _refreshGames();
+            }
+          },
+          teamOneName: game.teamOneName,
+          teamOneTotal: teamOneTotal,
+          teamTwoTotal: teamTwoTotal,
+          teamTwoName: game.teamTwoName,
+          gameDate: game.createdAt,
+          winningTeam: winningTeam.isNotEmpty ? winningTeam : null,
+        );
+      },
+    );
   }
 
   @override
@@ -32,10 +107,11 @@ class HistoryScreenState extends ConsumerState<HistoryScreen> {
     final loc = AppLocalizations.of(context)!;
     final settings = ref.watch(settingsProvider);
     final int stigljaValue = settings.stigljaValue;
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        surfaceTintColor: Theme.of(context).colorScheme.surface,
+        surfaceTintColor: theme.colorScheme.surface,
         title: Text(
           loc.translate('historyTitle'),
           style: const TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito'),
@@ -49,16 +125,28 @@ class HistoryScreenState extends ConsumerState<HistoryScreen> {
             onPressed: () async {
               final games = await _gamesFuture;
               if (context.mounted) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => GlobalStatisticsScreen(games: games),
-                  ),
-                );
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (context) => GlobalStatisticsScreen(games: games)));
               }
             },
             icon: const Icon(HugeIcons.strokeRoundedAnalytics01),
           ),
         ],
+        bottom: TabBar(
+          controller: _tabController,
+          labelStyle: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.bold, fontSize: 16),
+          unselectedLabelStyle: const TextStyle(
+            fontFamily: 'Nunito',
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+          ),
+          indicatorColor: theme.colorScheme.primary,
+          tabs: [
+            Tab(text: loc.translate('finishedGamesTab')),
+            Tab(text: loc.translate('unfinishedGamesTab')),
+          ],
+        ),
       ),
       body: FutureBuilder<List<Game>>(
         future: _gamesFuture,
@@ -70,72 +158,24 @@ class HistoryScreenState extends ConsumerState<HistoryScreen> {
             return Center(
               child: Text(
                 loc.translate('historyError'),
-                style: const TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: const TextStyle(fontFamily: 'Nunito', fontSize: 24, fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center,
               ),
             );
           }
           final List<Game> games = snapshot.data ?? [];
-          if (games.isEmpty) {
-            return Center(
-              child: Text(
-                loc.translate('noSavedGames'),
-                style: const TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            );
-          }
-          return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: games.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              final game = games[index];
+          final finishedGames = games.where((game) => !game.isCanceled).toList();
+          final unfinishedGames = games.where((game) => game.isCanceled).toList();
 
-              final int teamOneTotal = ScoreCalculator(
-                stigljaValue: stigljaValue,
-              ).computeTeamOneTotal(game.rounds);
-              final int teamTwoTotal = ScoreCalculator(
-                stigljaValue: stigljaValue,
-              ).computeTeamTwoTotal(game.rounds);
-
-              String winningTeam = '';
-              if (teamOneTotal > teamTwoTotal) {
-                winningTeam = game.teamOneName;
-              } else if (teamTwoTotal > teamOneTotal) {
-                winningTeam = game.teamTwoName;
-              } else if (teamOneTotal == teamTwoTotal && teamOneTotal > 0) {
-                winningTeam = 'Remi';
-              }
-
-              return FinishedGameDisplay(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => FinishedGameScreen(game: game),
-                    ),
-                  );
-                },
-                teamOneName: game.teamOneName,
-                teamOneTotal: teamOneTotal,
-                teamTwoTotal: teamTwoTotal,
-                teamTwoName: game.teamTwoName,
-                gameDate: game.createdAt,
-                winningTeam: winningTeam.isNotEmpty ? winningTeam : null,
-              );
-            },
+          return TabBarView(
+            controller: _tabController,
+            children: [
+              _buildGameList(finishedGames, loc, stigljaValue),
+              _buildGameList(unfinishedGames, loc, stigljaValue),
+            ],
           );
         },
       ),
     );
   }
 }
-

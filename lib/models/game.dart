@@ -8,6 +8,7 @@ class Game {
   final DateTime createdAt;
   final DateTime? updatedAt;
   final int goalScore;
+  final bool isCanceled;
 
   Game({
     String? id,
@@ -17,6 +18,7 @@ class Game {
     DateTime? createdAt,
     this.updatedAt,
     this.goalScore = 1001,
+    this.isCanceled = false,
   }) : id = id ?? DateTime.now().millisecondsSinceEpoch.toString(),
        rounds = rounds ?? [],
        createdAt = createdAt ?? DateTime.now();
@@ -58,6 +60,7 @@ class Game {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? goalScore,
+    bool? isCanceled,
   }) {
     return Game(
       id: id ?? this.id,
@@ -67,6 +70,7 @@ class Game {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
       goalScore: goalScore ?? this.goalScore,
+      isCanceled: isCanceled ?? this.isCanceled,
     );
   }
 
@@ -102,6 +106,7 @@ class Game {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
       'goalScore': goalScore,
+      'isCanceled': isCanceled,
     };
   }
 
@@ -115,6 +120,7 @@ class Game {
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null,
       goalScore: json['goalScore'] as int,
+      isCanceled: json['isCanceled'] as bool? ?? false,
     );
   }
 

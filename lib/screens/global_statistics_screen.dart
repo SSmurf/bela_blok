@@ -12,6 +12,9 @@ class GlobalStatisticsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final completedGames = games.where((game) => !game.isCanceled).toList();
+    final finishedGames = completedGames.where((game) => game.isFinished).toList();
+    final unfinishedGames = games.where((game) => game.isCanceled || !game.isFinished).toList();
 
     if (games.isEmpty) {
       return Scaffold(
@@ -47,7 +50,7 @@ class GlobalStatisticsScreen extends StatelessWidget {
     int totalDecl200 = 0;
     int totalDeclStiglja = 0;
 
-    for (var game in games) {
+    for (var game in completedGames) {
       int gameTeamOneScore = game.teamOneTotalScore;
       int gameTeamTwoScore = game.teamTwoTotalScore;
 
@@ -137,36 +140,18 @@ class GlobalStatisticsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainer,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  loc.translate('gamesPlayed'),
-                  style: TextStyle(
-                    fontFamily: 'Nunito',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: theme.colorScheme.onSurface,
-                  ),
-                ),
-                Text(
-                  games.length.toString(),
-                  style: TextStyle(
-                    fontFamily: 'Nunito',
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.onSurface,
-                  ),
-                ),
-              ],
-            ),
+          _SectionHeader(
+            title: loc.translate('numberOfGames'),
+            theme: theme,
+            color: theme.colorScheme.primary,
           ),
+          _GamesCountSection(
+            finishedCount: finishedGames.length,
+            unfinishedCount: unfinishedGames.length,
+            loc: loc,
+            theme: theme,
+          ),
+
           const SizedBox(height: 24),
 
           _SectionHeader(
@@ -317,7 +302,7 @@ class _SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 8, left: 8),
       child: Text(
         title,
         style: TextStyle(
@@ -380,6 +365,62 @@ class _StatisticsSection extends StatelessWidget {
           padding: EdgeInsets.only(top: 12, bottom: isLast ? 0 : 12),
           child: Text(
             value,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Nunito'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _GamesCountSection extends StatelessWidget {
+  final int finishedCount;
+  final int unfinishedCount;
+  final AppLocalizations loc;
+  final ThemeData theme;
+
+  const _GamesCountSection({
+    required this.finishedCount,
+    required this.unfinishedCount,
+    required this.loc,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.5)),
+      ),
+      child: Table(
+        columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(1)},
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        children: [
+          _buildCountRow(loc.translate('finishedGames'), finishedCount, theme),
+          _buildCountRow(loc.translate('unfinishedGames'), unfinishedCount, theme, isLast: true),
+        ],
+      ),
+    );
+  }
+
+  TableRow _buildCountRow(String label, int value, ThemeData theme, {bool isLast = false}) {
+    return TableRow(
+      decoration: BoxDecoration(
+        border: isLast ? null : Border(bottom: BorderSide(color: theme.colorScheme.outline.withOpacity(0.1))),
+      ),
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 12, bottom: isLast ? 0 : 12),
+          child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Nunito')),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 12, bottom: isLast ? 0 : 12),
+          child: Text(
+            value.toString(),
             textAlign: TextAlign.center,
             style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Nunito'),
           ),

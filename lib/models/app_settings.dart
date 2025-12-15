@@ -11,6 +11,15 @@ class AppSettings {
     required this.teamTwoName,
   });
 
+  AppSettings copyWith({int? goalScore, int? stigljaValue, String? teamOneName, String? teamTwoName}) {
+    return AppSettings(
+      goalScore: goalScore ?? this.goalScore,
+      stigljaValue: stigljaValue ?? this.stigljaValue,
+      teamOneName: teamOneName ?? this.teamOneName,
+      teamTwoName: teamTwoName ?? this.teamTwoName,
+    );
+  }
+
   Map<String, dynamic> toJson() => {
     'goalScore': goalScore,
     'stigljaValue': stigljaValue,
