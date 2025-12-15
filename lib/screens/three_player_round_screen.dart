@@ -11,9 +11,6 @@ import '../models/three_player_round.dart';
 import '../providers/three_player_game_provider.dart';
 import '../utils/app_localizations.dart';
 
-const double declarationFontSize = 28.0;
-const double stigljaFontSize = 26.0;
-
 class ThreePlayerRoundScreen extends ConsumerStatefulWidget {
   final int? roundToEditIndex;
   final ThreePlayerRound? roundToEdit;
@@ -158,9 +155,7 @@ class _ThreePlayerRoundScreenState extends ConsumerState<ThreePlayerRoundScreen>
   }
 
   void _checkIfInputStarted() {
-    if (activeScorePlayerOne == '0' &&
-        activeScorePlayerTwo == '0' &&
-        activeScorePlayerThree == '0') {
+    if (activeScorePlayerOne == '0' && activeScorePlayerTwo == '0' && activeScorePlayerThree == '0') {
       hasStartedInput = false;
     }
   }
@@ -248,18 +243,11 @@ class _ThreePlayerRoundScreenState extends ConsumerState<ThreePlayerRoundScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (count > 0) ...[
-            Text(
-              'x$count',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-            ),
+            Text('x$count', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
             const SizedBox(width: 4),
             GestureDetector(
               onTap: onUndo,
-              child: Icon(
-                HugeIcons.strokeRoundedRemoveSquare,
-                size: 20,
-                color: theme.colorScheme.error,
-              ),
+              child: Icon(HugeIcons.strokeRoundedRemoveSquare, size: 20, color: theme.colorScheme.error),
             ),
           ],
         ],
@@ -269,7 +257,6 @@ class _ThreePlayerRoundScreenState extends ConsumerState<ThreePlayerRoundScreen>
 
   Widget _buildDeclarationRow({
     required String label,
-    double fontSize = declarationFontSize,
     required int playerOneCount,
     required int playerTwoCount,
     required int playerThreeCount,
@@ -279,11 +266,14 @@ class _ThreePlayerRoundScreenState extends ConsumerState<ThreePlayerRoundScreen>
     required VoidCallback onPlayerOneUndo,
     required VoidCallback onPlayerTwoUndo,
     required VoidCallback onPlayerThreeUndo,
-    required double buttonWidth,
+    required double buttonFontSize,
+    double? fontSizeOverride,
+    EdgeInsetsGeometry contentPadding = const EdgeInsets.symmetric(horizontal: 2),
   }) {
-    double adjustedFontSize = fontSize;
+    final double baseFontSize = fontSizeOverride ?? buttonFontSize;
+    double adjustedFontSize = baseFontSize;
     if (label.length > 8) {
-      adjustedFontSize = fontSize * 0.8;
+      adjustedFontSize *= 0.7;
     }
 
     return Padding(
@@ -292,11 +282,12 @@ class _ThreePlayerRoundScreenState extends ConsumerState<ThreePlayerRoundScreen>
         children: [
           // Declaration button on the LEFT - clickable to add to active player
           SizedBox(
-            width: buttonWidth,
+            width: 90,
             child: DeclarationButton(
               text: label,
-              width: buttonWidth,
+              width: 90,
               fontSize: adjustedFontSize,
+              contentPadding: contentPadding,
               onPressed: () {
                 if (selectedPlayerIndex == 0) {
                   onPlayerOneIncrement();
@@ -350,35 +341,64 @@ class _ThreePlayerRoundScreenState extends ConsumerState<ThreePlayerRoundScreen>
     int totalDecl200 = decl200PlayerOne + decl200PlayerTwo + decl200PlayerThree;
 
     if (declStigljaPlayerOne > 0) {
-      declScorePlayerOne = totalDecl20 * 20 + totalDecl50 * 50 + totalDecl100 * 100 +
-          totalDecl150 * 150 + totalDecl200 * 200 + (declStigljaPlayerOne * stigljaValue);
+      declScorePlayerOne =
+          totalDecl20 * 20 +
+          totalDecl50 * 50 +
+          totalDecl100 * 100 +
+          totalDecl150 * 150 +
+          totalDecl200 * 200 +
+          (declStigljaPlayerOne * stigljaValue);
       declScorePlayerTwo = 0;
       declScorePlayerThree = 0;
     } else if (declStigljaPlayerTwo > 0) {
-      declScorePlayerTwo = totalDecl20 * 20 + totalDecl50 * 50 + totalDecl100 * 100 +
-          totalDecl150 * 150 + totalDecl200 * 200 + (declStigljaPlayerTwo * stigljaValue);
+      declScorePlayerTwo =
+          totalDecl20 * 20 +
+          totalDecl50 * 50 +
+          totalDecl100 * 100 +
+          totalDecl150 * 150 +
+          totalDecl200 * 200 +
+          (declStigljaPlayerTwo * stigljaValue);
       declScorePlayerOne = 0;
       declScorePlayerThree = 0;
     } else if (declStigljaPlayerThree > 0) {
-      declScorePlayerThree = totalDecl20 * 20 + totalDecl50 * 50 + totalDecl100 * 100 +
-          totalDecl150 * 150 + totalDecl200 * 200 + (declStigljaPlayerThree * stigljaValue);
+      declScorePlayerThree =
+          totalDecl20 * 20 +
+          totalDecl50 * 50 +
+          totalDecl100 * 100 +
+          totalDecl150 * 150 +
+          totalDecl200 * 200 +
+          (declStigljaPlayerThree * stigljaValue);
       declScorePlayerOne = 0;
       declScorePlayerTwo = 0;
     } else {
-      declScorePlayerOne = decl20PlayerOne * 20 + decl50PlayerOne * 50 + decl100PlayerOne * 100 +
-          decl150PlayerOne * 150 + decl200PlayerOne * 200;
-      declScorePlayerTwo = decl20PlayerTwo * 20 + decl50PlayerTwo * 50 + decl100PlayerTwo * 100 +
-          decl150PlayerTwo * 150 + decl200PlayerTwo * 200;
-      declScorePlayerThree = decl20PlayerThree * 20 + decl50PlayerThree * 50 + decl100PlayerThree * 100 +
-          decl150PlayerThree * 150 + decl200PlayerThree * 200;
+      declScorePlayerOne =
+          decl20PlayerOne * 20 +
+          decl50PlayerOne * 50 +
+          decl100PlayerOne * 100 +
+          decl150PlayerOne * 150 +
+          decl200PlayerOne * 200;
+      declScorePlayerTwo =
+          decl20PlayerTwo * 20 +
+          decl50PlayerTwo * 50 +
+          decl100PlayerTwo * 100 +
+          decl150PlayerTwo * 150 +
+          decl200PlayerTwo * 200;
+      declScorePlayerThree =
+          decl20PlayerThree * 20 +
+          decl50PlayerThree * 50 +
+          decl100PlayerThree * 100 +
+          decl150PlayerThree * 150 +
+          decl200PlayerThree * 200;
     }
 
     final int totalScoreSum = playerOneScore + playerTwoScore + playerThreeScore;
     // Score is valid if: sum <= 162 OR sum == 162 (when exceeding limit)
     // Also allow if all zeros (no input yet)
-    bool isScoreValid = totalScoreSum <= totalPoints || (totalScoreSum > 0 && playerOneScore + playerTwoScore + playerThreeScore == totalPoints);
+    bool isScoreValid =
+        totalScoreSum <= totalPoints ||
+        (totalScoreSum > 0 && playerOneScore + playerTwoScore + playerThreeScore == totalPoints);
     bool isSaveEnabled = hasStartedInput && isScoreValid;
-    final double declarationButtonWidth = isSmallScreen ? 70 : 78;
+    final double declarationButtonFontSize = isSmallScreen ? 20 : 24;
 
     final theme = Theme.of(context);
     return SafeArea(
@@ -464,7 +484,7 @@ class _ThreePlayerRoundScreenState extends ConsumerState<ThreePlayerRoundScreen>
                     Scrollbar(
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.only(bottom: 16),
-                        child: _buildDeclarationsContent(loc, stigljaValue, declarationButtonWidth),
+                        child: _buildDeclarationsContent(loc, stigljaValue, declarationButtonFontSize),
                       ),
                     ),
                   ],
@@ -490,96 +510,174 @@ class _ThreePlayerRoundScreenState extends ConsumerState<ThreePlayerRoundScreen>
     );
   }
 
-  Widget _buildDeclarationsContent(AppLocalizations loc, int stigljaValue, double buttonWidth) {
+  Widget _buildDeclarationsContent(AppLocalizations loc, int stigljaValue, double buttonFontSize) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildDeclarationRow(
           label: '20',
-          fontSize: declarationFontSize,
           playerOneCount: decl20PlayerOne,
           playerTwoCount: decl20PlayerTwo,
           playerThreeCount: decl20PlayerThree,
-          onPlayerOneIncrement: () => setState(() { if (decl20PlayerOne < max20) decl20PlayerOne++; }),
-          onPlayerTwoIncrement: () => setState(() { if (decl20PlayerTwo < max20) decl20PlayerTwo++; }),
-          onPlayerThreeIncrement: () => setState(() { if (decl20PlayerThree < max20) decl20PlayerThree++; }),
-          onPlayerOneUndo: () => setState(() { if (decl20PlayerOne > 0) decl20PlayerOne--; }),
-          onPlayerTwoUndo: () => setState(() { if (decl20PlayerTwo > 0) decl20PlayerTwo--; }),
-          onPlayerThreeUndo: () => setState(() { if (decl20PlayerThree > 0) decl20PlayerThree--; }),
-          buttonWidth: buttonWidth,
+          onPlayerOneIncrement:
+              () => setState(() {
+                if (decl20PlayerOne < max20) decl20PlayerOne++;
+              }),
+          onPlayerTwoIncrement:
+              () => setState(() {
+                if (decl20PlayerTwo < max20) decl20PlayerTwo++;
+              }),
+          onPlayerThreeIncrement:
+              () => setState(() {
+                if (decl20PlayerThree < max20) decl20PlayerThree++;
+              }),
+          onPlayerOneUndo:
+              () => setState(() {
+                if (decl20PlayerOne > 0) decl20PlayerOne--;
+              }),
+          onPlayerTwoUndo:
+              () => setState(() {
+                if (decl20PlayerTwo > 0) decl20PlayerTwo--;
+              }),
+          onPlayerThreeUndo:
+              () => setState(() {
+                if (decl20PlayerThree > 0) decl20PlayerThree--;
+              }),
+          buttonFontSize: buttonFontSize,
         ),
         _buildDeclarationRow(
           label: '50',
-          fontSize: declarationFontSize,
           playerOneCount: decl50PlayerOne,
           playerTwoCount: decl50PlayerTwo,
           playerThreeCount: decl50PlayerThree,
-          onPlayerOneIncrement: () => setState(() { if (decl50PlayerOne < max50) decl50PlayerOne++; }),
-          onPlayerTwoIncrement: () => setState(() { if (decl50PlayerTwo < max50) decl50PlayerTwo++; }),
-          onPlayerThreeIncrement: () => setState(() { if (decl50PlayerThree < max50) decl50PlayerThree++; }),
-          onPlayerOneUndo: () => setState(() { if (decl50PlayerOne > 0) decl50PlayerOne--; }),
-          onPlayerTwoUndo: () => setState(() { if (decl50PlayerTwo > 0) decl50PlayerTwo--; }),
-          onPlayerThreeUndo: () => setState(() { if (decl50PlayerThree > 0) decl50PlayerThree--; }),
-          buttonWidth: buttonWidth,
+          onPlayerOneIncrement:
+              () => setState(() {
+                if (decl50PlayerOne < max50) decl50PlayerOne++;
+              }),
+          onPlayerTwoIncrement:
+              () => setState(() {
+                if (decl50PlayerTwo < max50) decl50PlayerTwo++;
+              }),
+          onPlayerThreeIncrement:
+              () => setState(() {
+                if (decl50PlayerThree < max50) decl50PlayerThree++;
+              }),
+          onPlayerOneUndo:
+              () => setState(() {
+                if (decl50PlayerOne > 0) decl50PlayerOne--;
+              }),
+          onPlayerTwoUndo:
+              () => setState(() {
+                if (decl50PlayerTwo > 0) decl50PlayerTwo--;
+              }),
+          onPlayerThreeUndo:
+              () => setState(() {
+                if (decl50PlayerThree > 0) decl50PlayerThree--;
+              }),
+          buttonFontSize: buttonFontSize,
         ),
         _buildDeclarationRow(
           label: '100',
-          fontSize: declarationFontSize,
           playerOneCount: decl100PlayerOne,
           playerTwoCount: decl100PlayerTwo,
           playerThreeCount: decl100PlayerThree,
-          onPlayerOneIncrement: () => setState(() { if (decl100PlayerOne < max100) decl100PlayerOne++; }),
-          onPlayerTwoIncrement: () => setState(() { if (decl100PlayerTwo < max100) decl100PlayerTwo++; }),
-          onPlayerThreeIncrement: () => setState(() { if (decl100PlayerThree < max100) decl100PlayerThree++; }),
-          onPlayerOneUndo: () => setState(() { if (decl100PlayerOne > 0) decl100PlayerOne--; }),
-          onPlayerTwoUndo: () => setState(() { if (decl100PlayerTwo > 0) decl100PlayerTwo--; }),
-          onPlayerThreeUndo: () => setState(() { if (decl100PlayerThree > 0) decl100PlayerThree--; }),
-          buttonWidth: buttonWidth,
+          onPlayerOneIncrement:
+              () => setState(() {
+                if (decl100PlayerOne < max100) decl100PlayerOne++;
+              }),
+          onPlayerTwoIncrement:
+              () => setState(() {
+                if (decl100PlayerTwo < max100) decl100PlayerTwo++;
+              }),
+          onPlayerThreeIncrement:
+              () => setState(() {
+                if (decl100PlayerThree < max100) decl100PlayerThree++;
+              }),
+          onPlayerOneUndo:
+              () => setState(() {
+                if (decl100PlayerOne > 0) decl100PlayerOne--;
+              }),
+          onPlayerTwoUndo:
+              () => setState(() {
+                if (decl100PlayerTwo > 0) decl100PlayerTwo--;
+              }),
+          onPlayerThreeUndo:
+              () => setState(() {
+                if (decl100PlayerThree > 0) decl100PlayerThree--;
+              }),
+          buttonFontSize: buttonFontSize,
         ),
         _buildDeclarationRow(
           label: '150',
-          fontSize: declarationFontSize,
           playerOneCount: decl150PlayerOne,
           playerTwoCount: decl150PlayerTwo,
           playerThreeCount: decl150PlayerThree,
           onPlayerOneIncrement: () {
             setState(() {
-              if (decl150PlayerOne < max150 && decl150PlayerTwo == 0 && decl150PlayerThree == 0) decl150PlayerOne++;
+              if (decl150PlayerOne < max150 && decl150PlayerTwo == 0 && decl150PlayerThree == 0)
+                decl150PlayerOne++;
             });
           },
           onPlayerTwoIncrement: () {
             setState(() {
-              if (decl150PlayerTwo < max150 && decl150PlayerOne == 0 && decl150PlayerThree == 0) decl150PlayerTwo++;
+              if (decl150PlayerTwo < max150 && decl150PlayerOne == 0 && decl150PlayerThree == 0)
+                decl150PlayerTwo++;
             });
           },
           onPlayerThreeIncrement: () {
             setState(() {
-              if (decl150PlayerThree < max150 && decl150PlayerOne == 0 && decl150PlayerTwo == 0) decl150PlayerThree++;
+              if (decl150PlayerThree < max150 && decl150PlayerOne == 0 && decl150PlayerTwo == 0)
+                decl150PlayerThree++;
             });
           },
-          onPlayerOneUndo: () => setState(() { if (decl150PlayerOne > 0) decl150PlayerOne--; }),
-          onPlayerTwoUndo: () => setState(() { if (decl150PlayerTwo > 0) decl150PlayerTwo--; }),
-          onPlayerThreeUndo: () => setState(() { if (decl150PlayerThree > 0) decl150PlayerThree--; }),
-          buttonWidth: buttonWidth,
+          onPlayerOneUndo:
+              () => setState(() {
+                if (decl150PlayerOne > 0) decl150PlayerOne--;
+              }),
+          onPlayerTwoUndo:
+              () => setState(() {
+                if (decl150PlayerTwo > 0) decl150PlayerTwo--;
+              }),
+          onPlayerThreeUndo:
+              () => setState(() {
+                if (decl150PlayerThree > 0) decl150PlayerThree--;
+              }),
+          buttonFontSize: buttonFontSize,
         ),
         _buildDeclarationRow(
           label: '200',
-          fontSize: declarationFontSize,
           playerOneCount: decl200PlayerOne,
           playerTwoCount: decl200PlayerTwo,
           playerThreeCount: decl200PlayerThree,
-          onPlayerOneIncrement: () => setState(() { if (_canDeclare200(0)) decl200PlayerOne++; }),
-          onPlayerTwoIncrement: () => setState(() { if (_canDeclare200(1)) decl200PlayerTwo++; }),
-          onPlayerThreeIncrement: () => setState(() { if (_canDeclare200(2)) decl200PlayerThree++; }),
-          onPlayerOneUndo: () => setState(() { if (decl200PlayerOne > 0) decl200PlayerOne--; }),
-          onPlayerTwoUndo: () => setState(() { if (decl200PlayerTwo > 0) decl200PlayerTwo--; }),
-          onPlayerThreeUndo: () => setState(() { if (decl200PlayerThree > 0) decl200PlayerThree--; }),
-          buttonWidth: buttonWidth,
+          onPlayerOneIncrement:
+              () => setState(() {
+                if (_canDeclare200(0)) decl200PlayerOne++;
+              }),
+          onPlayerTwoIncrement:
+              () => setState(() {
+                if (_canDeclare200(1)) decl200PlayerTwo++;
+              }),
+          onPlayerThreeIncrement:
+              () => setState(() {
+                if (_canDeclare200(2)) decl200PlayerThree++;
+              }),
+          onPlayerOneUndo:
+              () => setState(() {
+                if (decl200PlayerOne > 0) decl200PlayerOne--;
+              }),
+          onPlayerTwoUndo:
+              () => setState(() {
+                if (decl200PlayerTwo > 0) decl200PlayerTwo--;
+              }),
+          onPlayerThreeUndo:
+              () => setState(() {
+                if (decl200PlayerThree > 0) decl200PlayerThree--;
+              }),
+          buttonFontSize: buttonFontSize,
         ),
         _buildDeclarationRow(
           label: loc.translate('allTricks'),
-          fontSize: stigljaFontSize,
           playerOneCount: declStigljaPlayerOne,
           playerTwoCount: declStigljaPlayerTwo,
           playerThreeCount: declStigljaPlayerThree,
@@ -649,7 +747,8 @@ class _ThreePlayerRoundScreenState extends ConsumerState<ThreePlayerRoundScreen>
               }
             });
           },
-          buttonWidth: buttonWidth,
+          buttonFontSize: buttonFontSize,
+          fontSizeOverride: buttonFontSize * 0.8,
         ),
       ],
     );

@@ -6,6 +6,7 @@ class DeclarationButton extends StatelessWidget {
   final double fontSize;
   final FontWeight fontWeight;
   final VoidCallback onPressed;
+  final EdgeInsetsGeometry contentPadding;
 
   const DeclarationButton({
     super.key,
@@ -13,6 +14,7 @@ class DeclarationButton extends StatelessWidget {
     this.width = 125,
     this.fontSize = 28,
     this.fontWeight = FontWeight.w600,
+    this.contentPadding = const EdgeInsets.symmetric(horizontal: 4),
     required this.onPressed,
   });
 
@@ -27,6 +29,7 @@ class DeclarationButton extends StatelessWidget {
           onPressed: onPressed,
           style: OutlinedButton.styleFrom(
             minimumSize: Size.fromHeight(50),
+            padding: contentPadding,
             side: BorderSide(color: Colors.transparent),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
