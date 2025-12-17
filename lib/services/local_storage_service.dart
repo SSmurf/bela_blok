@@ -3,9 +3,12 @@ import 'package:bela_blok/services/review_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/game.dart';
 import '../models/round.dart';
+import '../models/three_player_game.dart';
+import '../models/three_player_round.dart';
 
 class LocalStorageService {
   static const String _currentGameKey = 'current_game';
+  static const String _currentThreePlayerGameKey = 'current_three_player_game';
   Future<void> saveGame(
     List<Round> rounds, {
     required String teamOneName,
@@ -172,5 +175,119 @@ class LocalStorageService {
       }
     }
     return {};
+  }
+
+  // Three-player game methods
+
+  Future<void> saveThreePlayerGame(
+    List<ThreePlayerRound> rounds, {
+    required String playerOneName,
+    required String playerTwoName,
+    required String playerThreeName,
+    int goalScore = 1001,
+    DateTime? createdAt,
+    bool isCanceled = false,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final game = ThreePlayerGame(
+      playerOneName: playerOneName,
+      playerTwoName: playerTwoName,
+      playerThreeName: playerThreeName,
+      rounds: rounds,
+      createdAt: createdAt ?? DateTime.now(),
+      goalScore: goalScore,
+      isCanceled: isCanceled,
+    );
+    final gameJson = json.encode(game.toJson());
+    final key = 'saved_three_player_game_${DateTime.now().millisecondsSinceEpoch}';
+    await prefs.setString(key, gameJson);
+    await prefs.setString('latest_three_player_game_key', key);
+    print('Three-player game saved under key: $key');
+
+    if (!isCanceled) {
+      await ReviewService.incrementCompletedGames();
+    }
+  }
+
+  Future<List<ThreePlayerGame>> loadThreePlayerGames() async {
+    final prefs = await SharedPreferences.getInstance();
+    final keys = prefs.getKeys().where((key) => key.startsWith('saved_three_player_game_')).toList();
+    List<ThreePlayerGame> games = [];
+    for (final key in keys) {
+      final String? gameJson = prefs.getString(key);
+      if (gameJson != null) {
+        try {
+          final Map<String, dynamic> gameData = json.decode(gameJson);
+          final game = ThreePlayerGame.fromJson(gameData);
+          games.add(game);
+        } catch (e) {
+          print('Error decoding three-player game for key $key: $e');
+        }
+      }
+    }
+    games.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return games;
+  }
+
+  Future<bool> deleteLatestThreePlayerGame() async {
+    final prefs = await SharedPreferences.getInstance();
+    final latestKey = prefs.getString('latest_three_player_game_key');
+
+    if (latestKey != null) {
+      final result = await prefs.remove(latestKey);
+      if (result) {
+        print('Deleted latest three-player game with key: $latestKey');
+        await prefs.remove('latest_three_player_game_key');
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> deleteThreePlayerGame(ThreePlayerGame gameToDelete) async {
+    final prefs = await SharedPreferences.getInstance();
+    final keys = prefs.getKeys().where((key) => key.startsWith('saved_three_player_game_')).toList();
+
+    for (final key in keys) {
+      final String? gameJson = prefs.getString(key);
+      if (gameJson != null) {
+        try {
+          final Map<String, dynamic> gameData = json.decode(gameJson);
+          if (gameData['id'] == gameToDelete.id) {
+            await prefs.remove(key);
+            print('Deleted three-player game with key: $key');
+            return true;
+          }
+        } catch (e) {
+          print('Error checking three-player game for deletion: $e');
+        }
+      }
+    }
+    return false;
+  }
+
+  Future<ThreePlayerGame?> loadCurrentThreePlayerGame() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString(_currentThreePlayerGameKey);
+    if (jsonString == null) return null;
+
+    try {
+      final Map<String, dynamic> gameData = json.decode(jsonString);
+      return ThreePlayerGame.fromJson(gameData);
+    } catch (e) {
+      print('Error decoding current three-player game: $e');
+      return null;
+    }
+  }
+
+  Future<ThreePlayerGame> saveCurrentThreePlayerGame(ThreePlayerGame game) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_currentThreePlayerGameKey, json.encode(game.toJson()));
+    return game;
+  }
+
+  Future<void> clearCurrentThreePlayerGame() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_currentThreePlayerGameKey);
   }
 }

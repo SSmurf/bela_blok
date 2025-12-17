@@ -1,12 +1,14 @@
 import 'package:bela_blok/models/game.dart';
+import 'package:bela_blok/models/three_player_game.dart';
 import 'package:bela_blok/utils/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class GlobalStatisticsScreen extends StatelessWidget {
   final List<Game> games;
+  final List<ThreePlayerGame> threePlayerGames;
 
-  const GlobalStatisticsScreen({super.key, required this.games});
+  const GlobalStatisticsScreen({super.key, required this.games, this.threePlayerGames = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,9 @@ class GlobalStatisticsScreen extends StatelessWidget {
     final finishedGames = completedGames.where((game) => game.isFinished).toList();
     final unfinishedGames = games.where((game) => game.isCanceled || !game.isFinished).toList();
 
-    if (games.isEmpty) {
+    final hasAnyGames = games.isNotEmpty || threePlayerGames.isNotEmpty;
+
+    if (!hasAnyGames) {
       return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -35,6 +39,31 @@ class GlobalStatisticsScreen extends StatelessWidget {
           ),
         ),
       );
+    }
+
+    // Three-player game stats
+    final completedThreePlayerGames = threePlayerGames.where((g) => !g.isCanceled).toList();
+    int threePlayerFinishedCount = completedThreePlayerGames.where((g) => g.isFinished()).length;
+    int threePlayerUnfinishedCount = threePlayerGames.length - threePlayerFinishedCount;
+
+    // Three-player declaration counters
+    int threePlayerDecl20 = 0;
+    int threePlayerDecl50 = 0;
+    int threePlayerDecl100 = 0;
+    int threePlayerDecl150 = 0;
+    int threePlayerDecl200 = 0;
+    int threePlayerDeclStiglja = 0;
+
+    for (var game in completedThreePlayerGames) {
+      for (var round in game.rounds) {
+        threePlayerDecl20 += round.decl20PlayerOne + round.decl20PlayerTwo + round.decl20PlayerThree;
+        threePlayerDecl50 += round.decl50PlayerOne + round.decl50PlayerTwo + round.decl50PlayerThree;
+        threePlayerDecl100 += round.decl100PlayerOne + round.decl100PlayerTwo + round.decl100PlayerThree;
+        threePlayerDecl150 += round.decl150PlayerOne + round.decl150PlayerTwo + round.decl150PlayerThree;
+        threePlayerDecl200 += round.decl200PlayerOne + round.decl200PlayerTwo + round.decl200PlayerThree;
+        threePlayerDeclStiglja +=
+            round.declStigljaPlayerOne + round.declStigljaPlayerTwo + round.declStigljaPlayerThree;
+      }
     }
 
     // Accumulators
@@ -195,6 +224,38 @@ class GlobalStatisticsScreen extends StatelessWidget {
             loc: loc,
             theme: theme,
           ),
+
+          // Three-player games section
+          if (threePlayerGames.isNotEmpty) ...[
+            const SizedBox(height: 32),
+            _SectionHeader(
+              title: loc.translate('threePlayerGames'),
+              theme: theme,
+              color: theme.colorScheme.tertiary,
+            ),
+            _GamesCountSection(
+              finishedCount: threePlayerFinishedCount,
+              unfinishedCount: threePlayerUnfinishedCount,
+              loc: loc,
+              theme: theme,
+            ),
+            const SizedBox(height: 24),
+            _SectionHeader(
+              title: loc.translate('threePlayerDeclarations'),
+              theme: theme,
+              color: theme.colorScheme.tertiary,
+            ),
+            _DeclarationsSection(
+              totalDecl20: threePlayerDecl20,
+              totalDecl50: threePlayerDecl50,
+              totalDecl100: threePlayerDecl100,
+              totalDecl150: threePlayerDecl150,
+              totalDecl200: threePlayerDecl200,
+              totalDeclStiglja: threePlayerDeclStiglja,
+              loc: loc,
+              theme: theme,
+            ),
+          ],
           const SizedBox(height: 32),
         ],
       ),

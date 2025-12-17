@@ -25,10 +25,13 @@ class AddRoundButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final trimmedText = text.trim();
     final displayText =
-        trimmedText.contains(' ') ? trimmedText.replaceFirst(RegExp(r'\s+'), '\n') : trimmedText;
+        fullWidth || !trimmedText.contains(' ')
+            ? trimmedText
+            : trimmedText.replaceFirst(RegExp(r'\s+'), '\n');
+    final double buttonWidth = fullWidth ? double.infinity : width;
     return SizedBox(
       height: 64.0,
-      width: fullWidth ? null : width,
+      width: buttonWidth,
       child: ElevatedButton.icon(
         onPressed: isEnabled ? onPressed : null,
         onLongPress: isEnabled ? onLongPress : null,
