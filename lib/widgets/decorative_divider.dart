@@ -8,16 +8,16 @@ class DecorativeDivider extends ConsumerWidget {
 
   String _getIconForPalette(ColorPalette palette) {
     switch (palette) {
-      case ColorPalette.red:
+      case ColorPalette.spring:
         return 'assets/images/heart.png';
-      case ColorPalette.blue:
-        return 'assets/images/acorn.png';
-      case ColorPalette.orange:
+      case ColorPalette.summer:
         return 'assets/images/bell.png';
+      case ColorPalette.autumn:
+        return 'assets/images/leaf.png';
+      case ColorPalette.winter:
+        return 'assets/images/acorn.png';
       case ColorPalette.green:
         return 'assets/images/leaf.png';
-      default:
-        return 'assets/images/heart.png'; // fallback
     }
   }
 
