@@ -156,5 +156,9 @@ ThemeData getTheme(ThemeType type, ColorPalette palette) {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       elevation: 0,
     ),
+    cardTheme: CardThemeData(
+      color: isPaletteDark ? darkDialogSurfaceColor : lightBackgroundColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    ),
   );
 }

@@ -147,12 +147,12 @@ class AboutAppScreen extends StatelessWidget {
                                 context,
                               ).textTheme.titleMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
                             ),
-                            Text(
-                              loc.translate('ferStudent'),
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodyMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
-                            ),
+                            // Text(
+                            //   loc.translate('ferStudent'),
+                            //   style: Theme.of(
+                            //     context,
+                            //   ).textTheme.bodyMedium?.copyWith(color: onSurfaceColor, fontFamily: 'Nunito'),
+                            // ),
                           ],
                         ),
                       ),
