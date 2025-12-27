@@ -10,6 +10,7 @@ import 'package:bela_blok/screens/three_player_home_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/services/score_calculator.dart';
 import 'package:bela_blok/widgets/add_round_button.dart';
+import 'package:bela_blok/widgets/save_round_button.dart';
 import 'package:bela_blok/widgets/decorative_divider.dart';
 import 'package:bela_blok/widgets/fading_edge_scroll_view.dart';
 import 'package:bela_blok/widgets/landscape_total_score_display.dart';
@@ -856,53 +857,63 @@ class _TwoPlayerHomeScreenState extends ConsumerState<TwoPlayerHomeScreen> {
                             ),
                   ),
                   const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AddRoundButton(
-                          fullWidth: true,
-                          text: settings.teamOneName,
-                          color: Theme.of(context).colorScheme.primary,
-                          onPressed: () => _handleTeamButtonPress(true),
-                          onLongPress: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => RoundScreen(
-                                      teamOneName: settings.teamOneName,
-                                      teamTwoName: settings.teamTwoName,
-                                      isTeamOneSelected: true,
-                                      initialTabIndex: 1,
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
+                  gameEnded
+                      ? SaveRoundButton(
+                        fullWidth: true,
+                        text: loc.translate('newGame'),
+                        color: Theme.of(context).colorScheme.primary,
+                        onPressed: () {
+                          ref.read(currentGameProvider.notifier).clearRounds();
+                          _resetGameState();
+                        },
+                      )
+                      : Row(
+                        children: [
+                          Expanded(
+                            child: AddRoundButton(
+                              fullWidth: true,
+                              text: settings.teamOneName,
+                              color: Theme.of(context).colorScheme.primary,
+                              onPressed: () => _handleTeamButtonPress(true),
+                              onLongPress: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => RoundScreen(
+                                          teamOneName: settings.teamOneName,
+                                          teamTwoName: settings.teamTwoName,
+                                          isTeamOneSelected: true,
+                                          initialTabIndex: 1,
+                                        ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: AddRoundButton(
+                              fullWidth: true,
+                              text: settings.teamTwoName,
+                              color: Theme.of(context).colorScheme.secondary,
+                              onPressed: () => _handleTeamButtonPress(false),
+                              onLongPress: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => RoundScreen(
+                                          teamOneName: settings.teamOneName,
+                                          teamTwoName: settings.teamTwoName,
+                                          isTeamOneSelected: false,
+                                          initialTabIndex: 1,
+                                        ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: AddRoundButton(
-                          fullWidth: true,
-                          text: settings.teamTwoName,
-                          color: Theme.of(context).colorScheme.secondary,
-                          onPressed: () => _handleTeamButtonPress(false),
-                          onLongPress: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => RoundScreen(
-                                      teamOneName: settings.teamOneName,
-                                      teamTwoName: settings.teamTwoName,
-                                      isTeamOneSelected: false,
-                                      initialTabIndex: 1,
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 24),
                 ],
               ),

@@ -8,6 +8,7 @@ import 'package:bela_blok/screens/settings_screen.dart';
 import 'package:bela_blok/screens/three_player_round_screen.dart';
 import 'package:bela_blok/services/local_storage_service.dart';
 import 'package:bela_blok/widgets/add_round_button.dart';
+import 'package:bela_blok/widgets/save_round_button.dart';
 import 'package:bela_blok/widgets/decorative_divider.dart';
 import 'package:bela_blok/widgets/fading_edge_scroll_view.dart';
 import 'package:bela_blok/widgets/three_player_round_display.dart';
@@ -875,29 +876,39 @@ class _ThreePlayerHomeScreenState extends ConsumerState<ThreePlayerHomeScreen> {
                         ),
               ),
               const SizedBox(height: 24),
-              AddRoundButton(
-                fullWidth: true,
-                text: loc.translate('addRound'),
-                color: Theme.of(context).colorScheme.primary,
-                onPressed: handleAddRoundPress,
-                onLongPress: () {
-                  if (gameEnded) {
-                    ref.read(currentThreePlayerGameProvider.notifier).clearRounds();
-                    _resetGameState();
-                  }
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder:
-                          (context) => ThreePlayerRoundScreen(
-                            playerOneName: settings.playerOneName,
-                            playerTwoName: settings.playerTwoName,
-                            playerThreeName: settings.playerThreeName,
-                            initialTabIndex: 1,
+              gameEnded
+                  ? SaveRoundButton(
+                      fullWidth: true,
+                      text: loc.translate('newGame'),
+                      color: Theme.of(context).colorScheme.primary,
+                      onPressed: () {
+                        ref.read(currentThreePlayerGameProvider.notifier).clearRounds();
+                        _resetGameState();
+                      },
+                    )
+                  : AddRoundButton(
+                      fullWidth: true,
+                      text: loc.translate('addRound'),
+                      color: Theme.of(context).colorScheme.primary,
+                      onPressed: handleAddRoundPress,
+                      onLongPress: () {
+                        if (gameEnded) {
+                          ref.read(currentThreePlayerGameProvider.notifier).clearRounds();
+                          _resetGameState();
+                        }
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder:
+                                (context) => ThreePlayerRoundScreen(
+                                  playerOneName: settings.playerOneName,
+                                  playerTwoName: settings.playerTwoName,
+                                  playerThreeName: settings.playerThreeName,
+                                  initialTabIndex: 1,
+                                ),
                           ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
               const SizedBox(height: 16),
             ],
           ),
