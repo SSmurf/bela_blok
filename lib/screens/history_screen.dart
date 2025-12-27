@@ -19,18 +19,21 @@ class HistoryGameItem {
   final ThreePlayerGame? threePlayerGame;
   final DateTime createdAt;
   final bool isCanceled;
+  final int goalScore;
 
   HistoryGameItem.twoPlayer(Game game)
-      : twoPlayerGame = game,
-        threePlayerGame = null,
-        createdAt = game.createdAt,
-        isCanceled = game.isCanceled;
+    : twoPlayerGame = game,
+      threePlayerGame = null,
+      createdAt = game.createdAt,
+      isCanceled = game.isCanceled,
+      goalScore = game.goalScore;
 
   HistoryGameItem.threePlayer(ThreePlayerGame game)
-      : twoPlayerGame = null,
-        threePlayerGame = game,
-        createdAt = game.createdAt,
-        isCanceled = game.isCanceled;
+    : twoPlayerGame = null,
+      threePlayerGame = game,
+      createdAt = game.createdAt,
+      isCanceled = game.isCanceled,
+      goalScore = game.goalScore;
 
   bool get isThreePlayer => threePlayerGame != null;
 }
@@ -45,21 +48,25 @@ class HistoryScreen extends ConsumerStatefulWidget {
 class HistoryScreenState extends ConsumerState<HistoryScreen>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late Future<List<HistoryGameItem>> _gamesFuture;
-  late TabController _tabController;
   final LocalStorageService _localStorageService = LocalStorageService();
+
+  // Filter states
+  bool _showFinished = true;
+  bool _showUnfinished = true;
+  bool _showTwoPlayer = true;
+  bool _showThreePlayer = true;
+  Set<int> _selectedGoalScores = {501, 701, 1001};
 
   @override
   void initState() {
     super.initState();
     _gamesFuture = _loadAllGames();
-    _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -90,8 +97,167 @@ class HistoryScreenState extends ConsumerState<HistoryScreen>
     });
   }
 
+  void _showFilterDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            final loc = AppLocalizations.of(context)!;
+
+            return AlertDialog(
+              actionsAlignment: MainAxisAlignment.spaceBetween,
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      loc.translate('gameStatus'),
+                      style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w600, fontSize: 16),
+                    ),
+                    CheckboxListTile(
+                      title: Text(loc.translate('finished'), style: const TextStyle(fontFamily: 'Nunito')),
+                      value: _showFinished,
+                      onChanged: (value) {
+                        setState(() {
+                          _showFinished = value ?? false;
+                        });
+                      },
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    CheckboxListTile(
+                      title: Text(loc.translate('unfinished'), style: const TextStyle(fontFamily: 'Nunito')),
+                      value: _showUnfinished,
+                      onChanged: (value) {
+                        setState(() {
+                          _showUnfinished = value ?? false;
+                        });
+                      },
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    Divider(color: Colors.grey.withOpacity(0.8)),
+                    Text(
+                      loc.translate('gameType'),
+                      style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w600, fontSize: 16),
+                    ),
+                    CheckboxListTile(
+                      title: Text(loc.translate('twoPlayers'), style: const TextStyle(fontFamily: 'Nunito')),
+                      value: _showTwoPlayer,
+                      onChanged: (value) {
+                        setState(() {
+                          _showTwoPlayer = value ?? false;
+                        });
+                      },
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    CheckboxListTile(
+                      title: Text(
+                        loc.translate('threePlayers'),
+                        style: const TextStyle(fontFamily: 'Nunito'),
+                      ),
+                      value: _showThreePlayer,
+                      onChanged: (value) {
+                        setState(() {
+                          _showThreePlayer = value ?? false;
+                        });
+                      },
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    Divider(color: Colors.grey.withOpacity(0.8)),
+                    Text(
+                      loc.translate('gameGoal'),
+                      style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w600, fontSize: 16),
+                    ),
+                    ...[501, 701, 1001].map((score) {
+                      return CheckboxListTile(
+                        title: Text('$score', style: const TextStyle(fontFamily: 'Nunito')),
+                        value: _selectedGoalScores.contains(score),
+                        onChanged: (value) {
+                          setState(() {
+                            if (value == true) {
+                              _selectedGoalScores.add(score);
+                            } else {
+                              _selectedGoalScores.remove(score);
+                            }
+                          });
+                        },
+                        dense: true,
+                        contentPadding: EdgeInsets.zero,
+                      );
+                    }),
+                  ],
+                ),
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    this.setState(() {}); // Update the main screen
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  child: Text(
+                    loc.translate('apply'),
+                    style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _showFinished = true;
+                      _showUnfinished = true;
+                      _showTwoPlayer = true;
+                      _showThreePlayer = true;
+                      _selectedGoalScores = {501, 701, 1001};
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  child: Text(
+                    loc.translate('reset'),
+                    style: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  List<HistoryGameItem> _filterGames(List<HistoryGameItem> games) {
+    return games.where((game) {
+      // Filter by status
+      if (game.isCanceled && !_showUnfinished) return false;
+      if (!game.isCanceled && !_showFinished) return false;
+
+      // Filter by type
+      if (game.isThreePlayer && !_showThreePlayer) return false;
+      if (!game.isThreePlayer && !_showTwoPlayer) return false;
+
+      // Filter by goal score
+      if (!_selectedGoalScores.contains(game.goalScore)) return false;
+
+      return true;
+    }).toList();
+  }
+
   Widget _buildGameList(List<HistoryGameItem> games, AppLocalizations loc, int stigljaValue) {
-    if (games.isEmpty) {
+    final filteredGames = _filterGames(games);
+
+    if (filteredGames.isEmpty) {
       return Center(
         child: Text(
           loc.translate('noSavedGames'),
@@ -102,10 +268,10 @@ class HistoryScreenState extends ConsumerState<HistoryScreen>
     }
     return ListView.separated(
       padding: const EdgeInsets.all(16),
-      itemCount: games.length,
+      itemCount: filteredGames.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        final item = games[index];
+        final item = filteredGames[index];
 
         if (item.isThreePlayer) {
           return _buildThreePlayerGameCard(item.threePlayerGame!, loc, stigljaValue);
@@ -133,9 +299,9 @@ class HistoryScreenState extends ConsumerState<HistoryScreen>
 
     return FinishedGameDisplay(
       onTap: () async {
-        final result = await Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => FinishedGameScreen(game: game)),
-        );
+        final result = await Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => FinishedGameScreen(game: game)));
 
         if (result == true) {
           _refreshGames();
@@ -162,11 +328,9 @@ class HistoryScreenState extends ConsumerState<HistoryScreen>
 
     return ThreePlayerFinishedGameDisplay(
       onTap: () async {
-        final result = await Navigator.of(context).push<bool>(
-          MaterialPageRoute(
-            builder: (context) => ThreePlayerFinishedGameScreen(game: game),
-          ),
-        );
+        final result = await Navigator.of(
+          context,
+        ).push<bool>(MaterialPageRoute(builder: (context) => ThreePlayerFinishedGameScreen(game: game)));
         if (result == true) {
           _refreshGames();
         }
@@ -188,8 +352,6 @@ class HistoryScreenState extends ConsumerState<HistoryScreen>
     final settings = ref.watch(settingsProvider);
     final int stigljaValue = settings.stigljaValue;
     final theme = Theme.of(context);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final bool isSmallScreen = screenWidth <= 375;
 
     return Scaffold(
       appBar: AppBar(
@@ -204,23 +366,22 @@ class HistoryScreenState extends ConsumerState<HistoryScreen>
         ),
         actions: [
           IconButton(
+            onPressed: () => _showFilterDialog(context),
+            icon: const Icon(HugeIcons.strokeRoundedFilter),
+          ),
+          IconButton(
             onPressed: () async {
               final games = await _gamesFuture;
-              final twoPlayerGames = games
-                  .where((g) => !g.isThreePlayer)
-                  .map((g) => g.twoPlayerGame!)
-                  .toList();
-              final threePlayerGames = games
-                  .where((g) => g.isThreePlayer)
-                  .map((g) => g.threePlayerGame!)
-                  .toList();
+              final twoPlayerGames =
+                  games.where((g) => !g.isThreePlayer).map((g) => g.twoPlayerGame!).toList();
+              final threePlayerGames =
+                  games.where((g) => g.isThreePlayer).map((g) => g.threePlayerGame!).toList();
               if (context.mounted) {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => GlobalStatisticsScreen(
-                      games: twoPlayerGames,
-                      threePlayerGames: threePlayerGames,
-                    ),
+                    builder:
+                        (context) =>
+                            GlobalStatisticsScreen(games: twoPlayerGames, threePlayerGames: threePlayerGames),
                   ),
                 );
               }
@@ -245,58 +406,7 @@ class HistoryScreenState extends ConsumerState<HistoryScreen>
             );
           }
           final List<HistoryGameItem> games = snapshot.data ?? [];
-          final finishedGames = games.where((game) => !game.isCanceled).toList();
-          final unfinishedGames = games.where((game) => game.isCanceled).toList();
-
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surface,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: theme.colorScheme.outline.withOpacity(0.5)),
-                  ),
-                  child: TabBar(
-                    controller: _tabController,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    dividerColor: Colors.transparent,
-                    indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: theme.colorScheme.primary,
-                    ),
-                    labelColor: theme.colorScheme.onPrimary,
-                    labelStyle: TextStyle(
-                      fontFamily: 'Nunito',
-                      fontWeight: FontWeight.w500,
-                      fontSize: isSmallScreen ? 14 : 16,
-                    ),
-                    unselectedLabelStyle: TextStyle(
-                      fontFamily: 'Nunito',
-                      fontWeight: FontWeight.w500,
-                      fontSize: isSmallScreen ? 14 : 16,
-                    ),
-                    unselectedLabelColor: theme.colorScheme.onSurface,
-                    tabs: [
-                      Tab(text: loc.translate('finishedGamesTab')),
-                      Tab(text: loc.translate('unfinishedGamesTab')),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _buildGameList(finishedGames, loc, stigljaValue),
-                    _buildGameList(unfinishedGames, loc, stigljaValue),
-                  ],
-                ),
-              ),
-            ],
-          );
+          return _buildGameList(games, loc, stigljaValue);
         },
       ),
     );
