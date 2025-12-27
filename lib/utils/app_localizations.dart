@@ -136,6 +136,10 @@ class AppLocalizations {
       'threePlayerGames': 'Igre u troje',
       'threePlayerDeclarations': 'Zvanja (igre u troje)',
       'threePlayerGameDetails': 'Detalji igre u troje',
+      'activeGameTitle': 'Postoji aktivna igra',
+      'activeGameContent': 'Promjena cilja igre ce izbrisati aktivnu igru i zapoceti novu.',
+      'accept': 'Prihvati',
+      'discard': 'Odbaci',
     },
     'en': {
       'settings': 'Settings',
@@ -262,6 +266,10 @@ class AppLocalizations {
       'threePlayerGames': 'Three-player games',
       'threePlayerDeclarations': 'Declarations (three-player)',
       'threePlayerGameDetails': 'Three-player game details',
+      'activeGameTitle': 'Active game exists',
+      'activeGameContent': 'Changing the game goal will delete the active game and start a new one.',
+      'accept': 'Accept',
+      'discard': 'Discard',
     },
     'de': {
       'settings': 'Einstellungen',
@@ -389,6 +397,10 @@ class AppLocalizations {
       'threePlayerGames': 'Dreier-Spiele',
       'threePlayerDeclarations': 'Ansagen (Dreier-Spiele)',
       'threePlayerGameDetails': 'Dreier-Spiel Details',
+      'activeGameTitle': 'Aktives Spiel vorhanden',
+      'activeGameContent': 'Das Ändern des Spielziels löscht das aktive Spiel und startet ein neues.',
+      'accept': 'Akzeptieren',
+      'discard': 'Verwerfen',
     },
   };
 

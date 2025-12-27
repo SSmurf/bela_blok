@@ -14,6 +14,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../providers/theme_provider.dart';
+import '../providers/game_provider.dart';
+import '../providers/three_player_game_provider.dart';
 import '../widgets/game_transfer_bottom_sheet.dart';
 import '../widgets/theme_picker_bottom_sheet.dart';
 import '../utils/player_name_utils.dart';
@@ -137,6 +139,81 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         : const EdgeInsets.symmetric(horizontal: 16, vertical: 16);
   }
 
+  Future<bool?> _showActiveGameWarningDialog(BuildContext context, AppLocalizations loc) async {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth <= 375;
+    final buttonFontSize = isSmallScreen ? 16.0 : 18.0;
+
+    return showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              loc.translate('activeGameTitle'),
+              style: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w500, fontSize: 18),
+            ),
+            content: Text(
+              loc.translate('activeGameContent'),
+              style: const TextStyle(fontFamily: 'Nunito', fontSize: 16),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceEvenly,
+            actionsPadding: _getDialogPadding(context),
+            actions: [
+              OverflowBar(
+                alignment: MainAxisAlignment.spaceEvenly,
+                spacing: isSmallScreen ? 8 : 16,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 0,
+                      minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                      padding:
+                          isSmallScreen
+                              ? const EdgeInsets.symmetric(horizontal: 8)
+                              : const EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    child: Text(
+                      loc.translate('accept'),
+                      style: TextStyle(
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w500,
+                        fontSize: buttonFontSize,
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 0,
+                      minimumSize: isSmallScreen ? const Size(90, 40) : const Size(100, 40),
+                      padding:
+                          isSmallScreen
+                              ? const EdgeInsets.symmetric(horizontal: 8)
+                              : const EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    child: Text(
+                      loc.translate('discard'),
+                      style: TextStyle(
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w500,
+                        fontSize: buttonFontSize,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+    );
+  }
+
   Future<void> _showGoalOptionsDialog(BuildContext context, AppLocalizations loc) async {
     final int originalGoal = _goalScore;
     int selectedOption = (_goalScore == 501 || _goalScore == 701 || _goalScore == 1001) ? _goalScore : 1001;
@@ -203,21 +280,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        setState(() {
-                          _goalScore = selectedOption;
-                        });
-                        ref.read(settingsProvider.notifier).state = AppSettings(
-                          goalScore: _goalScore,
-                          stigljaValue: _stigljaValue,
-                          teamOneName: _teamOneName,
-                          teamTwoName: _teamTwoName,
-                          isThreePlayerMode: _isThreePlayerMode,
-                          playerOneName: _playerOneName,
-                          playerTwoName: _playerTwoName,
-                          playerThreeName: _playerThreeName,
-                        );
-                        _localStorageService.saveSettings(_buildSettingsMap(_getCurrentLanguageString()));
-                        Navigator.of(context).pop(_goalScore);
+                        Navigator.of(context).pop(selectedOption);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -258,22 +321,43 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       },
     );
 
-    // Rest of the method remains the same
-    if (result != null) {
-      setState(() {
-        _goalScore = result;
-      });
-      ref.read(settingsProvider.notifier).state = AppSettings(
-        goalScore: _goalScore,
-        stigljaValue: _stigljaValue,
-        teamOneName: _teamOneName,
-        teamTwoName: _teamTwoName,
-        isThreePlayerMode: _isThreePlayerMode,
-        playerOneName: _playerOneName,
-        playerTwoName: _playerTwoName,
-        playerThreeName: _playerThreeName,
-      );
-      await _localStorageService.saveSettings(_buildSettingsMap(_getCurrentLanguageString()));
+    if (result != null && result != originalGoal) {
+      final isGameActive =
+          _isThreePlayerMode
+              ? ref.read(currentThreePlayerGameProvider).isNotEmpty
+              : ref.read(currentGameProvider).isNotEmpty;
+
+      bool proceed = true;
+      if (isGameActive) {
+        proceed = await _showActiveGameWarningDialog(context, loc) ?? false;
+      }
+
+      if (proceed) {
+        if (isGameActive) {
+          if (_isThreePlayerMode) {
+            ref.read(currentThreePlayerGameProvider.notifier).clearRounds();
+            await _localStorageService.clearCurrentThreePlayerGame();
+          } else {
+            ref.read(currentGameProvider.notifier).clearRounds();
+            await _localStorageService.clearCurrentGame();
+          }
+        }
+
+        setState(() {
+          _goalScore = result;
+        });
+        ref.read(settingsProvider.notifier).state = AppSettings(
+          goalScore: _goalScore,
+          stigljaValue: _stigljaValue,
+          teamOneName: _teamOneName,
+          teamTwoName: _teamTwoName,
+          isThreePlayerMode: _isThreePlayerMode,
+          playerOneName: _playerOneName,
+          playerTwoName: _playerTwoName,
+          playerThreeName: _playerThreeName,
+        );
+        await _localStorageService.saveSettings(_buildSettingsMap(_getCurrentLanguageString()));
+      }
     } else {
       setState(() {
         _goalScore = originalGoal;
