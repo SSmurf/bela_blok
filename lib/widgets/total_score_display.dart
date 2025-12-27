@@ -23,36 +23,33 @@ class TotalScoreDisplay extends StatelessWidget {
     final theme = Theme.of(context);
     final showWins = teamOneWins > 0 || teamTwoWins > 0;
 
-    Widget _nameCell(String label, int wins, bool showWinsRow) {
+    Widget _winCell(int wins) {
       return Expanded(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (showWinsRow) ...[
-              Text(
-                wins.toString(),
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Nunito',
-                  color: theme.colorScheme.onSurface.withOpacity(0.7),
-                ),
-              ),
-              const SizedBox(height: 2),
-            ],
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Nunito',
-                color: theme.colorScheme.onSurface,
-              ),
-              textAlign: TextAlign.center,
-              softWrap: true,
-            ),
-          ],
+        child: Text(
+          wins.toString(),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Nunito',
+            color: theme.colorScheme.onSurface.withOpacity(0.7),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
+    Widget _nameCell(String label) {
+      return Expanded(
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Nunito',
+            color: theme.colorScheme.onSurface,
+          ),
+          textAlign: TextAlign.center,
+          softWrap: true,
         ),
       );
     }
@@ -75,12 +72,11 @@ class TotalScoreDisplay extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          children: [
-            _nameCell(teamOneName, teamOneWins, showWins),
-            _nameCell(teamTwoName, teamTwoWins, showWins),
-          ],
-        ),
+        if (showWins) ...[
+          Row(children: [_winCell(teamOneWins), _winCell(teamTwoWins)]),
+          const SizedBox(height: 2),
+        ],
+        Row(children: [_nameCell(teamOneName), _nameCell(teamTwoName)]),
         const SizedBox(height: 6),
         Row(children: [_scoreCell(scoreTeamOne), _scoreCell(scoreTeamTwo)]),
       ],
