@@ -1188,7 +1188,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     const String playStoreUrl = 'https://play.google.com/store/apps/details?id=com.belablok.app';
 
     const String shareMessage =
-        'Check out Bela Blok - the perfect app for belote score tracking! 🎴\n\n'
+        'Check out Bela Blok - the perfect app for belote score tracking!\n\n'
         'Download now:\n'
         '📱 iOS: $appStoreUrl\n'
         '🤖 Android: $playStoreUrl';
